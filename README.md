@@ -1,2 +1,2 @@
 # emersim
-Simulating emergency services for our 3rd year group project in java.
+Simulating emergency services for our 3rd year group project in Java.
