@@ -1,0 +1,49 @@
+\documentclass[a4paper]{article}
+
+% Table of contents depth (currently unused)
+\setcounter{tocdepth}{3}
+
+% Section numbering depth (zero for no numbering)
+\setcounter{secnumdepth}{0}
+
+% latex package inclusions here
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{tabulary}
+\usepackage{amsthm}
+
+% set up BNF generator
+\usepackage{syntax}
+\setlength{\grammarparsep}{10pt plus 1pt minus 1pt}
+\setlength{\grammarindent}{10em} 
+
+% set up source code inclusion
+\usepackage{listings}
+\lstset{
+  tabsize=2,
+  basicstyle = \ttfamily\small,
+  columns=fullflexible
+}
+% Usage for the above like so:
+% \begin{lstlisting}
+%   CODE CODE CODE
+% \end{lstlisting}
+
+% in-line code styling (same style as listing)
+\newcommand{\shell}[1]{\lstinline{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\title{}
+\date{}
+\author{}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
