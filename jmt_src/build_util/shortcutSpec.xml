@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<izpack:shortcuts version="5.0"
+                  xmlns:izpack="http://izpack.org/schema/shortcuts"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://izpack.org/schema/shortcuts http://izpack.org/schema/5.0/izpack-shortcuts-5.0.xsd">
+	<programGroup defaultName="Java Modelling Tools" location="applications"/>
+	<shortcut name="JMT @jmt.version@" 
+	target="$JAVA_HOME/bin/javaw.exe" 
+	commandLine="-jar &quot;$INSTALL_PATH/JMT.jar&quot;" 
+	programGroup="yes" 
+	desktop="yes" 
+	applications="no" 
+	startMenu="no" 
+	startup="no" 
+	workingDirectory="$INSTALL_PATH" 
+	description="Launch Java Modelling Tools @jmt.version@" 
+	iconFile="$INSTALL_PATH/jmt.ico">
+	</shortcut>
+	
+	<shortcut name="Uninstall JMT @jmt.version@" 
+	target="JAVA_HOME/bin/javaw.exe" 
+	commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;" 
+	programGroup="yes" 
+	desktop="no" 
+	applications="no" 
+	startMenu="no" 
+	startup="no" 
+	workingDirectory="$APPLICATIONS_DEFAULT_ROOT" 
+	description="Uninstall Java Modelling Tools @jmt.version@"
+	iconFile="$INSTALL_PATH/uninst.ico">
+	</shortcut>
+</izpack:shortcuts>

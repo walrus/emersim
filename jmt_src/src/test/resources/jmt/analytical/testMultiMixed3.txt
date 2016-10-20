@@ -1,0 +1,54 @@
+Sistema misto con 2 classi
+
+------------------------------------
+Analysis with MVA Multiclass
+
+Queue Length (Q)
+------------------------------------
+[   3.035714   0.550325   ]
+[   1.964286   1.394958   ]
+
+
+Residence Time (R)
+------------------------------------
+[   2.272727   13.758117   ]
+[   1.470588   34.87395   ]
+
+
+Throughput (X)
+------------------------------------
+[   1.335714   0.04   ]
+[   1.335714   0.04   ]
+
+
+Utilization (U)
+------------------------------------
+[   2.671429   0.12   ]
+[   1.335714   0.32   ]
+
+
+Station 0: aggregated values
+  throughput       : 1.3757142857142857
+  utilization      : 2.7914285714285714
+  queue length     : 3.5860389610389607
+  residence time   : 2.6066742188237515
+
+Station 1: aggregated values
+  throughput       : 1.3757142857142857
+  utilization      : 1.6557142857142857
+  queue length     : 3.359243697478992
+  residence time   : 2.4418178486347815
+
+Class 0: aggregated values
+  response time       : 3.7433155080213907
+  throughput          : 1.3357142857142856
+
+Class 1: aggregated values
+  response time       : 48.63206646294882
+  throughput          : 0.04
+
+System aggregate values
+  System Response Time    : 5.0484920674585325
+  System Throughput       : 1.3757142857142857
+  System Number of jobs   : 6.945282658517953
+End Multi mixed

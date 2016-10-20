@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="JMTmodel.xsd">
+<description><![CDATA[created with RandomMVAModelGenerator: model n. 10 (seed = 1429781109001)]]></description>
+<parameters>
+<classes number="1">
+<closedclass name="Class0" population="4"/>
+</classes>
+<stations number="10">
+<listation name="Station0">
+<servicetimes>
+<servicetime customerclass="Class0">0.5265349526168491</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.2667957468032043</visit>
+</visits>
+</listation>
+<listation name="Station1">
+<servicetimes>
+<servicetime customerclass="Class0">0.98259643304181</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.6354338479916319</visit>
+</visits>
+</listation>
+<listation name="Station2">
+<servicetimes>
+<servicetime customerclass="Class0">0.23673348631074775</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.532565467754109</visit>
+</visits>
+</listation>
+<listation name="Station3">
+<servicetimes>
+<servicetime customerclass="Class0">0.26806322339019795</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.7112859045712492</visit>
+</visits>
+</listation>
+<listation name="Station4">
+<servicetimes>
+<servicetime customerclass="Class0">0.7725071513698071</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.1855897779526312</visit>
+</visits>
+</listation>
+<listation name="Station5">
+<servicetimes>
+<servicetime customerclass="Class0">0.9219382552759741</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.35592697497120307</visit>
+</visits>
+</listation>
+<listation name="Station6">
+<servicetimes>
+<servicetime customerclass="Class0">0.6534408266717378</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.11680945399551312</visit>
+</visits>
+</listation>
+<listation name="Station7">
+<servicetimes>
+<servicetime customerclass="Class0">0.05628691722803347</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.17355876102791234</visit>
+</visits>
+</listation>
+<listation name="Station8">
+<servicetimes>
+<servicetime customerclass="Class0">0.3761815705505499</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.3466877010021834</visit>
+</visits>
+</listation>
+<listation name="Station9">
+<servicetimes>
+<servicetime customerclass="Class0">0.06777513183532125</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.2854127254886929</visit>
+</visits>
+</listation>
+</stations>
+</parameters>
+</model>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="JMTmodel.xsd">
+<description><![CDATA[created with RandomMVAModelGenerator: model n. 9 (seed = 1429781108970)]]></description>
+<parameters>
+<classes number="1">
+<closedclass name="Class0" population="21"/>
+</classes>
+<stations number="9">
+<listation name="Station0">
+<servicetimes>
+<servicetime customerclass="Class0">0.7303457944883248</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.22720078230254104</visit>
+</visits>
+</listation>
+<listation name="Station1">
+<servicetimes>
+<servicetime customerclass="Class0">0.32378892997318465</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.9088701960518957</visit>
+</visits>
+</listation>
+<listation name="Station2">
+<servicetimes>
+<servicetime customerclass="Class0">0.78183742656678</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.706894116126825</visit>
+</visits>
+</listation>
+<listation name="Station3">
+<servicetimes>
+<servicetime customerclass="Class0">0.373568681573781</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.30034251584121474</visit>
+</visits>
+</listation>
+<delaystation name="Station4">
+<servicetimes>
+<servicetime customerclass="Class0">0.011910391787544494</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.13254929806770743</visit>
+</visits>
+</delaystation>
+<listation name="Station5">
+<servicetimes>
+<servicetime customerclass="Class0">0.2562206164814975</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.4174060135366442</visit>
+</visits>
+</listation>
+<listation name="Station6">
+<servicetimes>
+<servicetime customerclass="Class0">0.7186278341525697</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.2749788950826606</visit>
+</visits>
+</listation>
+<listation name="Station7">
+<servicetimes>
+<servicetime customerclass="Class0">0.9759786581405088</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.194959565158507</visit>
+</visits>
+</listation>
+<listation name="Station8">
+<servicetimes>
+<servicetime customerclass="Class0">0.6900562714289726</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.9771211081716966</visit>
+</visits>
+</listation>
+</stations>
+</parameters>
+</model>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:/home/piotrek/Repositories/Individual%20Project/Improved%20JMT/bin/jmt/common/xml/JMTmodel.xsd">
+<description><![CDATA[created with RandomMVAModelGenerator: model n. 2 (seed = 1434380376191)]]></description>
+<parameters>
+<classes number="3">
+<openclass name="Class0" rate="0.40129986409793195"/>
+<closedclass name="Class1" population="7"/>
+<openclass name="Class2" rate="0.532577040353066"/>
+</classes>
+<stations number="3">
+<listation name="Station0">
+<servicetimes>
+<servicetime customerclass="Class0">1.3379790264415885</servicetime>
+<servicetime customerclass="Class1">1.3379790264415885</servicetime>
+<servicetime customerclass="Class2">1.3379790264415885</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.33211544336732035</visit>
+<visit customerclass="Class1">0.8064005276239201</visit>
+<visit customerclass="Class2">0.7830238715987368</visit>
+</visits>
+</listation>
+<listation name="Station1">
+<servicetimes>
+<servicetime customerclass="Class0">1.7684340150060294</servicetime>
+<servicetime customerclass="Class1">1.7684340150060294</servicetime>
+<servicetime customerclass="Class2">1.7684340150060294</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.34848226522050885</visit>
+<visit customerclass="Class1">0.40701632751387296</visit>
+<visit customerclass="Class2">0.01682232521031568</visit>
+</visits>
+</listation>
+<listation name="Station2">
+<servicetimes>
+<servicetime customerclass="Class0">1.2340408563445675</servicetime>
+<servicetime customerclass="Class1">1.2340408563445675</servicetime>
+<servicetime customerclass="Class2">1.2340408563445675</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.734447444914188</visit>
+<visit customerclass="Class1">0.4439966535205371</visit>
+<visit customerclass="Class2">0.33249702279366145</visit>
+</visits>
+</listation>
+</stations>
+</parameters>
+</model>

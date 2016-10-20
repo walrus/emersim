@@ -1,0 +1,62 @@
+Sistema chiuso con 4 classi
+
+------------------------------------
+Analysis with MVA Multiclass
+
+Queue Length (Q)
+------------------------------------
+[   98.588561   95.242691   98.86472   97.250321   ]
+[   1.411439   4.757309   1.13528   2.749679   ]
+
+
+Residence Time (R)
+------------------------------------
+[   3898.378036   1950.864234   3898.093829   1949.868946   ]
+[   55.810982   97.444379   44.762468   55.131054   ]
+
+
+Throughput (X)
+------------------------------------
+[   0.02529   0.048821   0.025362   0.049875   ]
+[   0.02529   0.048821   0.025362   0.049875   ]
+
+
+Utilization (U)
+------------------------------------
+[   0.252896   0.244104   0.253623   0.249377   ]
+[   0.126448   0.439387   0.101449   0.249377   ]
+
+
+Station 0: aggregated values
+  throughput       : 0.14934803996201987
+  utilization      : 1.0
+  queue length     : 389.94629241965544
+  residence time   : 11697.205045772353
+
+Station 1: aggregated values
+  throughput       : 0.14934803996201987
+  utilization      : 0.9166609483462548
+  queue length     : 10.05370758034458
+  residence time   : 253.1488830332992
+
+Class 0: aggregated values
+  response time       : 3954.1890182192474
+  throughput          : 0.025289635760769622
+
+Class 1: aggregated values
+  response time       : 2048.308612914362
+  throughput          : 0.04882076820334149
+
+Class 2: aggregated values
+  response time       : 3942.856297672043
+  throughput          : 0.025362324277210507
+
+Class 3: aggregated values
+  response time       : 2005.0000000000002
+  throughput          : 0.04987531172069825
+
+System aggregate values
+  System Response Time    : 11950.353928805653
+  System Throughput       : 0.03347181199678301
+  System Number of jobs   : 400.0
+End Multi Closed LI
