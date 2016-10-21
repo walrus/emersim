@@ -79,6 +79,7 @@ import jmt.jmarkov.Queues.MMNLogic;
 import jmt.jmarkov.Queues.MMNdLogic;
 import jmt.jmarkov.Queues.Processor;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
+import jmt.jmarkov.SpatialQueue.SpatialQDialog;
 import jmt.jmarkov.utils.Formatter;
 import jmt.manual.ManualBookmarkers;
 import jmt.manual.PDFViewerBuffer;
@@ -210,6 +211,8 @@ public class MMQueues extends JMTFrame {
 	private JMenu queueMenu;
 	private Action selectQueueRB;
 	private JRadioButtonMenuItem gradientItem;
+	// spatial queue
+	private JMenu spatialMenu;
 	// settings
 	private JMenu settingsMenu;
 	// colors
@@ -617,6 +620,19 @@ public class MMQueues extends JMTFrame {
 			};
 			queueMenu.add(exitAction);
 			menuB.add(queueMenu);
+
+			// spatial queue
+			spatialMenu = new JMenu("Spatial Queue");
+			JMenuItem newSQ = new JMenuItem();
+			newSQ.setText("New Spatial Queue");
+			newSQ.setToolTipText("Create a new Spatial Queue");
+			newSQ.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					new SpatialQDialog(mf);
+				}
+			});
+			spatialMenu.add(newSQ);
+			menuB.add(spatialMenu);
 
 			// settings
 			settingsMenu = new JMenu("Settings");
