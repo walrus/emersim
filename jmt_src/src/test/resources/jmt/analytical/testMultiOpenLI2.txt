@@ -1,0 +1,58 @@
+Sistema aperto con 3 classi
+
+------------------------------------
+Analysis with MVA Multiclass
+
+Queue Length (Q)
+------------------------------------
+[   2.5E-4   2.5E-4   2.5E-4   ]
+[   0.018258   0.01252   0.01252   ]
+
+
+Residence Time (R)
+------------------------------------
+[   0.005004   0.005004   0.005004   ]
+[   0.365154   0.250391   0.250391   ]
+
+
+Throughput (X)
+------------------------------------
+[   0.05   0.05   0.05   ]
+[   3.5   6.0   6.0   ]
+
+
+Utilization (U)
+------------------------------------
+[   2.5E-4   2.5E-4   2.5E-4   ]
+[   0.0175   0.012   0.012   ]
+
+
+Station 0: aggregated values
+  throughput       : 0.15000000000000002
+  utilization      : 7.5E-4
+  queue length     : 7.505629221916439E-4
+  residence time   : 0.015011258443832876
+
+Station 1: aggregated values
+  throughput       : 15.5
+  utilization      : 0.0415
+  queue length     : 0.043296817944705274
+  residence time   : 0.8659363588941054
+
+Class 0: aggregated values
+  response time       : 0.37015763909525784
+  throughput          : 0.05
+
+Class 1: aggregated values
+  response time       : 0.25539498912134023
+  throughput          : 0.05
+
+Class 2: aggregated values
+  response time       : 0.25539498912134023
+  throughput          : 0.05
+
+System aggregate values
+  System Response Time    : 0.8809476173379382
+  System Throughput       : 0.0
+  System Number of jobs   : 0.0
+End Multi LI

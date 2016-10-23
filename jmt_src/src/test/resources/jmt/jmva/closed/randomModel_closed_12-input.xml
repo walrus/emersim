@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="JMTmodel.xsd">
+<description><![CDATA[created with RandomMVAModelGenerator: model n. 12 (seed = 1429781109115)]]></description>
+<parameters>
+<classes number="1">
+<closedclass name="Class0" population="13"/>
+</classes>
+<stations number="12">
+<listation name="Station0">
+<servicetimes>
+<servicetime customerclass="Class0">0.00257183565558472</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.25282104994387344</visit>
+</visits>
+</listation>
+<delaystation name="Station1">
+<servicetimes>
+<servicetime customerclass="Class0">0.9858525769111277</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.4191729019202255</visit>
+</visits>
+</delaystation>
+<listation name="Station2">
+<servicetimes>
+<servicetime customerclass="Class0">0.17978646691062405</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.5682514619360175</visit>
+</visits>
+</listation>
+<listation name="Station3">
+<servicetimes>
+<servicetime customerclass="Class0">0.252909676238509</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.4340271715672588</visit>
+</visits>
+</listation>
+<listation name="Station4">
+<servicetimes>
+<servicetime customerclass="Class0">0.6675958915332043</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.5368587328471968</visit>
+</visits>
+</listation>
+<listation name="Station5">
+<servicetimes>
+<servicetime customerclass="Class0">0.45032500255649477</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.9658607760784288</visit>
+</visits>
+</listation>
+<listation name="Station6">
+<servicetimes>
+<servicetime customerclass="Class0">0.9547892282564753</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.4515465383198789</visit>
+</visits>
+</listation>
+<listation name="Station7">
+<servicetimes>
+<servicetime customerclass="Class0">0.9183796804000014</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.43936684269795023</visit>
+</visits>
+</listation>
+<listation name="Station8">
+<servicetimes>
+<servicetime customerclass="Class0">0.2724884667569759</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.7646571020663615</visit>
+</visits>
+</listation>
+<listation name="Station9">
+<servicetimes>
+<servicetime customerclass="Class0">0.49491334131009335</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.21711537029143146</visit>
+</visits>
+</listation>
+<listation name="Station10">
+<servicetimes>
+<servicetime customerclass="Class0">0.9897513221359474</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.47469438524116425</visit>
+</visits>
+</listation>
+<listation name="Station11">
+<servicetimes>
+<servicetime customerclass="Class0">0.4669189506763063</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.7591867892521182</visit>
+</visits>
+</listation>
+</stations>
+</parameters>
+</model>

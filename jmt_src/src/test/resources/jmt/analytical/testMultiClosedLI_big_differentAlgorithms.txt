@@ -1,0 +1,261 @@
+
+------------------------------------
+Analysis with MVA Multiclass
+
+Queue Length (Q)
+------------------------------------
+Algorithm: MVA
+[   98.588561   95.242691   98.86472   97.250321   ]
+[   1.411439   4.757309   1.13528   2.749679   ]
+Algorithm: Chow
+[   98.534876   94.9191   98.824456   97.112063   ]
+[   1.465124   5.0809   1.175544   2.887937   ]
+Algorithm: Bard-Schweitzer
+[   98.54103   94.955044   98.829111   97.127544   ]
+[   1.45897   5.044956   1.170889   2.872456   ]
+Algorithm: AQL
+[   98.591829   95.264931   98.867093   97.259514   ]
+[   1.408171   4.73507   1.132907   2.740486   ]
+Algorithm: Linearizer
+[   98.597801   95.293311   98.871816   97.272544   ]
+[   1.402199   4.706689   1.128184   2.727456   ]
+Algorithm: Optimised Linearizer
+[   98.597801   95.293311   98.871816   97.272544   ]
+[   1.402199   4.706689   1.128184   2.727456   ]
+
+
+Residence Time (R)
+------------------------------------
+Algorithm: MVA
+[   3898.378036   1950.864234   3898.093829   1949.868946   ]
+[   55.810982   97.444379   44.762468   55.131054   ]
+Algorithm: Chow
+[   3903.904942   1951.952471   3903.904942   1951.952471   ]
+[   58.047529   104.485552   46.438023   58.047529   ]
+Algorithm: Bard-Schweitzer
+[   3894.673173   1947.515886   3894.644364   1947.407261   ]
+[   57.663414   103.471406   46.142254   57.592739   ]
+Algorithm: AQL
+[   3898.63296   1951.122757   3898.323894   1950.053255   ]
+[   55.68352   96.979038   44.670443   54.946745   ]
+Algorithm: Linearizer
+[   3899.098712   1951.452577   3898.781698   1950.314498   ]
+[   55.450644   96.385361   44.487321   54.685502   ]
+Algorithm: Optimised Linearizer
+[   3899.098712   1951.452577   3898.781698   1950.314498   ]
+[   55.450644   96.385361   44.487321   54.685502   ]
+
+
+Throughput (X)
+------------------------------------
+Algorithm: MVA
+[   0.02529   0.048821   0.025362   0.049875   ]
+[   0.02529   0.048821   0.025362   0.049875   ]
+Algorithm: Chow
+[   0.02524   0.048628   0.025314   0.049751   ]
+[   0.02524   0.048628   0.025314   0.049751   ]
+Algorithm: Bard-Schweitzer
+[   0.025301   0.048757   0.025376   0.049875   ]
+[   0.025301   0.048757   0.025376   0.049875   ]
+Algorithm: AQL
+[   0.025289   0.048826   0.025361   0.049875   ]
+[   0.025289   0.048826   0.025361   0.049875   ]
+Algorithm: Linearizer
+[   0.025287   0.048832   0.02536   0.049875   ]
+[   0.025287   0.048832   0.02536   0.049875   ]
+Algorithm: Optimised Linearizer
+[   0.025287   0.048832   0.02536   0.049875   ]
+[   0.025287   0.048832   0.02536   0.049875   ]
+
+
+Utilization (U)
+------------------------------------
+Algorithm: MVA
+[   0.252896   0.244104   0.253623   0.249377   ]
+[   0.126448   0.439387   0.101449   0.249377   ]
+Algorithm: Chow
+[   0.252401   0.243139   0.253143   0.248756   ]
+[   0.1262   0.43765   0.101257   0.248756   ]
+Algorithm: Bard-Schweitzer
+[   0.253015   0.243785   0.253756   0.249377   ]
+[   0.126507   0.438813   0.101503   0.249377   ]
+Algorithm: AQL
+[   0.252888   0.244128   0.253614   0.249377   ]
+[   0.126444   0.439431   0.101446   0.249377   ]
+Algorithm: Linearizer
+[   0.252873   0.24416   0.253597   0.249377   ]
+[   0.126437   0.439488   0.101439   0.249377   ]
+Algorithm: Optimised Linearizer
+[   0.252873   0.24416   0.253597   0.249377   ]
+[   0.126437   0.439488   0.101439   0.249377   ]
+
+
+Station 0: aggregated values
+Algorithm: MVA
+  throughput       : 0.14934803996201987
+  utilization      : 1.0
+  queue length     : 389.94629241965544
+  residence time   : 11697.205045772353
+Algorithm: Chow
+  throughput       : 0.14893335452964282
+  utilization      : 0.9974384647447936
+  queue length     : 389.39049519271305
+  residence time   : 11711.714826207643
+Algorithm: Bard-Schweitzer
+  throughput       : 0.14930945113688315
+  utilization      : 0.9999329219853457
+  queue length     : 389.45272853290214
+  residence time   : 11684.240683056954
+Algorithm: AQL
+  throughput       : 0.1493512668308914
+  utilization      : 1.0000076189813105
+  queue length     : 389.9833667157053
+  residence time   : 11698.132865070846
+Algorithm: Linearizer
+  throughput       : 0.14935430199155975
+  utilization      : 1.0000065155102242
+  queue length     : 390.0354720850965
+  residence time   : 11699.647485624693
+Algorithm: Optimised Linearizer
+  throughput       : 0.14935430199155972
+  utilization      : 1.0000065155102242
+  queue length     : 390.03547208509644
+  residence time   : 11699.647485624693
+
+Station 1: aggregated values
+Algorithm: MVA
+  throughput       : 0.14934803996201987
+  utilization      : 0.9166609483462548
+  queue length     : 10.05370758034458
+  residence time   : 253.1488830332992
+Algorithm: Chow
+  throughput       : 0.14893335452964282
+  utilization      : 0.9138636042209719
+  queue length     : 10.60950480728701
+  residence time   : 267.0186332408065
+Algorithm: Bard-Schweitzer
+  throughput       : 0.14930945113688315
+  utilization      : 0.9161996358808567
+  queue length     : 10.547271467097856
+  residence time   : 264.869813411927
+Algorithm: AQL
+  throughput       : 0.1493512668308914
+  utilization      : 0.9166976903543094
+  queue length     : 10.01663319285528
+  residence time   : 252.27974568523183
+Algorithm: Linearizer
+  throughput       : 0.14935430199155975
+  utilization      : 0.9167397968640005
+  queue length     : 9.964527914903528
+  residence time   : 251.0088274099613
+Algorithm: Optimised Linearizer
+  throughput       : 0.14935430199155972
+  utilization      : 0.9167397968640003
+  queue length     : 9.964527914903536
+  residence time   : 251.00882740996158
+
+Class 0: aggregated values
+Algorithm: MVA
+  response time       : 3954.1890182192474
+  throughput          : 0.025289635760769622
+Algorithm: Chow
+  response time       : 3961.9524710346072
+  throughput          : 0.0252400806751441
+Algorithm: Bard-Schweitzer
+  response time       : 3952.3365862577407
+  throughput          : 0.025301488832631214
+Algorithm: AQL
+  response time       : 3954.316479892479
+  throughput          : 0.025288820585933243
+Algorithm: Linearizer
+  response time       : 3954.549355814842
+  throughput          : 0.02528733137518139
+Algorithm: Optimised Linearizer
+  response time       : 3954.5493558148414
+  throughput          : 0.025287331375181393
+
+Class 1: aggregated values
+Algorithm: MVA
+  response time       : 2048.308612914362
+  throughput          : 0.04882076820334149
+Algorithm: Chow
+  response time       : 2056.438023172314
+  throughput          : 0.04862777232923239
+Algorithm: Bard-Schweitzer
+  response time       : 2050.987291550433
+  throughput          : 0.048757006155998914
+Algorithm: AQL
+  response time       : 2048.1017947431874
+  throughput          : 0.04882569814482246
+Algorithm: Linearizer
+  response time       : 2047.8379381920156
+  throughput          : 0.04883198916037637
+Algorithm: Optimised Linearizer
+  response time       : 2047.8379381920158
+  throughput          : 0.048831989160376364
+
+Class 2: aggregated values
+Algorithm: MVA
+  response time       : 3942.856297672043
+  throughput          : 0.025362324277210507
+Algorithm: Chow
+  response time       : 3950.342965241529
+  throughput          : 0.02531425774417181
+Algorithm: Bard-Schweitzer
+  response time       : 3940.7866186607084
+  throughput          : 0.02537564442755477
+Algorithm: AQL
+  response time       : 3942.9943361204105
+  throughput          : 0.02536143637943745
+Algorithm: Linearizer
+  response time       : 3943.269019027796
+  throughput          : 0.025359669735303726
+Algorithm: Optimised Linearizer
+  response time       : 3943.2690190277963
+  throughput          : 0.025359669735303722
+
+Class 3: aggregated values
+Algorithm: MVA
+  response time       : 2005.0000000000002
+  throughput          : 0.04987531172069825
+Algorithm: Chow
+  response time       : 2010.0
+  throughput          : 0.04975124378109453
+Algorithm: Bard-Schweitzer
+  response time       : 2005.0
+  throughput          : 0.04987531172069826
+Algorithm: AQL
+  response time       : 2005.0
+  throughput          : 0.04987531172069826
+Algorithm: Linearizer
+  response time       : 2005.0
+  throughput          : 0.04987531172069826
+Algorithm: Optimised Linearizer
+  response time       : 2005.0000000000002
+  throughput          : 0.04987531172069825
+
+System aggregate values
+Algorithm: MVA
+  System Response Time    : 11950.353928805653
+  System Throughput       : 0.03347181199678301
+  System Number of jobs   : 400.0
+Algorithm: Chow
+  System Response Time    : 11978.73345944845
+  System Throughput       : 0.03339251193409705
+  System Number of jobs   : 400.00000000000006
+Algorithm: Bard-Schweitzer
+  System Response Time    : 11949.110496468882
+  System Throughput       : 0.03347529509566467
+  System Number of jobs   : 400.0
+Algorithm: AQL
+  System Response Time    : 11950.412610756077
+  System Throughput       : 0.03347164762734108
+  System Number of jobs   : 399.9999999085606
+Algorithm: Linearizer
+  System Response Time    : 11950.656313034653
+  System Throughput       : 0.03347096506856428
+  System Number of jobs   : 400.0
+Algorithm: Optimised Linearizer
+  System Response Time    : 11950.656313034655
+  System Throughput       : 0.03347096506856427
+  System Number of jobs   : 400.0

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited  by Bertoli Marco -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="Archive.xsd"/>
+	<xs:element name="solutions">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="measure" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="station" type="xs:string" use="required"/>
+						<xs:attribute name="class" type="xs:string" use="required"/>
+						<xs:attribute name="measureType" type="xs:string" use="required"/>
+						<xs:attribute name="meanValue" type="jdouble" use="optional"/>
+						<xs:attribute name="lowerLimit" type="jdouble" use="optional"/>
+						<xs:attribute name="upperLimit" type="jdouble" use="optional"/>
+						<xs:attribute name="successful" type="xs:boolean" use="required"/>
+						<xs:attribute name="analyzedSamples" type="xs:int" use="optional"/>
+						<xs:attribute name="discardedSamples" type="xs:int" use="optional"/>
+						<xs:attribute name="precision" type="jdouble" use="optional"/>
+						<xs:attribute name="alfa" type="jdouble" use="optional"/>
+						<xs:attribute name="maxSamples" type="xs:int" use="optional"/>
+						<xs:attribute name="nodeType" type="xs:string" use="optional"/>
+						<xs:attribute name="logFile" type="xs:string" use="optional"/>
+						<xs:attribute name="mean" type="xs:string" use="optional"/>
+						<xs:attribute name="variance" type="xs:string" use="optional"/>
+						<xs:attribute name="standardDeviation" type="xs:string" use="optional"/>
+						<xs:attribute name="coefficientOfVariation" type="xs:string" use="optional"/>
+						<xs:attribute name="skeweness" type="xs:string" use="optional"/>
+						<xs:attribute name="kurtosis" type="xs:string" use="optional"/>
+						<xs:attribute name="firstPowerMoment" type="xs:string" use="optional"/>
+						<xs:attribute name="secondPowerMoment" type="xs:string" use="optional"/>
+						<xs:attribute name="thirdPowerMoment" type="xs:string" use="optional"/>
+						<xs:attribute name="fourthPowerMoment" type="xs:string" use="optional"/>
+						<xs:attribute name="minValue" type="xs:string" use="optional"/>
+						<xs:attribute name="maxValue" type="xs:string" use="optional"/>
+						<xs:attribute name="minSimulationTime" type="xs:string" use="optional"/>
+						<xs:attribute name="maxSimulationTime" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="modelName" type="xs:string" use="required"/>
+			<xs:attribute name="solutionMethod" type="xs:string" use="required"/>
+			<xs:attribute name="modelDefinitionPath" type="xs:string" use="required"/>
+			<xs:attribute name="logDecimalSeparator" type="xs:string" use="optional"/>
+			<xs:attribute name="logDelimiter" type="xs:string" use="optional"/>
+			<xs:attribute name="logPath" type="xs:string" use="optional"/>
+			<xs:attribute name="lastRunTime" type="xs:string" use="optional"/>		
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

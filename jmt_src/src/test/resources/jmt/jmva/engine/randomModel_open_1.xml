@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet "type="text/xsl" href="NepTranslatorMVAtoSIM.xslt"?>
+
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="JMTmodel.xsd">
+<parameters>
+<classes number="1">
+<openclass name="Class0" rate="0.865989742277264"/>
+</classes>
+<stations number="1">
+<listation name="Station0">
+<servicetimes>
+<servicetime customerclass="Class0">12.253066573202064</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.07511561735064021</visit>
+</visits>
+</listation>
+</stations>
+</parameters>
+<solutions ok="true" solutionMethod="simulation">
+<stationresults station="Station0">
+<classresults customerclass="Class0">
+<measure measureType="Number of Customers" upperLimit="4.436012186550101" meanValue="4.061956203169122" lowerLimit="3.687900219788142" successful="true" analyzedSamples="102400" discardedSamples="5385" precision="0.1" alfa="0.1" maxSamples="500000"/>
+<measure measureType="Throughput" upperLimit="0.06605130056614954" meanValue="0.06540092796790156" lowerLimit="0.06476323824540423" successful="true" analyzedSamples="61440" discardedSamples="135" precision="0.1" alfa="0.1" maxSamples="500000"/>
+<measure maxSamples="500000" alfa="0.1" precision="0.1" discardedSamples="2690" analyzedSamples="87040" successful="true" upperLimit="4.933533645381967" meanValue="4.670399771573419" lowerLimit="4.407265897764871" measureType="Residence Time"/>
+<measure measureType="Utilization" upperLimit="0.8100627075808663" meanValue="0.8013356566384972" lowerLimit="0.792608605696128" successful="true" analyzedSamples="81920" discardedSamples="2495" precision="0.1" alfa="0.1" maxSamples="500000"/>
+</classresults>
+</stationresults>
+</solutions>
+</model>

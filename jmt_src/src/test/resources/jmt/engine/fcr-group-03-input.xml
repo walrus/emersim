@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<archive xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="fcr-group-03-input.jsimg" timestamp="Mon Sep 19 21:07:08 BST 2016" xsi:noNamespaceSchemaLocation="Archive.xsd">
+<sim disableStatisticStop="false" logDecimalSeparator="." logDelimiter=";" logPath="C:\Users\Administrator/JMT/" logReplaceMode="0" maxSamples="1000000" name="fcr-group-03-input.jsimg" polling="1.0" xsi:noNamespaceSchemaLocation="SIMmodeldefinition.xsd">
+<userClass name="Low Class" priority="0" referenceSource="Source 1" type="open"/>
+<userClass name=" High Class" priority="1" referenceSource="Source 1" type="open"/>
+<node name="Source 1">
+<section className="RandomSource">
+<parameter array="true" classPath="jmt.engine.NetStrategies.ServiceStrategy" name="ServiceStrategy">
+<refClass>Low Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.ServiceStrategies.ServiceTimeStrategy" name="ServiceTimeStrategy">
+<subParameter classPath="jmt.engine.random.Exponential" name="Exponential"/>
+<subParameter classPath="jmt.engine.random.ExponentialPar" name="distrPar">
+<subParameter classPath="java.lang.Double" name="lambda">
+<value>12.0</value>
+</subParameter>
+</subParameter>
+</subParameter>
+<refClass> High Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.ServiceStrategies.ServiceTimeStrategy" name="ServiceTimeStrategy">
+<subParameter classPath="jmt.engine.random.Exponential" name="Exponential"/>
+<subParameter classPath="jmt.engine.random.ExponentialPar" name="distrPar">
+<subParameter classPath="java.lang.Double" name="lambda">
+<value>12.0</value>
+</subParameter>
+</subParameter>
+</subParameter>
+</parameter>
+</section>
+<section className="ServiceTunnel"/>
+<section className="Router">
+<parameter array="true" classPath="jmt.engine.NetStrategies.RoutingStrategy" name="RoutingStrategy">
+<refClass>Low Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RandomStrategy" name="Random"/>
+<refClass> High Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RandomStrategy" name="Random"/>
+</parameter>
+</section>
+</node>
+<node name="Queue 1">
+<section className="Queue">
+<parameter classPath="java.lang.Integer" name="size">
+<value>-1</value>
+</parameter>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Low Class</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>waiting queue</value>
+</subParameter>
+<refClass> High Class</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>waiting queue</value>
+</subParameter>
+</parameter>
+<parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
+<parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
+<refClass>Low Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.QueuePutStrategies.TailStrategy" name="TailStrategy"/>
+<refClass> High Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.QueuePutStrategies.TailStrategy" name="TailStrategy"/>
+</parameter>
+</section>
+<section className="Server">
+<parameter classPath="java.lang.Integer" name="maxJobs">
+<value>1</value>
+</parameter>
+<parameter array="true" classPath="java.lang.Integer" name="numberOfVisits">
+<refClass>Low Class</refClass>
+<subParameter classPath="java.lang.Integer" name="numberOfVisits">
+<value>1</value>
+</subParameter>
+<refClass> High Class</refClass>
+<subParameter classPath="java.lang.Integer" name="numberOfVisits">
+<value>1</value>
+</subParameter>
+</parameter>
+<parameter array="true" classPath="jmt.engine.NetStrategies.ServiceStrategy" name="ServiceStrategy">
+<refClass>Low Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.ServiceStrategies.ServiceTimeStrategy" name="ServiceTimeStrategy">
+<subParameter classPath="jmt.engine.random.Exponential" name="Exponential"/>
+<subParameter classPath="jmt.engine.random.ExponentialPar" name="distrPar">
+<subParameter classPath="java.lang.Double" name="lambda">
+<value>10.0</value>
+</subParameter>
+</subParameter>
+</subParameter>
+<refClass> High Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.ServiceStrategies.ServiceTimeStrategy" name="ServiceTimeStrategy">
+<subParameter classPath="jmt.engine.random.Exponential" name="Exponential"/>
+<subParameter classPath="jmt.engine.random.ExponentialPar" name="distrPar">
+<subParameter classPath="java.lang.Double" name="lambda">
+<value>10.0</value>
+</subParameter>
+</subParameter>
+</subParameter>
+</parameter>
+</section>
+<section className="Router">
+<parameter array="true" classPath="jmt.engine.NetStrategies.RoutingStrategy" name="RoutingStrategy">
+<refClass>Low Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RandomStrategy" name="Random"/>
+<refClass> High Class</refClass>
+<subParameter classPath="jmt.engine.NetStrategies.RoutingStrategies.RandomStrategy" name="Random"/>
+</parameter>
+</section>
+</node>
+<node name="Sink 1">
+<section className="JobSink"/>
+</node>
+<measure alpha="0.01" name="System Throughput" nodeType="station" precision="0.03" referenceNode="" referenceUserClass="" type="System Throughput" verbose="false"/>
+<measure alpha="0.01" name="Low Class_System Throughput" nodeType="station" precision="0.03" referenceNode="" referenceUserClass="Low Class" type="System Throughput" verbose="false"/>
+<measure alpha="0.01" name=" High Class_System Throughput" nodeType="station" precision="0.03" referenceNode="" referenceUserClass=" High Class" type="System Throughput" verbose="false"/>
+<connection source="Source 1" target="Queue 1"/>
+<connection source="Queue 1" target="Sink 1"/>
+<blockingRegion name="FCRegion1" type="default">
+<regionNode nodeName="Queue 1"/>
+<globalConstraint maxJobs="-1"/>
+<globalMemoryConstraint maxMemory="-1"/>
+<classConstraint jobClass="Low Class" maxJobsPerClass="-1"/>
+<classConstraint jobClass=" High Class" maxJobsPerClass="-1"/>
+<classWeight jobClass="Low Class" weight="1"/>
+<classWeight jobClass=" High Class" weight="1"/>
+<classMemorySize jobClass="Low Class" size="1"/>
+<classMemorySize jobClass=" High Class" size="1"/>
+<dropRules dropThisClass="false" jobClass="Low Class"/>
+<dropRules dropThisClass="false" jobClass=" High Class"/>
+<groupConstraint jobGroup="Group1" maxJobsPerGroup="90"/>
+<groupConstraint jobGroup="Group2" maxJobsPerGroup="10"/>
+<groupStrategy jobGroup="Group1" strategy="FCFS"/>
+<groupStrategy jobGroup="Group2" strategy="HPS_FCFS"/>
+<groupClassList>
+<groupClass jobClass="Low Class" jobGroup="Group1"/>
+</groupClassList>
+<groupClassList>
+<groupClass jobClass=" High Class" jobGroup="Group2"/>
+</groupClassList>
+</blockingRegion>
+</sim>
+<jmodel xsi:noNamespaceSchemaLocation="JModelGUI.xsd">
+<userClass color="#FF0000FF" name="Low Class"/>
+<userClass color="#FFFF0000" name=" High Class"/>
+<station name="Source 1">
+<position rotate="false" x="25.0" y="93.0"/>
+</station>
+<station name="Queue 1">
+<position rotate="false" x="147.0" y="90.0"/>
+</station>
+<station name="Sink 1">
+<position rotate="false" x="312.0" y="93.0"/>
+</station>
+</jmodel>
+</archive>

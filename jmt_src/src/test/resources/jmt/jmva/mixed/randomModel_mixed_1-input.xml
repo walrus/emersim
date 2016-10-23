@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:/home/piotrek/Repositories/Individual%20Project/Improved%20JMT/bin/jmt/common/xml/JMTmodel.xsd">
+<description><![CDATA[created with RandomMVAModelGenerator: model n. 1 (seed = 1434380375871)]]></description>
+<parameters>
+<classes number="2">
+<openclass name="Class0" rate="0.7410969924353266"/>
+<closedclass name="Class1" population="16"/>
+</classes>
+<stations number="2">
+<listation name="Station0">
+<servicetimes>
+<servicetime customerclass="Class0">0.1456375187790905</servicetime>
+<servicetime customerclass="Class1">0.1456375187790905</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.6260970014480463</visit>
+<visit customerclass="Class1">0.4533130422723699</visit>
+</visits>
+</listation>
+<listation name="Station1">
+<servicetimes>
+<servicetime customerclass="Class0">0.7130138319117673</servicetime>
+<servicetime customerclass="Class1">0.7130138319117673</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.8027495817416812</visit>
+<visit customerclass="Class1">0.643401552690281</visit>
+</visits>
+</listation>
+</stations>
+</parameters>
+</model>

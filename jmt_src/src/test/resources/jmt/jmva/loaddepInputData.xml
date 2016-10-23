@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="JMTmodel.xsd"><description><![CDATA[The objective of this simple example is to show how the service times of a Load Dependent station should be described. 
+The model is closed, the workload consists of a single class of customers, the stations are two, one of them is of Load Dependent type (i.e., its service time depends on the number of customers in the station, usually referred to as queue length).
+
+When defining service time (or service demand) for a LD station, one value of service time must be specified for each feasible population.
+
+]]></description><parameters><classes number="1"><closedclass name="Class1" population="5"/></classes><stations number="2"><listation name="Server LI" servers="1"><servicetimes><servicetime customerclass="Class1">1.5</servicetime></servicetimes><visits><visit customerclass="Class1">1.0</visit></visits></listation><ldstation name="Server LD" servers="1"><servicetimes><servicetimes customerclass="Class1">1.0;1.5;1.9;2.6;3.1</servicetimes></servicetimes><visits><visit customerclass="Class1">1.0</visit></visits></ldstation></stations></parameters></model>
+

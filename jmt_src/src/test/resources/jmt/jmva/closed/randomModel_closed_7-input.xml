@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="JMTmodel.xsd">
+<description><![CDATA[created with RandomMVAModelGenerator: model n. 7 (seed = 1429781108907)]]></description>
+<parameters>
+<classes number="1">
+<closedclass name="Class0" population="17"/>
+</classes>
+<stations number="7">
+<listation name="Station0">
+<servicetimes>
+<servicetime customerclass="Class0">0.87932286996347</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.23848802599572272</visit>
+</visits>
+</listation>
+<listation name="Station1">
+<servicetimes>
+<servicetime customerclass="Class0">0.9205153306929359</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.8494190197627041</visit>
+</visits>
+</listation>
+<listation name="Station2">
+<servicetimes>
+<servicetime customerclass="Class0">0.5924799227853389</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.7260085778834884</visit>
+</visits>
+</listation>
+<delaystation name="Station3">
+<servicetimes>
+<servicetime customerclass="Class0">0.02158290340749114</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.9965271037188106</visit>
+</visits>
+</delaystation>
+<listation name="Station4">
+<servicetimes>
+<servicetime customerclass="Class0">0.7653882731787698</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.800025583401923</visit>
+</visits>
+</listation>
+<listation name="Station5">
+<servicetimes>
+<servicetime customerclass="Class0">0.77206021873497</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.795193720077451</visit>
+</visits>
+</listation>
+<listation name="Station6">
+<servicetimes>
+<servicetime customerclass="Class0">0.07860362789706898</servicetime>
+</servicetimes>
+<visits>
+<visit customerclass="Class0">0.8813134662549944</visit>
+</visits>
+</listation>
+</stations>
+</parameters>
+</model>
