@@ -1,0 +1,180 @@
+\documentclass[a4paper]{article}
+
+% Table of contents depth (currently unused)
+\setcounter{tocdepth}{3}
+
+% Section numbering depth (zero for no numbering)
+\setcounter{secnumdepth}{0}
+
+% latex package inclusions here
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{tabulary}
+\usepackage{amsthm}
+\usepackage{graphicx}
+
+% set up source code inclusion
+\usepackage{listings}
+\lstset{
+  tabsize=2,
+  basicstyle = \ttfamily\small,
+  columns=fullflexible
+}
+% Usage for the above like so:
+% \begin{lstlisting}
+%   CODE CODE CODE
+% \end{lstlisting}
+
+% in-line code styling (same style as listing, but for single or partial lines)
+\newcommand{\shell}[1]{\lstinline{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\title{Spatial Queue Simulator Specification}
+\date{21/10/2016}
+\author{Adam Quick, Dylan Tracey, Joshua Zeltser, \\Yuting Lin, Zhengqi Yu and Daniel Clay}
+\maketitle
+
+\tableofcontents
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Background}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Java Modelling Tools (JMT) are a suite of applications offering a comprehensive framework for performance evaluation, system modeling with analytical and simulation techniques, capacity planning and workload characterization studies. For the purposes of this project we will be extending JMCH (Markov Chain Simulator) which is a queuing network models simulator with a graphical user interface. We aim to add a Spatial Queue simulation to this tool.
+
+\subsection{Overview}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The Spatial Queue will be a windowed application, which will display a two dimensional map. The application will allow the user to select on the map of an area of their choosing, which will act as a source for events to be simulated in the queue (called 'clients' from here), as well as an endpoint (called 'the server' from here) to receive these events. Distance parameters will be calculated for each added client on the map. 
+
+Once an area has been selected the simulation can be run. During the simulation, clients will be randomly generated and send requests to the server, which will respond to them. Each response will take a variable amount of time based on the distance parameter for that client. The server will use a queue to track incoming requests
+
+Once the simulation has run, information will be displayed to the user about the outcome of the simulation.
+
+This Spatial Queue implementation will be configurable to allow it to be used for different applications. We will be implementing an configuration to model an ambulance service.
+
+\subsection{Ambulance Service example}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+As an example of the extensions that will be possible, we will extend the base Spatial Queue to model an ambulance service. The Clients will model people who make a call to 999 requesting an ambulance, while the Server will model the ambulance department of a hospital.
+
+The server will respond to requests by dispatching ambulances, which will return to the hospital with a patient before being ready to serve another client (other models, such as the police service, might not need to return to the Server between serving requests). Each client will only make one request.
+
+The distance parameter will model the actual distance from the person to the hospital, and will be used to work out the journey time.
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Specification}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Technologies}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The JMT application is Java-based and therefore our extension of this will also be written in Java in order to integrate with the current application. The different components of the JMT suite have an internal communication model using XML files so we will also need to integrate with this.
+
+\subsection{Simulator structure}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The simulator has been set up using the Model View Controller strategy. The GUI which the user will use to create their desired simulation is the view part of the system (see below). This is the only part of the system that the end user sees. Our model is the tools which we use to create the simulations including our spatial queues and other simulation tools already provided in the JMT package. These two components will be combined by a controller giving the user an easy to use GUI which provides them with these simulation tools.
+
+\subsection{GUI}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The application will be a full-screen windowed application. The main part of the page will be a map (or other sensible background) with the simulation data overlayed on it.
+
+At the bottom of the screen will be a bar displaying the incoming requests and simulation data.
+
+To the left of the screen will be another bar with buttons for controlling the simulation.
+\\
+\\
+\includegraphics[width=\textwidth]{GUI}
+
+\subsection{Simulation Engine}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The Engine will run the simulation, and be responsible for creating new clients. It will extend JMT's \lstinline{SimEngine} class.
+
+\subsubsection{\lstinline{define_area}}
+
+The engine will implement a method called \lstinline{define_area} which defines the area in which new clients can be created.
+
+\subsubsection{\lstinline{create_client}}
+
+The engine will implement a method called \lstinline{create_client} which creates a new client in the valid area. 
+
+The engine will also handle the data tracking and statistic side of the simulation (see the 'Simulation Metrics' subsection below for details).
+
+\subsubsection{Simulation Metrics}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+During and after the simulation, we will display various metrics, as below:
+
+\begin{itemize}
+    \item Simulation run time
+    \item Number of requests
+    \item Requests successfully responded to
+    \item Requests not responded to
+    \item Average response time
+\end{itemize}
+
+For each individual request, we will also record the following metrics:
+
+\begin{itemize}
+    \item Client
+    \item Time sent
+    \item Time finished
+    \item Responded to
+\end{itemize}
+
+\subsection{Server/Receiver}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Detailed spec for the Receiver bit, basically how it differs from normal.
+Needs to have an interface for plugging in different ways of finding distance.
+Also consider different routing (EG ambulances need to return to the hospital,
+but police cars don't necessarily need to return to the police station.)
+
+\subsubsection{\lstinline{handle_request}}
+
+The server will implement a method called \lstinline{handle_request} that
+receives a request and adds it to the queue. It will also need to call \lstinline{calculate_response_time}.
+
+\subsubsection{\lstinline{calculate_response_time}}
+
+The server will implement a method called \lstinline{calculate_response_time} that, given a request which contains a location, calculates how long it will take to respond to that request (not including queuing time).
+
+\subsubsection{\lstinline{serve_request}}
+
+The server will implement a method called \lstinline{serve_request} that, given a request from the queue, responds appropriately.
+
+\subsubsection{\lstinline{get_next_request}}
+
+The server will implement a method called \lstinline{get_next_request} that chooses which request from the queue to respond to next.
+
+\subsection{Client/Sender}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Detailed spec for the client bit. Essentially needs to support some way
+of finding distance from client-receiver.\\
+
+This will extend \lstinline{SimEntity} from the JMT engine.
+
+Clients must implement a method of finding the distance between themselves and the receiver. This could be by the user manually inputting the number or via a service like Google Maps API to retrieve realistic travel times and traffic data.
+
+The client will send requests (see below) to the receiver.
+
+\subsubsection{\lstinline{get_location}}
+
+The client will implement a method called \lstinline{get_location} that returns a ??? representing it's location. The server will be able to use this location to work out how long the client's request will take to respond to.
+
+\subsubsection{\lstinline{run}}
+
+The client will implement a method called \lstinline{run} that will run throughout the lifetime of the client, and send a variable number of requests at varying (or random) times.
+
+\subsubsection{\lstinline{make_request}}
+
+The client will implement a method called \lstinline{make_request} that will send a request to the appropriate server.
+
+\subsection{Request}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The Request will extend \lstinline{SimEvent} from the JMT engine. 
+
+The data encapsulated with it will include the location of the Client that sent the request.
+
+\end{document}
