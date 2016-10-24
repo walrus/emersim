@@ -19,6 +19,11 @@
         <!-- Create the build directory structure used by compile -->
         <mkdir dir="${jmt_base}"/>
         <mkdir dir="${class}"/>
+        <mkdir dir="${test_class}"/>
+        <mkdir dir="${test_report}/engine"/>
+        <mkdir dir="${test_report}/gui"/>
+        <mkdir dir="${test_report}/jmva"/>
+
 
     </target>
 
@@ -36,7 +41,89 @@
         </javac>
     </target>
 
+    <path id="classpath.test">
+        <pathelement location="lib/junit-4.8.1.jar"/>
+        <pathelement location="lib/hamcrest-core-1.3.jar"/>
+        <pathelement location="${class}"/>
+        <fileset dir="${lib}">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement location="src/test/resources"/>
+    </path>
 
+    <target name="test_compile" depends="compile">
+        <mkdir dir="${test_class}"/>
+        <javac srcdir="${test_src}" destdir="${test_class}" includeantruntime="false">
+            <classpath refid="classpath.test"/>
+        </javac>
+    </target>
+
+    <target name="run_all_tests" depends="test_compile, engine_tests
+        , gui_tests, jmva_tests">
+<!--         <junit printsummary="on" haltonfailure="no" fork="true">
+            <classpath>
+                <path refid="classpath.test"/>
+                <pathelement location="${test_class}"/>
+            </classpath>
+            <formatter type="plain"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${test_report}">
+                <fileset dir="${test_src}"></fileset>
+            </batchtest>
+        </junit> -->
+    </target>
+
+    <target name="engine_tests" depends="test_compile, copy_resources">
+        <junit printsummary="on" haltonfailure="no" fork="true">
+            <classpath>
+                <path refid="classpath.test"/>
+                <pathelement location="${test_class}"/>
+            </classpath>
+            <formatter type="plain"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${test_report}/engine">
+                <fileset dir="${test_src}">
+                    <include name="jmt/engine/**"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="gui_tests" depends="test_compile, copy_resources">
+        <junit printsummary="on" haltonfailure="no" fork="true">
+            <classpath>
+                <path refid="classpath.test"/>
+                <pathelement location="${test_class}"/>
+            </classpath>
+            <formatter type="plain"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${test_report}/gui">
+                <fileset dir="${test_src}">
+                    <include name="jmt/gui/**"/>
+                    <exclude name="jmt/gui/TestWizardPanel.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="jmva_tests" depends="test_compile, copy_resources">
+        <junit printsummary="on" haltonfailure="no" fork="true">
+            <classpath>
+                <path refid="classpath.test"/>
+                <pathelement location="${test_class}"/>
+            </classpath>
+            <formatter type="plain"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${test_report}/jmva">
+                <fileset dir="${test_src}">
+                    <include name="jmt/jmva/**"/>
+                    <exclude name="jmt/jmva/BatchTest.java"/>
+                    <exclude name="jmt/jmva/RandomMVAModelGenerator.java"/>
+                    <exclude name="jmt/jmva/ResultsCheck.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
 
     <target name="copy_resources" description="copies resources into build dir" depends="compile">
 
@@ -47,6 +134,41 @@
             	excludes="**/*.java,**/*.bak,**/*.log,**/*.dfPackage,**/.svn,**/package.htm*" />
             <fileset dir="${src}" 
             	excludes="**/*.java,**/*.bak,**/*.log,**/*.dfPackage,**/.svn,**/package.htm*" />
+        </copy>
+
+        <copy todir="${test_class}/jmt/jmva">
+            <fileset dir="${test_re_src}/jmt/jmva/closed" 
+                excludes="**/*.java,**/*.bak,**/*.log,**/*.dfPackage,**/.svn,**/package.htm*" />
+        </copy>
+
+        <copy todir="${test_class}/jmt/jmva">
+            <fileset dir="${test_re_src}/jmt/jmva/engine" 
+                excludes="**/*.java,**/*.bak,**/*.log,**/*.dfPackage,**/.svn,**/package.htm*" />
+        </copy>
+
+        <copy todir="${test_class}/jmt/jmva">
+            <fileset dir="${test_re_src}/jmt/jmva/gui" 
+                excludes="**/*.java,**/*.bak,**/*.log,**/*.dfPackage,**/.svn,**/package.htm*" />
+        </copy>
+
+        <copy todir="${test_class}/jmt/jmva">
+            <fileset dir="${test_re_src}/jmt/jmva/mixed" 
+                excludes="**/*.java,**/*.bak,**/*.log,**/*.dfPackage,**/.svn,**/package.htm*" />
+        </copy>
+
+        <copy todir="${test_class}/jmt/jmva">
+            <fileset dir="${test_re_src}/jmt/jmva/open" 
+                excludes="**/*.java,**/*.bak,**/*.log,**/*.dfPackage,**/.svn,**/package.htm*" />
+        </copy>
+
+        <copy todir="${test_class}/jmt/jmva">
+            <fileset dir="${test_re_src}/jmt/analytical" 
+                excludes="**/*.java,**/*.bak,**/*.log,**/*.dfPackage,**/.svn,**/package.htm*" />
+        </copy>
+
+        <copy todir="${test_class}/jmt/jmva">
+            <fileset dir="${test_re_src}/jmt/jmva" 
+                excludes="**/*.java,**/*.bak,**/*.log,**/*.dfPackage,**/.svn,**/package.htm*" />
         </copy>
     	
     	<!-- Copy License and Readme to class folder -->
@@ -234,6 +356,8 @@
         <!-- Delete the ${dist} directory -->
         <delete dir="${dist}"/>
     	<delete dir="${class}"/>
+        <delete dir="${test_class}"/>
+        <delete dir="${test_report}"/>
     </target>
 	
 	<target name="create_framework" depends="copy_resources" description="builds the framework in a separate JAR">
