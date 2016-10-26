@@ -1,0 +1,18 @@
+#!/bin/bash
+
+master_branch='master'
+development_branch='development' 
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+
+echo "Running pre-commit checks"
+
+if [ $development_branch = $current_branch ] 
+then  
+    echo "You're trying to commit directly to development."
+    echo "If this is really what you want to do, commit with --no-verify"
+fi
+if [ $master_branch = $current_branch ] 
+then  
+    echo "You're trying to commit directly to master."
+    echo "Stop."
+fi
