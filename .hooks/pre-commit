@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 master_branch='master'
 development_branch='development' 
