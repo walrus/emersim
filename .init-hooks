@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#remove whatever's in git's hooks directory
+rm -rf .git/hooks;
+#symlink hooks into git's hooks directory from version control
+ln -s $(pwd)/.hooks .git/hooks
+
+echo "Git hooks updated"
