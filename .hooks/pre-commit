@@ -6,6 +6,18 @@ current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 
 echo "Running pre-commit checks"
 
+#cd into jmt_src and attempt to build
+cd jmt_src
+ant create_jar
+if [ $? != 0 ]; then
+  echo "Build failed, not committing"
+  exit 1
+else
+  echo "Build passed"
+fi
+
+cd ..
+
 if [ $development_branch = $current_branch ] 
 then  
     echo "You're trying to commit directly to development."
