@@ -21,10 +21,23 @@ cd ..
 if [ $development_branch = $current_branch ] 
 then  
     echo "You're trying to commit directly to development."
-    echo "If this is really what you want to do, commit with --no-verify"
+    exec < /dev/tty
+
+    while true; do
+      read -p "Is this really what you want to do? (Y/n) " yn
+      if [ "$yn" = "" ]; then
+        yn='Y'
+      fi
+      case $yn in
+          [Yy] ) exit 0;;
+          [Nn] ) exit 1;;
+          * ) echo "Please answer y or n for yes or no.";;
+      esac
+    done
 fi
 if [ $master_branch = $current_branch ] 
 then  
     echo "You're trying to commit directly to master."
     echo "Stop."
+    exit 1
 fi
