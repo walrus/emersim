@@ -60,6 +60,7 @@ import jmt.gui.jsimgraph.mainGui.MainWindow;
 import jmt.gui.jsimwiz.JSIMMain;
 import jmt.gui.jwat.MainJwatWizard;
 import jmt.jmarkov.MMQueues;
+import jmt.jmarkov.QueueTypeDialog;
 import jmt.jmva.gui.exact.ExactWizard;
 import jmt.manual.ManualBookmarkers;
 import jmt.manual.PDFViewerBuffer;
@@ -165,7 +166,7 @@ public class GraphStartScreen extends JMTFrame {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			MMQueues.main(args);
+			new QueueTypeDialog();
 		}
 
 	};
