@@ -1,4 +1,5 @@
-!/bin/sh
+#!/bin/bash
+
 master_branch='master'
 development_branch='development' 
 current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
