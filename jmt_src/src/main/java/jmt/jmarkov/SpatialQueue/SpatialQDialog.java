@@ -1,4 +1,22 @@
+package jmt.jmarkov.SpatialQueue;
 
+import com.teamdev.jxmaps.MapViewOptions;
+import jmt.jmarkov.Graphics.JobsDrawer;
+import jmt.jmarkov.Graphics.constants.DrawConstrains;
+import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Simulator;
+import jmt.jmarkov.utils.Formatter;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Dictionary;
 /**
  * Copyright (C) 2016, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
@@ -17,25 +35,24 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package jmt.jmarkov.SpatialQueue;
-		import com.teamdev.jxmaps.MapViewOptions;
-		import jmt.jmarkov.Graphics.constants.DrawConstrains;
-		import jmt.jmarkov.Graphics.constants.DrawNormal;
-		import jmt.jmarkov.utils.Formatter;
 
-		import javax.swing.*;
-		import javax.swing.border.EmptyBorder;
-		import javax.swing.border.TitledBorder;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.*;
-		import java.awt.event.*;
-		import java.beans.PropertyChangeEvent;
-		import java.beans.PropertyChangeListener;
-		import java.util.Dictionary;
 
 /* Dialog to contain Spatial Queue Window. */
 public class SpatialQDialog extends JDialog implements ActionListener, PropertyChangeListener {
+
+
+	private Simulator sim = null;
+	private JobsDrawer jobsDrawer;
+	private DrawConstrains dCst = new DrawNormal();
+	private JPanel buttons;
+	private JButton receiver;
+	private JButton client;
+	private JButton start;
+	private JButton pause;
+	private JButton stop;
+	private JPanel leftPanel;
+	private JFrame window;
+
 
 	/** Creates the dialog. */
 	public SpatialQDialog(Frame aFrame) {
@@ -47,22 +64,19 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		this.init();
 	}
 
-
-
 	public void init(){
 		setTitle("Create a new Spatial Queue");
 
-		JFrame window = new JFrame();
+		window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setLayout(new BorderLayout());
 		Dimension d = new Dimension(800,600);
 		window.setPreferredSize(d);
 
+		buttons = new JPanel(new GridLayout(0, 1));
+
 		//Side buttons
 		sideButtons(window);
-
-		// acceleration scroll bar
-		speedSlider(window);
 
 		//maps
 		maps(window);
@@ -80,54 +94,91 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		MapViewOptions mapOptions = new MapViewOptions();
 		mapOptions.importPlaces();
 		final MapConfig mapView = new MapConfig(mapOptions);
-		JDialog mapDialog = new JDialog();
-//		map.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		map.add(mapView, BorderLayout.CENTER);
-		map.setSize(230, 250);
-//		map.setLocationRelativeTo(null);
+		map.setSize(150, 150);
 		map.setVisible(true);
-//		map.add(mapDialog);
-//		window.add(map);
 	}
 
 	private void sideButtons(JFrame window) {
-		JPanel buttons = new JPanel(new GridLayout(0, 1));
-		JButton r = new JButton("Add Receiver");
-		r.setPreferredSize(new Dimension(100,40));
-		JButton c = new JButton("Add Client");
-		c.setPreferredSize(new Dimension(100,40));
-		JButton start = new JButton("Start");
+
+		receiver = new JButton("Add Receiver");
+		receiver.setPreferredSize(new Dimension(100,40));
+		receiver.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		client = new JButton("Add Client");
+		client.setPreferredSize(new Dimension(100,40));
+		client.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		start = new JButton("Start");
 		start.setPreferredSize(new Dimension(100,40));
-		JButton pause = new JButton("Pause");
+		start.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+
+			}
+		});
+
+
+		pause = new JButton("Pause");
 		pause.setPreferredSize(new Dimension(100,40));
-		JButton stop = new JButton("Stop");
+		pause.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		stop = new JButton("Stop");
 		stop.setPreferredSize(new Dimension(100,40));
-		buttons.add(r);
-		buttons.add(c);
+		stop.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+
+		buttons.add(receiver);
+		buttons.add(client);
 		buttons.add(start);
 		buttons.add(pause);
 		buttons.add(stop);
 
 		buttons.setBorder(new EmptyBorder(50, 0, 0, 0));
 
+		//scroll bar
+		buttons = speedSlider(buttons);
 
-		JPanel left = new JPanel(new BorderLayout());
-		left.add(buttons, BorderLayout.NORTH);
-		window.add(left, BorderLayout.WEST);
+		//number of arrivals
+		buttons = jobsPanel(buttons);
+
+		leftPanel = new JPanel(new BorderLayout());
+		leftPanel.add(buttons, BorderLayout.NORTH);
+		window.add(leftPanel, BorderLayout.WEST);
 	}
 
-	private void speedSlider(JFrame window) {
-		JPanel accelerationP = new JPanel(new BorderLayout());
+	private JPanel speedSlider(JPanel accelerationP) {
+
 		DrawConstrains dCst = new DrawNormal();
 
-		accelerationP.setBorder(addTitle("Simulation time", dCst.getSmallGUIFont()));
+		accelerationP.setBorder(addTitle("Simulation Options", dCst.getSmallGUIFont()));
 		JLabel accelerationL = new JLabel();
 		accelerationL = new JLabel("Time x0.0");
 		accelerationL.setFont(dCst.getNormalGUIFont());
 		accelerationL.setHorizontalAlignment(SwingConstants.CENTER);
 		accelerationP.add(accelerationL);
 
-		JSlider accelerationS = new JSlider();
+		final JSlider accelerationS = new JSlider();
 		accelerationS.setValue(50);
 		accelerationS.setMaximum(100);
 		accelerationS.setMinimum(1);
@@ -145,16 +196,29 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 
 		accelerationP.add(accelerationS);
 		accelerationS.setValue(50);
+		final JLabel finalAccelerationL = accelerationL;
 		accelerationS.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent evt) {
-
+				int value = accelerationS.getValue();
+				if (sim != null) {
+					sim.setTimeMultiplier(value);
+					finalAccelerationL.setText("Time x" + Formatter.formatNumber(sim.getTimeMultiplier(), 2));
+				} else {
+					finalAccelerationL.setText("Time x" + Formatter.formatNumber(value, 2));
+				}
 			}
 
 		});
 		accelerationL.setText("Time x" + Formatter.formatNumber(accelerationS.getValue(), 2));
 
-//		accelerationP.setSize(50,50);
-		window.add(accelerationP, BorderLayout.PAGE_END);
+		return accelerationP;
+	}
+
+
+	private JPanel jobsPanel(JPanel jobsP) {
+		jobsDrawer = new JobsDrawer();
+		jobsP.add(jobsDrawer);
+		return jobsP;
 	}
 
 	@Override
@@ -170,24 +234,4 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 	private TitledBorder addTitle(String title, Font f) {
 		return new TitledBorder(null, title, TitledBorder.LEADING, TitledBorder.TOP, f, new java.awt.Color(0, 0, 0));
 	}
-
-
-	/** Creates the dialog. */
-//	public SpatialQDialog(Frame aFrame) {
-//		super(aFrame, true);
-//		setTitle("Create a new Spatial Queue");
-//
-//		MapViewOptions mapOptions = new MapViewOptions();
-//		mapOptions.importPlaces();
-//		final MapConfig mapView = new MapConfig(mapOptions);
-//		JDialog mapDialog = new JDialog();
-//		mapDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-//		mapDialog.add(mapView, BorderLayout.CENTER);
-//		mapDialog.setSize(700, 500);
-//		mapDialog.setLocationRelativeTo(null);
-//		mapDialog.setVisible(true);
-//
-//		//Handle window closing correctly.
-//		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-//	}
 }

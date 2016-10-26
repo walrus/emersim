@@ -621,19 +621,6 @@ public class MMQueues extends JMTFrame {
 			queueMenu.add(exitAction);
 			menuB.add(queueMenu);
 
-			// spatial queue
-			spatialMenu = new JMenu("Spatial Queue");
-			JMenuItem newSQ = new JMenuItem();
-			newSQ.setText("New Spatial Queue");
-			newSQ.setToolTipText("Create a new Spatial Queue");
-			newSQ.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					new SpatialQDialog(mf);
-				}
-			});
-			spatialMenu.add(newSQ);
-			menuB.add(spatialMenu);
-
 			// settings
 			settingsMenu = new JMenu("Settings");
 			colorsMenu = new JMenu("Colors");
