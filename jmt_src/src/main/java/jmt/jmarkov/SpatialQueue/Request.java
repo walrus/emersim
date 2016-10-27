@@ -6,6 +6,10 @@ package jmt.jmarkov.SpatialQueue;
 public class Request {
     private Sender sender;
 
+    public Request(Sender sender) {
+        this.sender = sender;
+    }
+
     public Sender getSender() {
         return sender;
     }
