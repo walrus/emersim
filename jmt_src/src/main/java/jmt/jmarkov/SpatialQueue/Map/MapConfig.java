@@ -14,6 +14,7 @@ public class MapConfig extends MapView {
 
     private static final String INITIAL_LOCATION = "Imperial College London, SW7 2AZ";
     private OptionsWindow optionsWindow;
+    private boolean placeMarker;
 
     public MapConfig(MapViewOptions options) {
         super(options);
@@ -35,6 +36,20 @@ public class MapConfig extends MapView {
                 // Setting map options
                 map.setOptions(options);
                 performGeocode(INITIAL_LOCATION);
+                map.addEventListener("click", new MapMouseEvent() {
+                    @Override
+                    public void onEvent(MouseEvent mouseEvent) {
+                        if (placeMarker) {
+                            // Closing initially created info window
+                            infoWindow.close();
+                            // Creating a new marker
+                            final Marker marker = new Marker(map);
+                            // Move marker to the position where user clicked
+                            marker.setPosition(mouseEvent.latLng());
+                            placeMarker = false;
+                        }
+                    }
+                });
             }
         });
     }
@@ -168,5 +183,9 @@ public class MapConfig extends MapView {
                 }
             }
         });
+    }
+
+    public void toggleMarkerPlacement() {
+        placeMarker = true;
     }
 }

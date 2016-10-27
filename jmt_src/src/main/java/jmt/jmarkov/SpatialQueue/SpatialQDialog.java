@@ -5,6 +5,7 @@ import jmt.jmarkov.Graphics.JobsDrawer;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Simulator;
+import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.utils.Formatter;
 
 import javax.swing.*;
@@ -52,6 +53,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 	private JButton stop;
 	private JPanel leftPanel;
 	private JFrame window;
+	private MapConfig mapView;
 
 
 	/** Creates the dialog. */
@@ -93,7 +95,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		window.add(map);
 		MapViewOptions mapOptions = new MapViewOptions();
 		mapOptions.importPlaces();
-		final MapConfig mapView = new MapConfig(mapOptions);
+		mapView = new MapConfig(mapOptions);
 		map.add(mapView, BorderLayout.CENTER);
 		map.setSize(150, 150);
 		map.setVisible(true);
@@ -106,7 +108,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		receiver.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				mapView.toggleMarkerPlacement();
 			}
 		});
 
