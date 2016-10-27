@@ -20,3 +20,9 @@ $ ant gui_tests
 $ ant jmva_tests
 ```
 
+#Setting up git hooks
+
+To install our version-controlled git hooks, please run the following script:
+
+`./.init-hooks`
+
