@@ -5,4 +5,8 @@ package jmt.jmarkov.SpatialQueue;
  */
 public class Request {
     private Sender sender;
+
+    public Sender getSender() {
+        return sender;
+    }
 }

@@ -7,21 +7,21 @@ public class Sender {
 
     private Location location;
     //How many requests the Sender should send
-    private int requests_to_send;
+    private int requestsToSend;
 
     //Return the Sender's location
-    public Location get_location() {
+    public Location getLocation() {
         //TODO: implement
         return location;
     }
 
     //Send a variable number of requests to the Receiver
-    public void send_requests() {
+    public void sendRequests() {
         //TODO: implement
     }
 
     //Send a request to the Receiver
-    public void make_request() {
+    public void makeRequest() {
         //TODO: implement
     }
 }
