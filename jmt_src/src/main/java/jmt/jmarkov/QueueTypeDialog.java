@@ -17,7 +17,7 @@ public class QueueTypeDialog extends JDialog {
     }
 
     private void init() {
-        JFrame queueType = new JFrame();
+        final JFrame queueType = new JFrame();
 
         JPanel buttons = new JPanel(new GridLayout(1,0));
 
@@ -27,6 +27,7 @@ public class QueueTypeDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MMQueues.main(null);
+                queueType.dispose();
             }
         });
 
@@ -36,6 +37,7 @@ public class QueueTypeDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new SpatialQDialog(null);
+                queueType.dispose();
             }
         });
 

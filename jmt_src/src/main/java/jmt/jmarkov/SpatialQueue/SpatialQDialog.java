@@ -54,7 +54,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 	private JPanel leftPanel;
 	private JFrame window;
 	private MapConfig mapView;
-
+	private boolean paused;
 
 	/** Creates the dialog. */
 	public SpatialQDialog(Frame aFrame) {
@@ -68,6 +68,8 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 
 	public void init(){
 		setTitle("Create a new Spatial Queue");
+
+		paused = false;
 
 		window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -126,7 +128,9 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		start.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-
+				start.setEnabled(false);
+				stop.setEnabled(true);
+				pause.setEnabled(true);
 			}
 		});
 
@@ -136,7 +140,12 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		pause.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				if (paused) {
+					paused = false;
+//					sim.pause();
+				} else {
+					paused = true;
+				}
 			}
 		});
 
@@ -145,7 +154,9 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		stop.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				start.setEnabled(true);
+				stop.setEnabled(false);
+				pause.setEnabled(false);
 			}
 		});
 
