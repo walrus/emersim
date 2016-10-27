@@ -23,7 +23,7 @@
         <mkdir dir="${test_report}/engine"/>
         <mkdir dir="${test_report}/gui"/>
         <mkdir dir="${test_report}/jmva"/>
-
+        <mkdir dir="${test_report}/spatial_queue"/>
 
     </target>
 
@@ -59,7 +59,7 @@
     </target>
 
     <target name="run_all_tests" depends="test_compile, engine_tests
-        , gui_tests, jmva_tests">
+        , gui_tests, jmva_tests, spatial_queue_tests">
 <!--         <junit printsummary="on" haltonfailure="no" fork="true">
             <classpath>
                 <path refid="classpath.test"/>
@@ -120,6 +120,22 @@
                     <exclude name="jmt/jmva/BatchTest.java"/>
                     <exclude name="jmt/jmva/RandomMVAModelGenerator.java"/>
                     <exclude name="jmt/jmva/ResultsCheck.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="spatial_queue_tests" depends="test_compile, copy_resources">
+        <junit printsummary="on" haltonfailure="no" fork="true">
+            <classpath>
+                <path refid="classpath.test"/>
+                <pathelement location="${test_class}"/>
+            </classpath>
+            <formatter type="plain"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${test_report}/spatial_queue">
+                <fileset dir="${test_src}">
+                    <include name="jmt/jmarkov/SpatialQueue/**"/>
                 </fileset>
             </batchtest>
         </junit>
