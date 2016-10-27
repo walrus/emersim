@@ -40,7 +40,7 @@ import java.util.Dictionary;
 
 
 /* Dialog to contain Spatial Queue Window. */
-public class SpatialQDialog extends JDialog implements ActionListener, PropertyChangeListener {
+public class SpatialQueueFrame extends JDialog implements ActionListener, PropertyChangeListener {
 
 
 	private Simulator sim = null;
@@ -54,18 +54,17 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 	private JButton pause;
 	private JButton stop;
 	private JPanel leftPanel;
-    private JPanel bottomPanel;
 	private JFrame window;
 	private boolean paused;
 
 
 	/** Creates the dialog. */
-	public SpatialQDialog(Frame aFrame) {
+	public SpatialQueueFrame(Frame aFrame) {
 		super(aFrame, true);
 		this.init();
 	}
 
-	public SpatialQDialog() {
+	public SpatialQueueFrame() {
 		this.init();
 	}
 
@@ -89,7 +88,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		maps(window);
 
         //queue
-//        queue(window);
+        //queue(window);
 
 
         //Handle window closing correctly.
@@ -97,22 +96,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
 	}
-
-//	private void queue(JFrame window) {
-//        // Creates visuals for a queue based on the default logic
-//        MM1Logic ql = new MM1Logic(0.0, 0.0);
-//        QueueDrawer queueDrawer = new QueueDrawer(ql);
-//
-//        queue.add(queueDrawer);
-////        bottomPanel = new JPanel(new BorderLayout());
-////        bottomPanel.add(queue);
-//
-//        // PROBLEM LINE - only centre works, isn't able to be positioned anywhere else (same as maps)
-//        window.add(queue, BorderLayout.CENTER);
-//
-//    }
-
-	//added queue here too!
+	
 	private void maps(JFrame window) {
 		JPanel map = new JPanel(new GridLayout(0,1));
 
@@ -272,7 +256,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 	public void propertyChange(PropertyChangeEvent evt) {}
 
 	public static void main(String[] args) {
-		new SpatialQDialog();
+		new SpatialQueueFrame();
 	}
 
 	private TitledBorder addTitle(String title, Font f) {

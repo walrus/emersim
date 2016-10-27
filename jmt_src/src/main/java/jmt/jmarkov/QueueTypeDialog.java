@@ -1,6 +1,6 @@
 package jmt.jmarkov;
 
-import jmt.jmarkov.SpatialQueue.SpatialQDialog;
+import jmt.jmarkov.SpatialQueue.SpatialQueueFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +36,7 @@ public class QueueTypeDialog extends JDialog {
         spatial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new SpatialQDialog(null);
+                new SpatialQueueFrame(null);
                 queueType.dispose();
             }
         });
