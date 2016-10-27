@@ -71,7 +71,6 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		paused = false;
 
 		window = new JFrame();
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setLayout(new BorderLayout());
 		Dimension d = new Dimension(800,600);
 		window.setPreferredSize(d);
@@ -85,7 +84,6 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		maps(window);
 
 		//Handle window closing correctly.
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
@@ -124,6 +122,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 
 		start = new JButton("Start");
 		start.setPreferredSize(new Dimension(100,40));
+		start.setEnabled(true);
 		start.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -136,6 +135,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 
 		pause = new JButton("Pause");
 		pause.setPreferredSize(new Dimension(100,40));
+		pause.setEnabled(false);
 		pause.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -150,6 +150,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 
 		stop = new JButton("Stop");
 		stop.setPreferredSize(new Dimension(100,40));
+		stop.setEnabled(false);
 		stop.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
