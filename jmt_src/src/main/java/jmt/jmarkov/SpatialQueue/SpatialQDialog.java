@@ -117,7 +117,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		client.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				mapView.toggleAreaPlacement();
 			}
 		});
 

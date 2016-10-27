@@ -1,20 +1,25 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
+import com.teamdev.jxmaps.MouseEvent;
+import com.teamdev.jxmaps.Polygon;
 import com.teamdev.jxmaps.swing.MapView;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicTextFieldUI;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.util.LinkedList;
 
 public class MapConfig extends MapView {
 
     private static final String INITIAL_LOCATION = "Imperial College London, SW7 2AZ";
     private OptionsWindow optionsWindow;
     private boolean placeMarker;
+    private boolean placeAreaVertex;
+    private Map map;
+    private LinkedList<Polygon> selectedAreas = new LinkedList<>();
 
     public MapConfig(MapViewOptions options) {
         super(options);
@@ -22,7 +27,7 @@ public class MapConfig extends MapView {
             @Override
             public void onMapReady(MapStatus status) {
                 // Getting the associated map object
-                final Map map = getMap();
+                map = getMap();
                 // Setting initial zoom value
                 map.setZoom(7.0);
                 // Creating a map options object
@@ -36,6 +41,8 @@ public class MapConfig extends MapView {
                 // Setting map options
                 map.setOptions(options);
                 performGeocode(INITIAL_LOCATION);
+
+                // Event handler for adding receivers
                 map.addEventListener("click", new MapMouseEvent() {
                     @Override
                     public void onEvent(MouseEvent mouseEvent) {
@@ -48,6 +55,15 @@ public class MapConfig extends MapView {
                             marker.setPosition(mouseEvent.latLng());
                             placeMarker = false;
                         }
+                    }
+                });
+
+                // Event handler for drawing areas
+                map.addEventListener("click", new MapMouseEvent() {
+                    @Override
+                    public void onEvent(MouseEvent mouseEvent) {
+                        if (placeAreaVertex)
+                            addPointToArea(mouseEvent);
                     }
                 });
             }
@@ -185,7 +201,67 @@ public class MapConfig extends MapView {
         });
     }
 
+    private Polyline pathLine;
+    private LinkedList<LatLng> path = new LinkedList<>();
+    private void addPointToArea(MouseEvent mouseEvent) {
+        path.add(mouseEvent.latLng());
+        LatLng[] pathArray = new LatLng[path.size()];
+        pathLine.setPath(path.toArray(pathArray));
+        if (path.size() == 1) {
+            final Marker marker = new Marker(map);
+            marker.setPosition(mouseEvent.latLng());
+            marker.addEventListener("click", new MapMouseEvent() {
+                @Override
+                public void onEvent(MouseEvent mouseEvent) {
+                    placeAreaVertex = false;
+                    pathLine.setVisible(false);
+                    Polygon polygon = new Polygon(map);
+                    // Initializing the polygon with the created path
+                    LatLng[] pathArray = new LatLng[path.size()];
+                    polygon.setPath(path.toArray(pathArray));
+                    // Creating a polyline options object
+                    PolygonOptions options = new PolygonOptions();
+                    // Setting fill color value
+                    options.setFillColor("#FF0000");
+                    // Setting fill opacity value
+                    options.setFillOpacity(0.35);
+                    // Setting stroke color value
+                    options.setStrokeColor("#FF0000");
+                    // Setting stroke opacity value
+                    options.setStrokeOpacity(0.8);
+                    // Setting stroke weight value
+                    options.setStrokeWeight(2.0);
+                    // Applying options to the polygon
+                    polygon.setOptions(options);
+                    // Delete current path
+                    path = new LinkedList<>();
+                    // Remove first vertex marker
+                    marker.setVisible(false);
+                    // Store area for use in simulation
+                    selectedAreas.add(polygon);
+                }
+            });
+        }
+    }
+
     public void toggleMarkerPlacement() {
         placeMarker = true;
+    }
+
+    public void toggleAreaPlacement() {
+        placeAreaVertex = true;
+        pathLine = new Polyline(map);
+        // Creating a polyline options object
+        PolylineOptions options = new PolylineOptions();
+        // Setting geodesic property value
+        options.setGeodesic(true);
+        // Setting stroke color value
+        options.setStrokeColor("#FF0000");
+        // Setting stroke opacity value
+        options.setStrokeOpacity(1.0);
+        // Setting stroke weight value
+        options.setStrokeWeight(2.0);
+        // Applying options to the polyline
+        pathLine.setOptions(options);
     }
 }
