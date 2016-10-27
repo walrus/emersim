@@ -2,8 +2,10 @@ package jmt.jmarkov.SpatialQueue;
 
 import com.teamdev.jxmaps.MapViewOptions;
 import jmt.jmarkov.Graphics.JobsDrawer;
+import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.Simulator;
 import jmt.jmarkov.utils.Formatter;
 
@@ -45,12 +47,14 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 	private JobsDrawer jobsDrawer;
 	private DrawConstrains dCst = new DrawNormal();
 	private JPanel buttons;
+    private JPanel queue;
 	private JButton receiver;
 	private JButton client;
 	private JButton start;
 	private JButton pause;
 	private JButton stop;
 	private JPanel leftPanel;
+    private JPanel bottomPanel;
 	private JFrame window;
 	private boolean paused;
 
@@ -76,6 +80,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		window.setPreferredSize(d);
 
 		buttons = new JPanel(new GridLayout(0, 1));
+        queue = new JPanel(new GridLayout(0, 1));
 
 		//Side buttons
 		sideButtons(window);
@@ -83,11 +88,29 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		//maps
 		maps(window);
 
-		//Handle window closing correctly.
+        //queue
+        queue(window);
+
+
+        //Handle window closing correctly.
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
 	}
+
+	private void queue(JFrame window) {
+        // Creates visuals for a queue based on the default logic
+        MM1Logic ql = new MM1Logic(0.0, 0.0);
+        QueueDrawer queueDrawer = new QueueDrawer(ql);
+
+        queue.add(queueDrawer);
+        bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(queue);
+
+        // PROBLEM LINE - only centre works, isn't able to be positioned anywhere else (same as maps)
+        window.add(bottomPanel, BorderLayout.CENTER);
+
+    }
 
 	private void maps(JFrame window) {
 		JPanel map = new JPanel(new BorderLayout());
