@@ -79,7 +79,6 @@ import jmt.jmarkov.Queues.MMNLogic;
 import jmt.jmarkov.Queues.MMNdLogic;
 import jmt.jmarkov.Queues.Processor;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
-import jmt.jmarkov.SpatialQueue.SpatialQDialog;
 import jmt.jmarkov.utils.Formatter;
 import jmt.manual.ManualBookmarkers;
 import jmt.manual.PDFViewerBuffer;

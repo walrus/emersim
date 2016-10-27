@@ -1,9 +1,10 @@
 package jmt.gui;
 
-import javax.swing.JDialog;
+import javax.swing.*;
 
 import jmt.gui.common.startScreen.GraphStartScreen;
 import jmt.jmarkov.MMQueues;
+import jmt.jmarkov.QueueTypeDialog;
 import jmt.util.ShortDescriptionButtonMatcher;
 import jmt.util.TextButtonMatcher;
 
@@ -42,8 +43,10 @@ public class JmchGuiTest {
 	 * (which is the JMCH frame).
 	 */
 	@Test
-	public void mainJMVAWindowDisplaysCorrectly() {
+	public void mainJMCHWindowDisplaysCorrectly() {
 		window.button(new ShortDescriptionButtonMatcher(GraphStartScreen.JMCH_SHORT_DESCRIPTION)).click();
+		FrameFixture optionDialog = WindowFinder.findFrame(QueueTypeDialog.class).using(window.robot);
+		optionDialog.button(new TextButtonMatcher("Queue")).click();
 		FrameFixture jmch = WindowFinder.findFrame(MMQueues.class).using(window.robot);
 		DialogFixture popup = WindowFinder.findDialog(JDialog.class).using(window.robot);
 		popup.button(new TextButtonMatcher("Enter")).click();
