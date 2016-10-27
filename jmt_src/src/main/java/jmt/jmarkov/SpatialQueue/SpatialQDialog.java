@@ -76,7 +76,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 
 		window = new JFrame();
 		window.setLayout(new BorderLayout());
-		Dimension d = new Dimension(800,600);
+		Dimension d = new Dimension(1000,700);
 		window.setPreferredSize(d);
 
 		buttons = new JPanel(new GridLayout(0, 1));
@@ -89,7 +89,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		maps(window);
 
         //queue
-        queue(window);
+//        queue(window);
 
 
         //Handle window closing correctly.
@@ -98,27 +98,35 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		window.setVisible(true);
 	}
 
-	private void queue(JFrame window) {
-        // Creates visuals for a queue based on the default logic
-        MM1Logic ql = new MM1Logic(0.0, 0.0);
-        QueueDrawer queueDrawer = new QueueDrawer(ql);
+//	private void queue(JFrame window) {
+//        // Creates visuals for a queue based on the default logic
+//        MM1Logic ql = new MM1Logic(0.0, 0.0);
+//        QueueDrawer queueDrawer = new QueueDrawer(ql);
+//
+//        queue.add(queueDrawer);
+////        bottomPanel = new JPanel(new BorderLayout());
+////        bottomPanel.add(queue);
+//
+//        // PROBLEM LINE - only centre works, isn't able to be positioned anywhere else (same as maps)
+//        window.add(queue, BorderLayout.CENTER);
+//
+//    }
 
-        queue.add(queueDrawer);
-        bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(queue);
-
-        // PROBLEM LINE - only centre works, isn't able to be positioned anywhere else (same as maps)
-        window.add(bottomPanel, BorderLayout.CENTER);
-
-    }
-
+	//added queue here too!
 	private void maps(JFrame window) {
-		JPanel map = new JPanel(new BorderLayout());
+		JPanel map = new JPanel(new GridLayout(0,1));
+
 		window.add(map);
 		MapViewOptions mapOptions = new MapViewOptions();
 		mapOptions.importPlaces();
 		final MapConfig mapView = new MapConfig(mapOptions);
-		map.add(mapView, BorderLayout.CENTER);
+		MM1Logic ql = new MM1Logic(0.0, 0.0);
+		QueueDrawer queueDrawer = new QueueDrawer(ql);
+
+		queue.add(queueDrawer);
+		map.add(mapView);
+		map.add(queue);
+
 		map.setSize(150, 150);
 		map.setVisible(true);
 	}
