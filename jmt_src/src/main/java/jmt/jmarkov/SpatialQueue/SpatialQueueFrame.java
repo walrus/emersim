@@ -117,6 +117,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
 		start = new JButton("Start");
 		start.setPreferredSize(new Dimension(100,40));
+		start.setEnabled(true);
 		start.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -129,6 +130,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
 		pause = new JButton("Pause");
 		pause.setPreferredSize(new Dimension(100,40));
+		pause.setEnabled(false);
 		pause.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -143,6 +145,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
 		stop = new JButton("Stop");
 		stop.setPreferredSize(new Dimension(100,40));
+		stop.setEnabled(false);
 		stop.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

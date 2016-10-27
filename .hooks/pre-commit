@@ -8,12 +8,12 @@ echo "Running pre-commit checks"
 
 #cd into jmt_src and attempt to build
 cd jmt_src
-ant create_jar
+ant spatial_queue_tests
 if [ $? != 0 ]; then
-  echo "Build failed, not committing"
+  echo "Tests failed, not committing"
   exit 1
 else
-  echo "Build passed"
+  echo "Tests passed"
 fi
 
 cd ..
