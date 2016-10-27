@@ -90,8 +90,8 @@ public class MapConfig extends MapView {
                 searchField.setUI(new SearchFieldUI(searchField));
 
                 final JButton searchButton = new JButton();
-                searchButton.setIcon(new ImageIcon(this.getClass().getResource("res/search.png")));
-                searchButton.setRolloverIcon(new ImageIcon(this.getClass().getResource("res/search_hover.png")));
+                searchButton.setIcon(new ImageIcon(this.getClass().getResource("Icons/search.png")));
+                searchButton.setRolloverIcon(new ImageIcon(this.getClass().getResource("Icons/search_hover.png")));
                 searchButton.setBorder(BorderFactory.createEmptyBorder());
                 searchButton.setUI(new BasicButtonUI());
                 searchButton.setOpaque(false);

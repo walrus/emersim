@@ -39,7 +39,7 @@ import java.util.Dictionary;
 
 
 /* Dialog to contain Spatial Queue Window. */
-public class SpatialQDialog extends JDialog implements ActionListener, PropertyChangeListener {
+public class SpatialQueueFrame extends JFrame implements ActionListener, PropertyChangeListener {
 
 
 	private Simulator sim = null;
@@ -52,17 +52,11 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 	private JButton pause;
 	private JButton stop;
 	private JPanel leftPanel;
-	private JFrame window;
 	private MapConfig mapView;
 	private boolean paused;
 
 	/** Creates the dialog. */
-	public SpatialQDialog(Frame aFrame) {
-		super(aFrame, true);
-		this.init();
-	}
-
-	public SpatialQDialog() {
+	public SpatialQueueFrame() {
 		this.init();
 	}
 
@@ -70,31 +64,29 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		setTitle("Create a new Spatial Queue");
 
 		paused = false;
-
-		window = new JFrame();
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setLayout(new BorderLayout());
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new BorderLayout());
 		Dimension d = new Dimension(800,600);
-		window.setPreferredSize(d);
+		setPreferredSize(d);
 
 		buttons = new JPanel(new GridLayout(0, 1));
 
 		//Side buttons
-		sideButtons(window);
+		sideButtons();
 
 		//maps
-		maps(window);
+		maps();
 
 		//Handle window closing correctly.
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		window.pack();
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 
-	private void maps(JFrame window) {
+	private void maps() {
 		JPanel map = new JPanel(new BorderLayout());
-		window.add(map);
+		add(map);
 		MapViewOptions mapOptions = new MapViewOptions();
 		mapOptions.importPlaces();
 		mapView = new MapConfig(mapOptions);
@@ -103,7 +95,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 		map.setVisible(true);
 	}
 
-	private void sideButtons(JFrame window) {
+	private void sideButtons() {
 
 		receiver = new JButton("Add Receiver");
 		receiver.setPreferredSize(new Dimension(100,40));
@@ -177,7 +169,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 
 		leftPanel = new JPanel(new BorderLayout());
 		leftPanel.add(buttons, BorderLayout.NORTH);
-		window.add(leftPanel, BorderLayout.WEST);
+		add(leftPanel, BorderLayout.WEST);
 	}
 
 	private JPanel speedSlider(JPanel accelerationP) {
@@ -241,7 +233,7 @@ public class SpatialQDialog extends JDialog implements ActionListener, PropertyC
 	public void propertyChange(PropertyChangeEvent evt) {}
 
 	public static void main(String[] args) {
-		new SpatialQDialog();
+		new SpatialQueueFrame();
 	}
 
 	private TitledBorder addTitle(String title, Font f) {
