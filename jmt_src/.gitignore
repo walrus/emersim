@@ -4,3 +4,4 @@ class
 test_class
 test_report
 *.iml
+.idea
