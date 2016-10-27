@@ -1,16 +1,20 @@
-public class SpatialQueue {
+package jmt.jmarkov.SpatialQueue;
+
+import java.lang.Math;
+
+public class SpatialQueueData {
 
 	private double latitude;
 	private double longitude;
 	private double radius;
 	private double area = radius * radius * Math.PI;
 
-	public SpatialQueue(double latitude, double longitude){
+	public SpatialQueueData(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
 	
-	public SpatialQueue(double latitude, double longitude, double radius){
+	public SpatialQueueData(double latitude, double longitude, double radius) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.radius = radius;
@@ -20,7 +24,7 @@ public class SpatialQueue {
 		this.latitude = latitude;
 	}
 	
-	public void setLongtitude(double longitude){
+	public void setLongitude(double longitude){
 		this.longitude = longitude;
 	}
 	
@@ -41,10 +45,10 @@ public class SpatialQueue {
 	}
 
 	public boolean isValid(){
-		return radius!=0;
+		return radius != 0;
 	}
 
-	public void render(){
+	public void render() {
 	}
 
 
