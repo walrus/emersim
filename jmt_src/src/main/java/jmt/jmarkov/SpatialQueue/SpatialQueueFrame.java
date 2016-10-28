@@ -2,8 +2,10 @@ package jmt.jmarkov.SpatialQueue;
 
 import com.teamdev.jxmaps.MapViewOptions;
 import jmt.jmarkov.Graphics.JobsDrawer;
+import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.Simulator;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.utils.Formatter;
@@ -39,13 +41,14 @@ import java.util.Dictionary;
 
 
 /* Dialog to contain Spatial Queue Window. */
-public class SpatialQueueFrame extends JFrame implements ActionListener, PropertyChangeListener {
 
+public class SpatialQueueFrame extends JFrame implements ActionListener, PropertyChangeListener {
 
 	private Simulator sim = null;
 	private JobsDrawer jobsDrawer;
 	private DrawConstrains dCst = new DrawNormal();
 	private JPanel buttons;
+    private JPanel queue;
 	private JButton receiver;
 	private JButton client;
 	private JButton start;
@@ -56,6 +59,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 	private boolean paused;
 
 	/** Creates the dialog. */
+
 	public SpatialQueueFrame() {
 		this.init();
 	}
@@ -64,33 +68,43 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 		setTitle("Create a new Spatial Queue");
 
 		paused = false;
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		setLayout(new BorderLayout());
 		Dimension d = new Dimension(800,600);
 		setPreferredSize(d);
 
+
 		buttons = new JPanel(new GridLayout(0, 1));
+        queue = new JPanel(new GridLayout(0, 1));
 
 		//Side buttons
 		sideButtons();
 
 		//maps
 		maps();
-
 		//Handle window closing correctly.
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 
 	private void maps() {
-		JPanel map = new JPanel(new BorderLayout());
+		JPanel map = new JPanel(new GridLayout(0,1));
 		add(map);
 		MapViewOptions mapOptions = new MapViewOptions();
 		mapOptions.importPlaces();
 		mapView = new MapConfig(mapOptions);
-		map.add(mapView, BorderLayout.CENTER);
+//		map.add(mapView, BorderLayout.CENTER);
+
+		MM1Logic ql = new MM1Logic(0.0, 0.0);
+		QueueDrawer queueDrawer = new QueueDrawer(ql);
+
+		queue.add(queueDrawer);
+		map.add(mapView);
+		map.add(queue);
+
+
 		map.setSize(150, 150);
 		map.setVisible(true);
 	}
