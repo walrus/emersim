@@ -2,8 +2,10 @@ package jmt.jmarkov.SpatialQueue;
 
 import com.teamdev.jxmaps.MapViewOptions;
 import jmt.jmarkov.Graphics.JobsDrawer;
+import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.Simulator;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.utils.Formatter;
@@ -36,26 +38,16 @@ import java.util.Dictionary;
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
-
 /* Dialog to contain Spatial Queue Window. */
+
 public class SpatialQueueFrame extends JFrame implements ActionListener, PropertyChangeListener {
 
-
 	private Simulator sim = null;
-	private JobsDrawer jobsDrawer;
-	private DrawConstrains dCst = new DrawNormal();
-	private JPanel buttons;
-	private JButton receiver;
-	private JButton client;
-	private JButton start;
-	private JButton pause;
-	private JButton stop;
-	private JPanel leftPanel;
 	private MapConfig mapView;
 	private boolean paused;
 
 	/** Creates the dialog. */
+
 	public SpatialQueueFrame() {
 		this.init();
 	}
@@ -64,38 +56,45 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 		setTitle("Create a new Spatial Queue");
 
 		paused = false;
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLayout(new BorderLayout());
 		Dimension d = new Dimension(800,600);
 		setPreferredSize(d);
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+		generateSideButtons(buttonPanel);
+		JPanel interfacePanel = new JPanel();
+		interfacePanel.setLayout(new BoxLayout(interfacePanel, BoxLayout.Y_AXIS));
+		generateMapPanel(interfacePanel);
+		generateQueueDrawer(interfacePanel);
+		interfacePanel.add(Box.createVerticalGlue());
 
-		buttons = new JPanel(new GridLayout(0, 1));
-
-		//Side buttons
-		sideButtons();
-
-		//maps
-		maps();
-
-		//Handle window closing correctly.
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		add(buttonPanel, BorderLayout.LINE_START);
+		add(interfacePanel, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 
-	private void maps() {
-		JPanel map = new JPanel(new BorderLayout());
-		add(map);
+	private void generateQueueDrawer(JPanel interfacePanel) {
+		MM1Logic ql = new MM1Logic(0.0, 0.0);
+		QueueDrawer queueDrawer = new QueueDrawer(ql);
+		queueDrawer.setPreferredSize(new Dimension(300, 150));
+		interfacePanel.add(queueDrawer);
+	}
+
+	private void generateMapPanel(JPanel interfacePanel) {
 		MapViewOptions mapOptions = new MapViewOptions();
 		mapOptions.importPlaces();
 		mapView = new MapConfig(mapOptions);
-		map.add(mapView, BorderLayout.CENTER);
-		map.setSize(150, 150);
-		map.setVisible(true);
+		mapView.setPreferredSize(new Dimension(300, 375));
+		interfacePanel.add(mapView);
 	}
 
-	private void sideButtons() {
+	private void generateSideButtons(JPanel panel) {
+		JButton receiver;
+		JButton client;
+		final JButton start = new JButton("Start");
+		final JButton pause = new JButton("Pause");
+		final JButton stop = new JButton("Stop");
 
 		receiver = new JButton("Add Receiver");
 		receiver.setPreferredSize(new Dimension(100,40));
@@ -115,20 +114,6 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 			}
 		});
 
-		start = new JButton("Start");
-		start.setPreferredSize(new Dimension(100,40));
-		start.setEnabled(true);
-		start.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				start.setEnabled(false);
-				stop.setEnabled(true);
-				pause.setEnabled(true);
-			}
-		});
-
-
-		pause = new JButton("Pause");
 		pause.setPreferredSize(new Dimension(100,40));
 		pause.setEnabled(false);
 		pause.addActionListener(new ActionListener() {
@@ -143,7 +128,17 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 			}
 		});
 
-		stop = new JButton("Stop");
+		start.setPreferredSize(new Dimension(100,40));
+		start.setEnabled(true);
+		start.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				start.setEnabled(false);
+				stop.setEnabled(true);
+				pause.setEnabled(true);
+			}
+		});
+
 		stop.setPreferredSize(new Dimension(100,40));
 		stop.setEnabled(false);
 		stop.addActionListener(new ActionListener() {
@@ -155,33 +150,26 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 			}
 		});
 
-
-		buttons.add(receiver);
-		buttons.add(client);
-		buttons.add(start);
-		buttons.add(pause);
-		buttons.add(stop);
-
-		buttons.setBorder(new EmptyBorder(50, 0, 0, 0));
+		panel.add(receiver);
+		panel.add(client);
+		panel.add(start);
+		panel.add(pause);
+		panel.add(stop);
+		panel.setBorder(new EmptyBorder(50, 0, 0, 0));
 
 		//scroll bar
-		buttons = speedSlider(buttons);
+		addSpeedSlider(panel);
 
 		//number of arrivals
-		buttons = jobsPanel(buttons);
-
-		leftPanel = new JPanel(new BorderLayout());
-		leftPanel.add(buttons, BorderLayout.NORTH);
-		add(leftPanel, BorderLayout.WEST);
+		addJobsPanel(panel);
 	}
 
-	private JPanel speedSlider(JPanel accelerationP) {
+	private void addSpeedSlider(JPanel accelerationP) {
 
 		DrawConstrains dCst = new DrawNormal();
 
 		accelerationP.setBorder(addTitle("Simulation Options", dCst.getSmallGUIFont()));
-		JLabel accelerationL = new JLabel();
-		accelerationL = new JLabel("Time x0.0");
+		JLabel accelerationL = new JLabel("Time x0.0");
 		accelerationL.setFont(dCst.getNormalGUIFont());
 		accelerationL.setHorizontalAlignment(SwingConstants.CENTER);
 		accelerationP.add(accelerationL);
@@ -218,15 +206,12 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
 		});
 		accelerationL.setText("Time x" + Formatter.formatNumber(accelerationS.getValue(), 2));
-
-		return accelerationP;
 	}
 
 
-	private JPanel jobsPanel(JPanel jobsP) {
-		jobsDrawer = new JobsDrawer();
+	private void addJobsPanel(JPanel jobsP) {
+		JobsDrawer jobsDrawer = new JobsDrawer();
 		jobsP.add(jobsDrawer);
-		return jobsP;
 	}
 
 	@Override
