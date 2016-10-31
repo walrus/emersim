@@ -1,3 +1,4 @@
+package jmt.jmarkov.SpatialQueue;
 public class SpatialQueue {
 
 	private double latitude;
@@ -20,7 +21,7 @@ public class SpatialQueue {
 		this.latitude = latitude;
 	}
 	
-	public void setLongtitude(double longitude){
+	public void setLongitude(double longitude){
 		this.longitude = longitude;
 	}
 	
