@@ -18,6 +18,8 @@ e.g.
 $ ant engine_tests
 $ ant gui_tests
 $ ant jmva_tests
+$ ant spatial_queue_tests
+$ ant spatial_queue_commit_tests
 ```
 
 #Setting up git hooks
