@@ -4,6 +4,7 @@ import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.MouseEvent;
 import com.teamdev.jxmaps.Polygon;
 import com.teamdev.jxmaps.swing.MapView;
+import jmt.jmarkov.SpatialQueue.Location;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -68,6 +69,7 @@ public class MapConfig extends MapView {
                 });
             }
         });
+
     }
 
     @Override
@@ -185,6 +187,7 @@ public class MapConfig extends MapView {
                     // Creating a marker object
                     if (currentLocation == null)
                         currentLocation = new Marker(map);
+
                     // Setting position of the marker to the result location
                     currentLocation.setPosition(location);
                     // Creating an information window
@@ -263,5 +266,10 @@ public class MapConfig extends MapView {
         options.setStrokeWeight(2.0);
         // Applying options to the polyline
         pathLine.setOptions(options);
+    }
+
+    public Location translateCoordinate(LatLng location) {
+        Location loc = new Location(location.getLat(), location.getLng());
+        return loc;
     }
 }
