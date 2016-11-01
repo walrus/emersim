@@ -15,23 +15,27 @@ import jmt.jmarkov.Queues.Processor;
 
 public class Simulator implements Runnable {
 
-    //list of jobs which contains jobs waiting in the simulator.
+    //list which contains jobs waiting in the simulator.
     private LinkedList<Job> jobList;
 
-
-    private Notifier[] n;
+    private Notifier[] notifier;
 
     //current simulation time
-    private double currentTime;// in millisecond
+    private double currentTime;// in milliseconds
+
     //if lambda is zero this value is set to true
-    //(if lambda set to zero new job will not create
+    //(if lambda set to zero new jobs will not be created
     private boolean lambdaZero = false;
+
     //Arrival class
     private Arrivals arrival;
+
     //array of processor
     private Processor[] processors;
+
     //it saves the data if the simulator is paused or not
     private boolean paused = false;
+
     //multiplier is used for multiplier for timer.(comes from simulation time slide bar)
     private double timeMultiplier = 1.0;
 
@@ -39,17 +43,15 @@ public class Simulator implements Runnable {
 
     private boolean started = false;
 
-    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] n) {
+    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier) {
         super();
+
         jobList = new LinkedList<Job>();
-        // waitingJobList = new LinkedList();
-        //endJobList = new LinkedList();
         this.arrival = arrival;
         currentTime = 0;
         this.processors = processors;
-        // numberOfTotalProcessor = processors.length;
         setTimeMultiplier(timeMultiplier);
-        this.n = n;
+        this.notifier = notifier;
     }
 
     public void run() {
@@ -79,19 +81,15 @@ public class Simulator implements Runnable {
             //this is calculating how long system will sleep
             realTimeCurrent = new Date().getTime() - realTimeStart;
 
-            //this is for calculating if the system will pause or not?
+            //this is for calculating if the system will pause or not
             if ((long) currentTimeMultiplied > realTimeCurrent) {
-                //System.out.println(currentTime + "\t" + currentTimeMultiplied + "\t" + realTimeCurrent);
                 try {
                     Thread.sleep((long) currentTimeMultiplied - realTimeCurrent);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-                //System.out.println("\t\tSLEEP:\t" + ((long) currentTimeMultiplied - realTimeCurrent));
                 realTimeCurrent = new Date().getTime() - realTimeStart;
             }
-            //System.out.println(currentTime + "\t" + currentTimeMultiplied + "\t" + realTimeCurrent);
 
             Job job = dequeueJob();
             currentTime = job.getNextEventTime();
@@ -103,16 +101,13 @@ public class Simulator implements Runnable {
                     if ((long) currentTimeMultiplied + 300 > realTimeCurrent) {
                         animate(job);
                     }
-                    //				else
-                    //					System.out.println("no animation");
+                    //No animation
                     break;
                 case Job.CURRENT_STATE_IN_CPU:
                     exitProcessor(job);
                     break;
-
             }
         }
-
         running = false;
     }
 
@@ -135,7 +130,6 @@ public class Simulator implements Runnable {
         } else {
             nextEventTime = currentTime + 100;
         }
-        //if (job.getCurrentStateType() != Job.CURRENT_STATE_EXIT_SYSTEM) {
         cloneJob = (Job) job.clone();
         cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 1 / 4);
         this.enqueueJob(cloneJob);
@@ -145,7 +139,6 @@ public class Simulator implements Runnable {
         cloneJob = (Job) job.clone();
         cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 3 / 4);
         this.enqueueJob(cloneJob);
-        //}
     }
 
     private void animate(Job job) {
@@ -153,21 +146,15 @@ public class Simulator implements Runnable {
         for (Processor processor : processors) {
             processor.animate(currentTime);
         }
-
     }
 
     private void startProcess() {// if there is an empty processor start it
         int i;
         //assign randomly to free one
-        // if (numberOfTotalProcessor > numberOfWorkingProcessor
-        // &&
-        // if (waitingJobList.size() > 0) {
         int numFreeProcessor = 0;
         for (i = 0; i < processors.length; i++) {
             if (!processors[i].isProcessing()) {
                 numFreeProcessor++;
-                // numberOfWorkingProcessor++;
-                // break;
             }
         }
         if (numFreeProcessor != 0) {
@@ -187,10 +174,8 @@ public class Simulator implements Runnable {
 
     private void exitProcessor(Job job) {
         job.getProcessor().endProcessing(currentTime);// this processor is stopped
-        job.setStateExitSystem();// set the state of the job as a
-        // finished
-        //endJobList.add(job); // add exit list
-        for (Notifier element : n) {
+        job.setStateExitSystem();// set the state of the job as finished
+        for (Notifier element : notifier) {
             element.exitSystem(job.getJobId(), job.getProcessorId(), job.getEnteringQueueTime(), job.getEnteringCpuTime(), job.getSystemExitTime());
         }
         startProcess();
@@ -215,23 +200,12 @@ public class Simulator implements Runnable {
         return jobList.element();
     }
 
-    // public void enqueueWaitingJob(Job job) {
-    // waitingJobList.add(job);
-    // }
-    //
-    // public Job dequeueWaitingJob() {
-    // return (Job) waitingJobList.removeFirst();
-    // }
-    //
-    // public Job peekWaitingJob() {
-    // return (Job) waitingJobList.element();
-    // }
-
     public boolean isLambdaZero() {
         return lambdaZero;
     }
 
     public void setLambdaZero(boolean lambdaZero) {
+        //This doesn't seem to actually set lambda to zero?
         this.lambdaZero = lambdaZero;
     }
 
@@ -252,12 +226,12 @@ public class Simulator implements Runnable {
     }
 
     public void stop() {
-        paused = true;
-        started = false;
+        this.paused = true;
+        this.started = false;
     }
 
     public double getTimeMultiplier() {
-        return timeMultiplier;
+        return this.timeMultiplier;
     }
 
     public void setTimeMultiplier(double timeMultiplier) {
@@ -265,11 +239,10 @@ public class Simulator implements Runnable {
     }
 
     public boolean isRunning() {
-        return running;
+        return this.running;
     }
 
     public boolean isStarted() {
-        return started;
+        return this.started;
     }
-
 }
