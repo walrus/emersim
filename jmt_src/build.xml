@@ -24,7 +24,7 @@
         <mkdir dir="${test_report}/gui"/>
         <mkdir dir="${test_report}/jmva"/>
         <mkdir dir="${test_report}/spatial_queue"/>
-
+        <mkdir dir="${test_report}/spatial_queue_commit"/>
     </target>
 
     <target name="compile" depends="init"
@@ -136,6 +136,23 @@
             <batchtest fork="yes" todir="${test_report}/spatial_queue">
                 <fileset dir="${test_src}">
                     <include name="jmt/jmarkov/SpatialQueue/**"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="spatial_queue_commit_tests" depends="test_compile, copy_resources">
+        <junit printsummary="on" haltonfailure="no" fork="true">
+            <classpath>
+                <path refid="classpath.test"/>
+                <pathelement location="${test_class}"/>
+            </classpath>
+            <formatter type="plain"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${test_report}/spatial_queue_commit">
+                <fileset dir="${test_src}">
+                    <include name="jmt/jmarkov/SpatialQueue/**"/>
+                    <exclude name="jmt/jmarkov/SpatialQueue/SpatialQueueGuiTest.java"/>
                 </fileset>
             </batchtest>
         </junit>
