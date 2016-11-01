@@ -2,21 +2,25 @@
  * Based on the standard Jmarkov Simulator
  */
 
-package jmt.jmarkov.SpatialQueue;
+package src.main.java.jmt.jmarkov.SpatialQueue;
+
+
+import jmt.jmarkov.Graphics.Notifier;
+import jmt.jmarkov.Job;
+import jmt.jmarkov.Queues.Arrivals;
+import jmt.jmarkov.Queues.Processor;
+import jmt.jmarkov.SpatialQueue.Location;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
 
-import jmt.jmarkov.Job;
-import jmt.jmarkov.Graphics.Notifier;
-import jmt.jmarkov.Queues.Arrivals;
-import jmt.jmarkov.Queues.Processor;
-
 public class Simulator implements Runnable {
 
     //list which contains jobs waiting in the simulator.
     private LinkedList<Job> jobList;
+
+    private Location[] area;
 
     private Notifier[] notifier;
 
@@ -43,7 +47,7 @@ public class Simulator implements Runnable {
 
     private boolean started = false;
 
-    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier) {
+    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier, Location[] area) {
         super();
 
         jobList = new LinkedList<Job>();
@@ -52,8 +56,48 @@ public class Simulator implements Runnable {
         this.processors = processors;
         setTimeMultiplier(timeMultiplier);
         this.notifier = notifier;
+        this.area = area;
     }
 
+    private boolean isLocationWithinArea(Location location, Location[] polygon) {
+        double minX = polygon[0].getX();
+        double maxX = polygon[0].getX();
+        double minY = polygon[0].getY();
+        double maxY = polygon[0].getY();
+
+        for (int i = 1; i < polygon.length; i++) {
+            Location l = polygon[i];
+            minX = Math.min(minX, l.getX());
+            maxX = Math.max(maxX, l.getX());
+            minY = Math.min(minY, l.getY());
+            maxY = Math.max(maxY, l.getY());
+        }
+
+        if (location.getX() < minX || location.getX() > maxX
+                || location.getY() < minY || location.getY() > maxY) {
+            return false;
+        }
+
+        boolean inside = false;
+
+        for (int i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+            if ((polygon[i].getY() > location.getY()) != (polygon[j].getY() > location.getY()) &&
+                    location.getX() < (polygon[j].getX() - polygon[i].getX())
+                            * (location.getY() - polygon[i].getY())
+                            / (polygon[j].getY() - polygon[i].getY()) + polygon[i].getX()) {
+                inside = !inside;
+            }
+        }
+        return inside;
+    }
+
+
+    public Sender generateNewSenderWithinArea(Location location, Location[] area) {
+        if (isLocationWithinArea(location, area)) {
+            Sender sender = new Sender();
+            //setLocation maybe?
+        }
+    }
     public void run() {
         running = true;
         started = true;
