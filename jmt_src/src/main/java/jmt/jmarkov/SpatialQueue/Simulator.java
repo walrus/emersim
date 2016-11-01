@@ -15,8 +15,8 @@ import jmt.jmarkov.Queues.Processor;
 
 public class Simulator implements Runnable {
 
-    //list which contains jobs waiting in the simulator.
-    private LinkedList<Job> jobList;
+    //list which contains requests waiting in the simulator.
+    private LinkedList<Request> jobList;
 
     private Notifier[] notifier;
 
@@ -46,7 +46,7 @@ public class Simulator implements Runnable {
     public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier) {
         super();
 
-        jobList = new LinkedList<Job>();
+        jobList = new LinkedList<Request>();
         this.arrival = arrival;
         currentTime = 0;
         this.processors = processors;
@@ -91,7 +91,7 @@ public class Simulator implements Runnable {
                 realTimeCurrent = new Date().getTime() - realTimeStart;
             }
 
-            Job job = dequeueJob();
+            Request job = dequeueJob();
             currentTime = job.getNextEventTime();
             switch (job.getCurrentStateType()) {
                 case Job.CURRENT_STATE_CREATED:
@@ -111,7 +111,7 @@ public class Simulator implements Runnable {
         running = false;
     }
 
-    private void newJobArrival(Job job) {
+    private void newJobArrival(Request job) {
         //the job whose arrival time has calculated entering the queue
         arrival.addQ(job, currentTime);
         //the new job is creating for calculating arrival time
@@ -122,26 +122,26 @@ public class Simulator implements Runnable {
         createAnimation(job);
     }
 
-    private void createAnimation(Job job) {
-        Job cloneJob;
+    private void createAnimation(Request job) {
+        Request cloneJob;
         double nextEventTime;
         if (!jobList.isEmpty()) {
             nextEventTime = peekJob().getNextEventTime();
         } else {
             nextEventTime = currentTime + 100;
         }
-        cloneJob = (Job) job.clone();
+        cloneJob = (Request) job.clone();
         cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 1 / 4);
         this.enqueueJob(cloneJob);
-        cloneJob = (Job) job.clone();
+        cloneJob = (Request) job.clone();
         cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 2 / 4);
         this.enqueueJob(cloneJob);
-        cloneJob = (Job) job.clone();
+        cloneJob = (Request) job.clone();
         cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 3 / 4);
         this.enqueueJob(cloneJob);
     }
 
-    private void animate(Job job) {
+    private void animate(Request job) {
         arrival.animate(job, currentTime);
         for (Processor processor : processors) {
             processor.animate(currentTime);
@@ -172,7 +172,7 @@ public class Simulator implements Runnable {
 
     }
 
-    private void exitProcessor(Job job) {
+    private void exitProcessor(Request job) {
         job.getProcessor().endProcessing(currentTime);// this processor is stopped
         job.setStateExitSystem();// set the state of the job as finished
         for (Notifier element : notifier) {
@@ -182,7 +182,7 @@ public class Simulator implements Runnable {
         createAnimation(job);
     }
 
-    public void enqueueJob(Job newJob) {// priority queue wrt their next job
+    public void enqueueJob(Request newJob) {// priority queue wrt their next job
         int i;
         for (i = 0; i < jobList.size(); i++) {
             if (jobList.get(i).getNextEventTime() > newJob.getNextEventTime()) {
@@ -192,11 +192,11 @@ public class Simulator implements Runnable {
         jobList.add(i, newJob);
     }
 
-    public Job dequeueJob() {
+    public Request dequeueJob() {
         return jobList.removeFirst();
     }
 
-    public Job peekJob() {
+    public Request peekJob() {
         return jobList.element();
     }
 
