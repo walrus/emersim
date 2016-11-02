@@ -187,18 +187,12 @@ public class Simulator implements Runnable {
         createAnimation(job);
     }
 
-    public void enqueueJob(Request newJob) {// priority queue wrt their next job
-        int i;
-        for (i = 0; i < this.receiver.getQueue().size(); i++) {
-            if (this.receiver.getQueue().get(i).getNextEventTime() > newJob.getNextEventTime()) {
-                break;
-            }
-        }
-        this.receiver.getQueue().add(i, newJob);
+    public void enqueueJob(Request newRequest) {
+        this.receiver.handleRequest(newRequest);
     }
 
     public Request dequeueJob() {
-        return this.receiver.getQueue().removeFirst();
+        return this.receiver.getNextRequest();
     }
 
     public Request peekJob() {

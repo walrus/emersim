@@ -20,8 +20,15 @@ public class Receiver {
 
     //Given a (newly arrived) Request, add it to the queue.
     //This should be overridden to implement different behaviours
+    //TODO: actual implementation rather than default from JMCH
     public void handleRequest(Request request) {
-        //TODO: implement
+        int i;
+        for (i = 0; i < this.requestQueue.size(); i++) {
+            if (this.requestQueue.get(i).getNextEventTime() > request.getNextEventTime()) {
+                break;
+            }
+        }
+        this.requestQueue.add(i, request);
     }
 
     // Given a Request object, calculate the response time in seconds
@@ -39,8 +46,8 @@ public class Receiver {
     //Find the next request in the queue. This should
     //be overridden to implement different behaviours
     public Request getNextRequest() {
-        //TODO: implement
-        return null;
+        //TODO: implement better algorithm that uses distances
+        return this.requestQueue.removeFirst();
     }
 
     public LinkedList<Request> getQueue() {
