@@ -2,18 +2,16 @@ package jmt.jmarkov.SpatialQueue;
 
 import jmt.gui.common.startScreen.GraphStartScreen;
 import jmt.jmarkov.QueueTypeDialog;
+import jmt.jmarkov.SpatialQueue.gui.SpatialQueueFrame;
 import jmt.util.ShortDescriptionButtonMatcher;
 import jmt.util.TextButtonMatcher;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.finder.WindowFinder;
 import org.fest.swing.fixture.FrameFixture;
-import org.fest.swing.fixture.JButtonFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.swing.*;
 
 import static org.junit.Assert.assertTrue;
 

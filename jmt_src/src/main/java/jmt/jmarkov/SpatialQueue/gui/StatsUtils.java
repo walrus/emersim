@@ -1,4 +1,4 @@
-package jmt.jmarkov.SpatialQueue;
+package jmt.jmarkov.SpatialQueue.gui;
 
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.StatiDrawer;
@@ -6,16 +6,17 @@ import jmt.jmarkov.Graphics.TANotifier;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.Queues.MM1Logic;
+import jmt.jmarkov.SpatialQueue.Simulator;
 import jmt.jmarkov.utils.Formatter;
-import javax.swing.*;;
+
+import javax.swing.*;
 import java.awt.*;
 import java.util.Dictionary;
-
 
 /**
  * Created by joshuazeltser on 02/11/2016.
  */
-public class GuiUtils {
+public class StatsUtils {
 
     private static String bufStrS = "Max Station Capacity k = ";
     private static String bufStrE = " cust.";
@@ -36,7 +37,6 @@ public class GuiUtils {
     private static String lambdaStrE = " cust./s";
     private static String sStrS = "Avg. Service Time S = ";
     private static String sStrE = " s";
-
 
     protected static void setLogAnalyticalResults(MM1Logic ql, TANotifier outputTA) {
         try {
@@ -100,22 +100,22 @@ public class GuiUtils {
         statiDrawer.repaint();
         outputTA = new TANotifier();
         if (sim == null || !sim.isStarted()) {
-            GuiUtils.setLogAnalyticalResults(ql, outputTA);
+            setLogAnalyticalResults(ql, outputTA);
         } else {
             outputTA.setAnalyticalResult();
         }
     }
 
     protected static void sSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, boolean nonErgodic,
-                                  Simulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider sS,
+                                         Simulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider sS,
                                          double sMultiplier, JLabel sL) {
         setSSlider(sS, sMultiplier, sL, ql);
-        GuiUtils.updateFields(ql, utilizationL, mediaJobsL, nonErgodic, sim, queueDrawer, statiDrawer);
+        updateFields(ql, utilizationL, mediaJobsL, nonErgodic, sim, queueDrawer, statiDrawer);
     }
 
     protected static void lambdaSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, boolean nonErgodic,
-                                       Simulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider lambdaS,
-                                       double lambdaMultiplier, int lambdaMultiplierChange, JLabel lambdaL, JSlider sS,
+                                              Simulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider lambdaS,
+                                              double lambdaMultiplier, int lambdaMultiplierChange, JLabel lambdaL, JSlider sS,
                                               double sMultiplier, JLabel sL) {
         if (lambdaS.getValue() == 0) {
             lambdaMultiplier = 0.01;
@@ -125,7 +125,7 @@ public class GuiUtils {
         ql.setLambda(lambdaMultiplier * lambdaS.getValue());
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
         setSSlider(sS, sMultiplier, sL, ql);
-        GuiUtils.updateFields(ql, utilizationL, mediaJobsL, nonErgodic, sim, queueDrawer, statiDrawer);
+        updateFields(ql, utilizationL, mediaJobsL, nonErgodic, sim, queueDrawer, statiDrawer);
     }
 
     protected static void setSSlider(JSlider sS, double sMultiplier, JLabel sL, MM1Logic ql) {
@@ -237,7 +237,6 @@ public class GuiUtils {
         ql.setLambda(lambdaMultiplier * lambdaS.getValue());
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
     }
-
     protected static void generateSimulationStats(JPanel resultsP, JLabel mediaJobsL, JLabel utilizationL,
                                                   DrawConstrains dCst) {
         // media
@@ -263,5 +262,4 @@ public class GuiUtils {
         responseL.setFont(dCst.getNormalGUIFont());
         resultsP.add(responseL);
     }
-
 }
