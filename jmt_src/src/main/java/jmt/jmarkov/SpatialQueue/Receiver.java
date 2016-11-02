@@ -30,13 +30,7 @@ public class Receiver {
         double yDistance = senderLocation.getY() - receiverLocation.getY();
 
         //Straight line distance in degrees
-        double overalldistance = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
-
-        //Divide by 60 to give Nautical Miles, then 1.852 for Km
-        overalldistance = overalldistance/(60 * 1.852);
-
-        //Now assume that everything moves at 50 kmh
-        return overalldistance * 3600 / 50;
+        return Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
     }
 
     //Given the request, respond to it.
