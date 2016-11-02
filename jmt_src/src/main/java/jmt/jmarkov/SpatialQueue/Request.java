@@ -8,7 +8,10 @@ import jmt.jmarkov.Job;
 public class Request extends Job{
     private Sender sender;
 
-    public Request(int jobId, double time){ super(jobId, time); }
+    public Request(int jobId, double time, Sender sender){
+        super(jobId, time);
+        this.sender = sender;
+    }
 
     public Sender getSender() {
         return sender;
