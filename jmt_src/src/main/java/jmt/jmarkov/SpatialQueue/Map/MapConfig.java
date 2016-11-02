@@ -196,7 +196,21 @@ public class MapConfig extends MapView {
         drawNewArea = true;
     }
 
-    public Location translateCoordinate(LatLng location) {
+    public Location[][] getAreasAsLocations() {
+        LinkedList<Location[]> areas = new LinkedList<>();
+        for (Polygon p : clientRegions) {
+            LatLng[] path = p.getPath();
+            Location[] pathAsLocation = new Location[path.length];
+            for (int i=0; i<path.length; i++) {
+                pathAsLocation[i] = translateCoordinate(path[i]);
+            }
+            areas.add(pathAsLocation);
+        }
+        Location[][] result = new Location[areas.size()][];
+        return areas.toArray(result);
+    }
+
+    private Location translateCoordinate(LatLng location) {
         Location loc = new Location(location.getLng(), location.getLat());
         return loc;
     }
