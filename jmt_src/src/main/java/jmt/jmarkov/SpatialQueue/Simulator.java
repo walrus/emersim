@@ -19,9 +19,6 @@ public class Simulator implements Runnable {
     // All logic related to dealing with requests is delegated to it
     private Receiver receiver;
 
-    //list which contains requests waiting in the simulator.
-    private LinkedList<Request> jobList;
-
     private Notifier[] notifier;
 
     //current simulation time
@@ -54,7 +51,6 @@ public class Simulator implements Runnable {
                      Receiver receiver) {
         super();
 
-        jobList = new LinkedList<Request>();
         this.arrival = arrival;
         currentTime = 0;
         this.processors = processors;
@@ -77,14 +73,14 @@ public class Simulator implements Runnable {
 
         //this is the first job which is created
         //if job list is not empty this means run is called from the paused situation
-        if (jobList.isEmpty()) {
+        if (this.receiver.getQueue().isEmpty()) {
             arrival.createJob(currentTime); // this is the first job which is created after pressed start
             //it is called in order calculate first arrival time to the system
         }
 
         //if there is still some job is waiting for processing it is running recursive
         //if paused the running will stop.
-        while (jobList.size() > 0 && !paused) {
+        while (this.receiver.getQueue().size() > 0 && !paused) {
             //this is calculating how long system will sleep
             currentTimeMultiplied += (peekJob().getNextEventTime() - currentTime) / timeMultiplier;
             //this is calculating how long system will sleep
@@ -134,7 +130,7 @@ public class Simulator implements Runnable {
     private void createAnimation(Request job) {
         Request cloneJob;
         double nextEventTime;
-        if (!jobList.isEmpty()) {
+        if (!this.receiver.getQueue().isEmpty()) {
             nextEventTime = peekJob().getNextEventTime();
         } else {
             nextEventTime = currentTime + 100;
@@ -193,20 +189,20 @@ public class Simulator implements Runnable {
 
     public void enqueueJob(Request newJob) {// priority queue wrt their next job
         int i;
-        for (i = 0; i < jobList.size(); i++) {
-            if (jobList.get(i).getNextEventTime() > newJob.getNextEventTime()) {
+        for (i = 0; i < this.receiver.getQueue().size(); i++) {
+            if (this.receiver.getQueue().get(i).getNextEventTime() > newJob.getNextEventTime()) {
                 break;
             }
         }
-        jobList.add(i, newJob);
+        this.receiver.getQueue().add(i, newJob);
     }
 
     public Request dequeueJob() {
-        return jobList.removeFirst();
+        return this.receiver.getQueue().removeFirst();
     }
 
     public Request peekJob() {
-        return jobList.element();
+        return this.receiver.getQueue().element();
     }
 
     public boolean isLambdaZero() {

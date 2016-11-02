@@ -1,5 +1,6 @@
 package jmt.jmarkov.SpatialQueue;
 
+import java.util.LinkedList;
 /**
  * Receivers handle requests from Senders
  */
@@ -7,12 +8,14 @@ public class Receiver {
 
     private Location location;
 
-    public Location getLocation() {
-        return location;
-    }
+    private LinkedList<Request> requestQueue;
 
     public Receiver(Location location) {
         this.location = location;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     //Given a (newly arrived) Request, add it to the queue.
@@ -33,15 +36,14 @@ public class Receiver {
         return Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
     }
 
-    //Given the request, respond to it.
-    public void serveRequest(Request request) {
-        //TODO: implement
-    }
-
     //Find the next request in the queue. This should
     //be overridden to implement different behaviours
     public Request getNextRequest() {
         //TODO: implement
         return null;
+    }
+
+    public LinkedList<Request> getQueue() {
+        return this.requestQueue;
     }
 }
