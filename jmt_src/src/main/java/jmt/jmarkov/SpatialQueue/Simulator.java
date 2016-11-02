@@ -15,6 +15,10 @@ import jmt.jmarkov.Queues.Processor;
 
 public class Simulator implements Runnable {
 
+    // Receiver is the server that deals with requests.
+    // All logic related to dealing with requests is delegated to it
+    private Receiver receiver;
+
     //list which contains requests waiting in the simulator.
     private LinkedList<Request> jobList;
 
@@ -43,7 +47,11 @@ public class Simulator implements Runnable {
 
     private boolean started = false;
 
-    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier) {
+    public Simulator(Arrivals arrival,
+                     Processor[] processors,
+                     double timeMultiplier,
+                     Notifier[] notifier,
+                     Receiver receiver) {
         super();
 
         jobList = new LinkedList<Request>();
@@ -52,6 +60,7 @@ public class Simulator implements Runnable {
         this.processors = processors;
         setTimeMultiplier(timeMultiplier);
         this.notifier = notifier;
+        this.receiver = receiver;
     }
 
     public void run() {
