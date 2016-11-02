@@ -21,56 +21,62 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Dictionary;
 
-
 /**
  * Created by joshuazeltser on 02/11/2016.
  */
 public class GuiComponents {
 
-    private MapConfig mapView;
-
-    private final JButton start = new JButton("Start");
-    private final JButton pause = new JButton("Pause");
-    private final JButton stop = new JButton("Stop");
-    private boolean paused;
-    private DrawNormal dCst;
-    private Simulator sim;
-    private JLabel buffL;
-    private JSlider buffS;
     private JPanel buffPanel;
-    private int BUFF_I = 15;
-    private String bufStrS = "Max Station Capacity k = ";
-    private String bufStrE = " cust.";
-    private int buffer; //number of place for the waiting queue
-    private int cpuNum; //number of server in the system
     private JPanel sPanel;
-    private JLabel sL;
-    private JSlider lambdaS;
-    protected static JSlider sS;
-    private double sMultiplier = 1; //service time slide bar multiplier
-    private int sMultiplierChange = 1; //for the service slide bar
-    private int S_I = 95;
-    private MM1Logic ql;
-    private QueueDrawer queueDrawer;
-    private StatiDrawer statiDrawer;
-    private boolean nonErgodic;//if the utilization is less than 1
-    private boolean sSChange = true;
     private JPanel lambdaPanel;
-    private JLabel lambdaL;
-    private double lambdaMultiplier = 1; //lambda slide bar multiplier
-    private int lambdaMultiplierChange = 0; //for the lambda slide bar
-    private int LAMBDA_I = 50;
-    private boolean lambdaSChange = true;
+    private JPanel parametersP;
+    private JPanel resultsP;
+
+    private JButton start;
+    private JButton pause;
+    private JButton stop;
     private JButton client;
     private JButton receiver;
 
+    private JLabel buffL;
+    private JLabel sL;
+    private JLabel lambdaL;
+    private JLabel mediaJobsL;
+    private JLabel utilizationL;
 
-    public GuiComponents(Simulator sim, MapConfig mapView) {
-        this.mapView = mapView;
-        this.sim = sim;
+    private JSlider buffS;
+    private JSlider lambdaS;
+    protected static JSlider sS;
+
+    private int BUFF_I = 15;
+
+    private int sMultiplierChange = 1; //for the service slide bar
+    private int S_I = 95;
+    private int lambdaMultiplierChange = 0; //for the lambda slide bar
+    private int LAMBDA_I = 50;
+
+    private String bufStrS = "Max Station Capacity k = ";
+    private String bufStrE = " cust.";
+
+    private double sMultiplier = 1; //service time slide bar multiplier
+    private double lambdaMultiplier = 1; //lambda slide bar multiplier
+
+    private boolean sSChange = true;
+    private boolean paused;
+    private boolean lambdaSChange = true;
+
+    private DrawNormal dCst;
+    private Simulator sim;
+    private MM1Logic ql;
+    private QueueDrawer queueDrawer;
+    private StatiDrawer statiDrawer;
+    private MapConfig mapView;
+
+    public GuiComponents() {
         init();
     }
 
+    //Initialise objects
     private void init() {
         paused = false;
         buffL = new JLabel();
@@ -84,14 +90,23 @@ public class GuiComponents {
         statiDrawer = new StatiDrawer(ql);
         lambdaPanel = new JPanel();
         lambdaL = new JLabel();
+        parametersP = new JPanel();
+        resultsP = new JPanel();
+        mediaJobsL = new JLabel();
+        utilizationL = new JLabel();
+        start = new JButton("Start");
+        pause = new JButton("Pause");
+        stop = new JButton("Stop");
     }
 
+    //Create queueDrawer for queue visualisation
     protected  void generateQueueDrawer(JPanel interfacePanel) {
         QueueDrawer queueDrawer = new QueueDrawer(ql);
         queueDrawer.setPreferredSize(new Dimension(300, 150));
         interfacePanel.add(queueDrawer);
     }
 
+    //create map panel for gui
     protected void generateMapPanel(JPanel interfacePanel) {
         MapViewOptions mapOptions = new MapViewOptions();
         mapOptions.importPlaces();
@@ -100,9 +115,10 @@ public class GuiComponents {
         interfacePanel.add(mapView);
     }
 
+    // create side panel for functionality buttons
     protected void generateSideButtons(JPanel panel) {
-        addReceiverButton();
-        addClientButton();
+        receiverButton();
+        clientButton();
         pauseButton();
         startButton();
         stopButton();
@@ -121,9 +137,10 @@ public class GuiComponents {
         addJobsPanel(panel);
     }
 
-    private JButton addClientButton() {
+    // create an add client button
+    private JButton clientButton() {
         client = new JButton("Add Client");
-        client.setPreferredSize(new Dimension(100,40));
+//        client.setMaximumSize(new Dimension(100,40));
         client.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -133,9 +150,10 @@ public class GuiComponents {
         return client;
     }
 
-    private JButton addReceiverButton() {
+    // create an add receiver button
+    private JButton receiverButton() {
         receiver = new JButton("Add Receiver");
-        receiver.setPreferredSize(new Dimension(100,40));
+//        receiver.setMaximumSize(new Dimension(100,40));
         receiver.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -145,8 +163,9 @@ public class GuiComponents {
         return receiver;
     }
 
+    // create a stop button
     private void stopButton() {
-        stop.setPreferredSize(new Dimension(100,40));
+//        stop.setMaximumSize(new Dimension(100,40));
         stop.setEnabled(false);
         stop.addActionListener(new ActionListener() {
             @Override
@@ -157,9 +176,9 @@ public class GuiComponents {
             }
         });
     }
-
+    // create a start button
     private void startButton() {
-        start.setPreferredSize(new Dimension(100,40));
+//        start.setMaximumSize(new Dimension(300,200));
         start.setEnabled(true);
         start.addActionListener(new ActionListener() {
             @Override
@@ -171,8 +190,9 @@ public class GuiComponents {
         });
     }
 
+    // create a pause button
     private void pauseButton() {
-        pause.setPreferredSize(new Dimension(100,40));
+//        pause.setMaximumSize(new Dimension(100,40));
         pause.setEnabled(false);
         pause.addActionListener(new ActionListener() {
             @Override
@@ -189,6 +209,7 @@ public class GuiComponents {
         });
     }
 
+    //create a slider to control simulation speed
     protected void addSpeedSlider(JPanel accelerationP) {
 
         dCst = new DrawNormal();
@@ -208,6 +229,7 @@ public class GuiComponents {
         accelerationL.setText("Time x" + Formatter.formatNumber(accelerationS.getValue(), 2));
     }
 
+    // functionality for the speed slider
     private void makeSliderFunctional(final JSlider accelerationS, final JLabel finalAccelerationL) {
         accelerationS.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent evt) {
@@ -223,6 +245,7 @@ public class GuiComponents {
         });
     }
 
+    // slider visuals
     private JSlider makeSlider() {
         final JSlider accelerationS = new JSlider();
         accelerationS.setValue(50);
@@ -242,6 +265,7 @@ public class GuiComponents {
         return accelerationS;
     }
 
+    // add title to panels
     protected TitledBorder addTitle(String title, Font f) {
         return new TitledBorder(null, title, TitledBorder.LEADING, TitledBorder.TOP, f, new java.awt.Color(0, 0, 0));
     }
@@ -251,6 +275,7 @@ public class GuiComponents {
         jobsP.add(jobsDrawer);
     }
 
+    // split a pane in half to view to objects side by side
     protected JPanel getSplitter(int width, int height) {
         JPanel splitPane = new JPanel();
         Dimension dim = new Dimension(width, height);
@@ -261,8 +286,8 @@ public class GuiComponents {
         return splitPane;
     }
 
-    protected void createQueueBufferSlider(GridBagConstraints c, JPanel parametersP, final JLabel utilizationL,
-                                           final JLabel mediaJobsL) {
+    // create a queue buffer slider
+    protected void createQueueBufferSlider(GridBagConstraints c) {
 
         buffPanel.setLayout(new GridLayout(2, 1));
         c.gridx = 4;
@@ -281,14 +306,13 @@ public class GuiComponents {
         buffL.setText(bufStrS + buffS.getValue() + bufStrE);
         buffS.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent evt) {
-                StatsUtils.buffSStateChanged(buffer, buffS, utilizationL, mediaJobsL, nonErgodic, cpuNum, ql, queueDrawer,
-                        statiDrawer, buffL, sim);
+                StatsUtils.buffSStateChanged(buffS, utilizationL, mediaJobsL, ql, queueDrawer, statiDrawer, buffL, sim);
             }
         });
     }
 
-    protected void createSSlider(GridBagConstraints c, JPanel parametersP, final JLabel utilizationL,
-                               final JLabel mediaJobsL) {
+    // create a service time slider
+    protected void createSSlider(GridBagConstraints c) {
         sPanel.setLayout(new GridLayout(2, 1));
         c.gridx = 2;
         parametersP.add(sPanel, c);
@@ -317,8 +341,8 @@ public class GuiComponents {
         StatsUtils.setSSlider(sS, sMultiplier, sL, ql);
         sS.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent evt) {
-                StatsUtils.sSStateChanged(ql, utilizationL, mediaJobsL, nonErgodic, sim, queueDrawer, statiDrawer, sS,
-                        sMultiplier, sL);
+                StatsUtils.sSStateChanged(ql, utilizationL, mediaJobsL, sim, queueDrawer, statiDrawer, sS, sMultiplier,
+                        sL);
                 if (sSChange) {
                     StatsUtils.setSMultiplier(sS, sMultiplier, sL, ql, sMultiplierChange);
                 }
@@ -347,8 +371,8 @@ public class GuiComponents {
         });
     }
 
-    protected void createLambdaSlider(GridBagConstraints c, JPanel parametersP, final JLabel utilizationL,
-                                      final JLabel mediaJobsL) {
+    //create a lambda slider
+    protected void createLambdaSlider(GridBagConstraints c) {
         lambdaPanel.setLayout(new GridLayout(2, 1));
         c.weightx = 0.5;
 
@@ -377,8 +401,8 @@ public class GuiComponents {
         StatsUtils.setLambdaSlider(lambdaS, lambdaMultiplier, ql, lambdaL);
         lambdaS.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent evt) {
-                StatsUtils.lambdaSStateChanged(ql, utilizationL, mediaJobsL, nonErgodic, sim, queueDrawer, statiDrawer,
-                        lambdaS, lambdaMultiplier, lambdaMultiplierChange, lambdaL, sS, sMultiplier, sL);
+                StatsUtils.lambdaSStateChanged(ql, utilizationL, mediaJobsL,sim, queueDrawer, statiDrawer, lambdaS,
+                        lambdaMultiplier, lambdaMultiplierChange, lambdaL, sS, sMultiplier, sL);
                 if (lambdaSChange) {
                     StatsUtils.setLambdaMultiplier(lambdaS, lambdaMultiplierChange, lambdaMultiplier, ql, lambdaL);
                 }
@@ -407,5 +431,26 @@ public class GuiComponents {
 
         });
         lambdaS.repaint();
+    }
+
+    // create the panel that contains the parameter sliders
+    protected void createSimulationParametersPanel(GridBagConstraints c, JPanel simulationP) {
+        parametersP.setLayout(new GridBagLayout());
+        parametersP.setBorder(addTitle("Simulation Parameters", dCst.getSmallGUIFont()));
+        c.weightx = 1;
+        c.weighty = 0;
+        c.gridx = 0;
+        c.gridy = 0;
+        simulationP.add(parametersP, c);
+    }
+
+    // create the panel that contains the simulation stats
+    protected void createSimulationResultsPanel(GridBagConstraints c, JPanel simulationP) {
+        resultsP.setLayout(new GridLayout(2, 2));
+        resultsP.setBorder(addTitle("Simulation Results", dCst.getSmallGUIFont()));
+        c.gridx = 0;
+        c.gridy = 1;
+        simulationP.add(resultsP, c);
+        StatsUtils.generateSimulationStats(resultsP, mediaJobsL, utilizationL, dCst);
     }
 }

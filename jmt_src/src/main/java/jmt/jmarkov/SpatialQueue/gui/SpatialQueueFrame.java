@@ -1,27 +1,10 @@
 package jmt.jmarkov.SpatialQueue.gui;
 
-import com.teamdev.jxmaps.MapViewOptions;
-import jmt.gui.common.CommonConstants;
-import jmt.jmarkov.Graphics.*;
-import jmt.jmarkov.Graphics.constants.DrawConstrains;
-import jmt.jmarkov.Graphics.constants.DrawNormal;
-import jmt.jmarkov.Queues.Arrivals;
-import jmt.jmarkov.Queues.MM1Logic;
-import jmt.jmarkov.Queues.Processor;
-import jmt.jmarkov.SpatialQueue.Map.MapConfig;
-import jmt.jmarkov.utils.Formatter;
-
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Dictionary;
-
 /**
  * Copyright (C) 2016, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
@@ -44,73 +27,12 @@ import java.util.Dictionary;
 
 public class SpatialQueueFrame extends JFrame implements ActionListener, PropertyChangeListener {
 
-    private jmt.jmarkov.SpatialQueue.Simulator sim;
-	private MapConfig mapView;
     private GuiComponents guiComponents;
-
-
-
-
-
-
-	private Dimension initSize = new Dimension(CommonConstants.MAX_GUI_WIDTH_JMCH, CommonConstants.MAX_GUI_HEIGHT_JMCH);
-
-
-
-
-
-
-
-
-	private JobsDrawer jobsDrawer;
-	private JTabbedPane outputTabP;
-	private JScrollPane txtScroll;
-
-	private LogFile logFile;
-	private Notifier[] tan = new Notifier[5];
-
-	private JPanel buttonsP;
-	private JPanel resultsP;
-	public JFrame mf;
-	private JPanel outputP;
-	private JPanel parametersP;
 	private JPanel simulationP;
 
-	private JPanel accelerationP;
-	private JPanel jobsP;
-	private JSlider accelerationS;
-
-	// Label & Label strings
-
-
-	private JLabel mediaJobsL;
-	private JLabel utilizationL;
-
-	private JLabel thrL;
-
-
-
-
-
-
-
-	// Settings
-	private DrawConstrains dCst = new DrawNormal();
-
-
-
-
-	Arrivals arrival;
-	Processor[] processors;
-
-
-
-
-
 	/** Creates the dialog. */
-
 	public SpatialQueueFrame() {
-		this.init();
+		init();
 	}
 
 	public void init(){
@@ -118,77 +40,55 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
         initObjects();
 
+        //set window size
 		Dimension d = new Dimension(1000,800);
 		setPreferredSize(d);
-        
+
+        //Create button panel for left side of window
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 		guiComponents.generateSideButtons(buttonPanel);
-        
+
+        //Create panel for map and queue drawer
 		JPanel interfacePanel = new JPanel();
 		interfacePanel.setLayout(new BoxLayout(interfacePanel, BoxLayout.Y_AXIS));
 		guiComponents.generateMapPanel(interfacePanel);
 		guiComponents.generateQueueDrawer(interfacePanel);
 		interfacePanel.add(Box.createVerticalGlue());
+        add(buttonPanel, BorderLayout.LINE_START);
+        add(interfacePanel, BorderLayout.CENTER);
 
+        //Create grid to store simulation data in
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
-        
 		simulationP.setLayout(new GridBagLayout());
 		this.getContentPane().add(simulationP, BorderLayout.SOUTH);
 
+        //create Simulation Results panel
+        guiComponents.createSimulationResultsPanel(c, simulationP);
 
-		resultsP.setLayout(new GridLayout(2, 2));
-		resultsP.setBorder(guiComponents.addTitle("Simulation Results", dCst.getSmallGUIFont()));
-		c.gridx = 0;
-		c.gridy = 1;
-		simulationP.add(resultsP, c);
-		StatsUtils.generateSimulationStats(resultsP, mediaJobsL, utilizationL, dCst);
+        //create Simulation parameters panel
+        guiComponents.createSimulationParametersPanel(c,simulationP);
 
-		parametersP.setLayout(new GridBagLayout());
-		parametersP.setBorder(guiComponents.addTitle("Simulation Parameters", dCst.getSmallGUIFont()));
-		c.weightx = 1;
-		c.weighty = 0;
-		c.gridx = 0;
-		c.gridy = 0;
-		simulationP.add(parametersP, c);
-
-//lambda
-        guiComponents.createLambdaSlider(c, parametersP, utilizationL, mediaJobsL);
+        // create lamda slider
+        guiComponents.createLambdaSlider(c);
 
 
-		// S slider
-        guiComponents.createSSlider(c, parametersP, utilizationL, mediaJobsL);
+		// create S slider
+        guiComponents.createSSlider(c);
 
-		// queueBuffer slider
-        guiComponents.createQueueBufferSlider(c, parametersP, utilizationL, mediaJobsL);
+		// create queueBuffer slider
+        guiComponents.createQueueBufferSlider(c);
 
-		add(buttonPanel, BorderLayout.LINE_START);
-		add(interfacePanel, BorderLayout.CENTER);
+        // window settings
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 
-
-
-
     private void initObjects() {
-        guiComponents = new GuiComponents(sim, mapView);
+        guiComponents = new GuiComponents();
         simulationP = new JPanel();
-        parametersP = new JPanel();
-        resultsP = new JPanel();
-        mediaJobsL = new JLabel();
-        utilizationL = new JLabel();
-        thrL = new JLabel();
-        outputP = new JPanel();
-        outputTabP = new JTabbedPane();
-        txtScroll = new JScrollPane();
-        logFile = new LogFile();
-        jobsDrawer = new JobsDrawer();
-        accelerationP = new JPanel();
-        jobsP = new JPanel();
-        accelerationS = new JSlider();
     }
 
     @Override

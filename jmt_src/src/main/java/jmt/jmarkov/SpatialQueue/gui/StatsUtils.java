@@ -18,25 +18,33 @@ import java.util.Dictionary;
  */
 public class StatsUtils {
 
-    private static String bufStrS = "Max Station Capacity k = ";
-    private static String bufStrE = " cust.";
     private static double U; // Utilization [%]
     private static double Q; // Average customer in station
+
+    private static JLabel responseL;
+    private static JLabel thrL;
+
+    private static String bufStrS = "Max Station Capacity k = ";
+    private static String bufStrE = " cust.";
     private static String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
     private static String nStrE = " cust.";
     private static String uStrS = "Avg. Utilization (Sum of All Servers) U = ";
     private static String uStrE = "";
-    private static JLabel thrL;
     private static String thrStrS = "Avg. Throughput X =";
     private static String thrStrE = " cust./s";
     private static String respStrS = "Avg. Response Time R = ";
     private static String respStrE = " s";
-    private static JLabel responseL;
-    private static TANotifier outputTA;
     private static String lambdaStrS = "Avg. Arrival Rate (lambda) = ";
     private static String lambdaStrE = " cust./s";
     private static String sStrS = "Avg. Service Time S = ";
     private static String sStrE = " s";
+
+    private static TANotifier outputTA;
+    private static boolean nonErgodic;//if the utilization is less than 1
+
+    private static int buffer; //number of place for the waiting queue
+    private static int cpuNum; //number of server in the system
+
 
     protected static void setLogAnalyticalResults(MM1Logic ql, TANotifier outputTA) {
         try {
@@ -51,8 +59,8 @@ public class StatsUtils {
         }
     }
 
-    protected static void buffSStateChanged(int buffer, JSlider buffS, JLabel utilizationL, JLabel mediaJobsL,
-                                            boolean nonErgodic, int cpuNum, MM1Logic ql, QueueDrawer queueDrawer,
+    protected static void buffSStateChanged(JSlider buffS, JLabel utilizationL, JLabel mediaJobsL,
+                                            MM1Logic ql, QueueDrawer queueDrawer,
                                             StatiDrawer statiDrawer, JLabel buffL, Simulator sim) {
 
         buffer = buffS.getValue() - cpuNum;
@@ -64,10 +72,10 @@ public class StatsUtils {
         queueDrawer.setMaxJobs(buffer + 1);
         statiDrawer.setMaxJobs(buffer + cpuNum);
         buffL.setText(bufStrS + buffS.getValue() + bufStrE);
-        updateFields(ql, utilizationL, mediaJobsL, nonErgodic, sim, queueDrawer, statiDrawer);
+        updateFields(ql, utilizationL, mediaJobsL,sim, queueDrawer, statiDrawer);
     }
 
-    protected static void updateFields(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, boolean nonErgodic,
+    protected static void updateFields(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL,
                                        Simulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer  ) {
         try {
             Q = ql.mediaJobs();
@@ -106,17 +114,17 @@ public class StatsUtils {
         }
     }
 
-    protected static void sSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, boolean nonErgodic,
-                                         Simulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider sS,
+    protected static void sSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, Simulator sim,
+                                         QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider sS,
                                          double sMultiplier, JLabel sL) {
         setSSlider(sS, sMultiplier, sL, ql);
-        updateFields(ql, utilizationL, mediaJobsL, nonErgodic, sim, queueDrawer, statiDrawer);
+        updateFields(ql, utilizationL, mediaJobsL,sim, queueDrawer, statiDrawer);
     }
 
-    protected static void lambdaSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, boolean nonErgodic,
-                                              Simulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider lambdaS,
-                                              double lambdaMultiplier, int lambdaMultiplierChange, JLabel lambdaL, JSlider sS,
-                                              double sMultiplier, JLabel sL) {
+    protected static void lambdaSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, Simulator sim,
+                                              QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider lambdaS,
+                                              double lambdaMultiplier, int lambdaMultiplierChange, JLabel lambdaL,
+                                              JSlider sS, double sMultiplier, JLabel sL) {
         if (lambdaS.getValue() == 0) {
             lambdaMultiplier = 0.01;
             lambdaMultiplierChange = 0;
@@ -125,7 +133,7 @@ public class StatsUtils {
         ql.setLambda(lambdaMultiplier * lambdaS.getValue());
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
         setSSlider(sS, sMultiplier, sL, ql);
-        updateFields(ql, utilizationL, mediaJobsL, nonErgodic, sim, queueDrawer, statiDrawer);
+        updateFields(ql, utilizationL, mediaJobsL,sim, queueDrawer, statiDrawer);
     }
 
     protected static void setSSlider(JSlider sS, double sMultiplier, JLabel sL, MM1Logic ql) {
@@ -237,6 +245,7 @@ public class StatsUtils {
         ql.setLambda(lambdaMultiplier * lambdaS.getValue());
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
     }
+
     protected static void generateSimulationStats(JPanel resultsP, JLabel mediaJobsL, JLabel utilizationL,
                                                   DrawConstrains dCst) {
         // media
