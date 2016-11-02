@@ -125,8 +125,8 @@ public class SpatialQueueGuiTest {
         FrameFixture jmch = WindowFinder.findFrame(SpatialQueueFrame.class).using(window.robot);
         jmch.button(new TextButtonMatcher("Start")).click();
         jmch.button(new TextButtonMatcher("Pause")).click();
-        jmch.button(new TextButtonMatcher("Start")).requireDisabled();
-        jmch.button(new TextButtonMatcher("Pause")).requireEnabled();
+        jmch.button(new TextButtonMatcher("Start")).requireEnabled();
+        jmch.button(new TextButtonMatcher("Pause")).requireDisabled();
         jmch.button(new TextButtonMatcher("Stop")).requireEnabled();
     }
 

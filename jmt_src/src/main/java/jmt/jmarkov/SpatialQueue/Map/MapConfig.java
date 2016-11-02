@@ -242,6 +242,7 @@ public class MapConfig extends MapView {
                         final InfoWindow infoWindow = new InfoWindow(map);
                         // Putting the address and location to the content of the information window
                         infoWindow.setContent("<b>Client region #" + clientRegions.size() + "</b>");
+
                         // Moving the information window to the result location
                         infoWindow.setPosition(polygon.getPaths()[0][0]);
                         // Showing of the information window

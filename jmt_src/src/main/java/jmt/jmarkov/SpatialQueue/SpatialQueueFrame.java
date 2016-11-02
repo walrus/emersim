@@ -1,11 +1,15 @@
 package jmt.jmarkov.SpatialQueue;
 
 import com.teamdev.jxmaps.MapViewOptions;
-import jmt.jmarkov.Graphics.JobsDrawer;
-import jmt.jmarkov.Graphics.QueueDrawer;
+import jmt.gui.common.CommonConstants;
+import jmt.jmarkov.Graphics.*;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Queues.Arrivals;
+import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
+import jmt.jmarkov.Queues.JobQueue;
 import jmt.jmarkov.Queues.MM1Logic;
+import jmt.jmarkov.Queues.Processor;
 import jmt.jmarkov.Simulator;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.utils.Formatter;
@@ -42,9 +46,142 @@ import java.util.Dictionary;
 
 public class SpatialQueueFrame extends JFrame implements ActionListener, PropertyChangeListener {
 
-	private Simulator sim = null;
+
 	private MapConfig mapView;
-	private boolean paused;
+
+
+	private static final long serialVersionUID = 1L;
+
+	private static final boolean DEBUG = false;
+
+	private boolean nonErgodic;//if the utilization is less than 1
+	private double U; // Utilization [%]
+	private double Q; // Average customer in station
+	private double sMultiplier = 1; //service time slide bar multiplier
+	private double lambdaMultiplier = 1; //lambda slide bar multiplier
+	private int lambdaMultiplierChange = 0; //for the lambda slide bar
+	private int sMultiplierChange = 1; //for the service slide bar
+
+	private int buffer; //number of place for the waiting queue
+	private int cpuNum; //number of server in the system
+	private boolean paused = false; //if the system is paused
+
+	private Dimension initSize = new Dimension(CommonConstants.MAX_GUI_WIDTH_JMCH, CommonConstants.MAX_GUI_HEIGHT_JMCH);
+
+	private JPanel sPanel;
+	private JPanel lambdaPanel;
+	private JSlider sS;
+	private JSlider lambdaS;
+	private JSlider buffS;
+
+	private QueueDrawer queueDrawer;
+	private StatiDrawer statiDrawer;
+	private JobsDrawer jobsDrawer;
+	private JTabbedPane outputTabP;
+	private JScrollPane txtScroll;
+	private TANotifier outputTA;
+	private LogFile logFile;
+	private Notifier[] tan = new Notifier[5];
+
+	private JPanel buttonsP;
+
+	private JPanel resultsP;
+	public JFrame mf;
+	private JPanel outputP;
+	private JPanel parametersP;
+	private JPanel simulationP;
+
+	private JPanel buffPanel;
+	private JPanel accelerationP;
+	private JPanel jobsP;
+	private JSlider accelerationS;
+
+	// Label & Label strings
+	private JLabel sL;
+
+	private JLabel lambdaL;
+
+	private JLabel mediaJobsL;
+
+	private JLabel utilizationL;
+
+	private JLabel buffL;
+
+	private JLabel thrL;
+
+	private JLabel responseL;
+
+	private String sStrS = "Avg. Service Time S = ";
+
+	private String sStrE = " s";
+
+	private String lambdaStrS = "Avg. Arrival Rate (lambda) = ";
+
+	private String lambdaStrE = " cust./s";
+
+	private String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
+
+	private String nStrE = " cust.";
+
+	private String uStrS = "Avg. Utilization (Sum of All Servers) U = ";
+
+	private String uStrE = "";
+
+	private String bufStrS = "Max Station Capacity k = ";
+
+	private String bufStrE = " cust.";
+
+	private String thrStrS = "Avg. Throughput X =";
+
+	private String thrStrE = " cust./s";
+
+	private String respStrS = "Avg. Response Time R = ";
+
+	private String respStrE = " s";
+
+	// Settings
+	private Color emptyC = Color.WHITE;
+
+	private Color probC = Color.GREEN;
+
+	private Color queueC = Color.BLUE;
+
+	private Color animC = Color.RED;
+	private boolean gradientF = false;
+	private DrawConstrains dCst = new DrawNormal();
+	private int BUFF_I = 15;
+
+	private int LAMBDA_I = 50;
+
+	private int S_I = 95;
+
+	// menu
+	private JMenuBar menuB;
+
+	// help
+	private JMenu helpMenu;
+
+	// queue
+	private JMenu queueMenu;
+	private Action selectQueueRB;
+	private JRadioButtonMenuItem gradientItem;
+	// spatial queue
+	private JMenu spatialMenu;
+	// settings
+	private JMenu settingsMenu;
+	// colors
+	private JMenu colorsMenu;
+
+	// size
+	private JMenu sizeMenu;
+	JobQueue jq;
+
+	Arrivals arrival;
+	Processor[] processors;
+
+	private jmt.jmarkov.SpatialQueue.Simulator sim = null;
+	private boolean lambdaSChange = true;
+	private boolean sSChange = true;
 
 	/** Creates the dialog. */
 
@@ -54,9 +191,41 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
 	public void init(){
 		setTitle("Create a new Spatial Queue");
+		lambdaS = new JSlider();
+		simulationP = new JPanel();
+		parametersP = new JPanel();
+		lambdaPanel = new JPanel();
+		lambdaL = new JLabel();
+		lambdaS = new JSlider();
+		buffS = new JSlider();
+		sPanel = new JPanel();
+		sS = new JSlider();
+		resultsP = new JPanel();
+		mediaJobsL = new JLabel();
+		utilizationL = new JLabel();
+		mediaJobsL = new JLabel();
+		thrL = new JLabel();
+		responseL = new JLabel();
+
+		// simulation output panels
+		outputP = new JPanel();
+		outputTabP = new JTabbedPane();
+		txtScroll = new JScrollPane();
+		outputTA = new TANotifier();
+		logFile = new LogFile();
+		// logD = new LogDrawer();
+		statiDrawer = new StatiDrawer(ql);
+		queueDrawer = new QueueDrawer(ql);
+		jobsDrawer = new JobsDrawer();
+
+		buffPanel = new JPanel();
+		accelerationP = new JPanel();
+		jobsP = new JPanel();
+		accelerationS = new JSlider();
+
 
 		paused = false;
-		Dimension d = new Dimension(800,600);
+		Dimension d = new Dimension(1000,800);
 		setPreferredSize(d);
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
@@ -67,11 +236,208 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 		generateQueueDrawer(interfacePanel);
 		interfacePanel.add(Box.createVerticalGlue());
 
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+
+//		JPanel simulationP = new JPanel();
+		simulationP.setLayout(new GridBagLayout());
+//		JPanel parametersP = new JPanel();
+		this.getContentPane().add(simulationP, BorderLayout.SOUTH);
+
+
+		resultsP.setLayout(new GridLayout(2, 2));
+		resultsP.setBorder(addTitle("Simulation Results", dCst.getSmallGUIFont()));
+		c.gridx = 0;
+		c.gridy = 1;
+		simulationP.add(resultsP, c);
+		generateSimulationStats(resultsP);
+
+		parametersP.setLayout(new GridBagLayout());
+		parametersP.setBorder(addTitle("Simulation Parameters", dCst.getSmallGUIFont()));
+		c.weightx = 1;
+		c.weighty = 0;
+		c.gridx = 0;
+		c.gridy = 0;
+		simulationP.add(parametersP, c);
+
+//		JPanel resultsP = new JPanel();
+
+
+
+
+		// lambda
+//		JPanel lambdaPanel = new JPanel();
+		lambdaPanel.setLayout(new GridLayout(2, 1));
+		c.weightx = 0.5;
+
+		parametersP.add(lambdaPanel, c);
+
+		c.gridx = 1;
+		c.weightx = 0;
+		parametersP.add(getSplitter(10, 1), c);
+		c.weightx = 0.5;
+
+//		JLabel lambdaL = new JLabel();
+		lambdaL.setAlignmentX(SwingConstants.CENTER);
+		lambdaPanel.add(lambdaL);
+		lambdaMultiplier = 0.01;
+		lambdaMultiplierChange = 0;
+
+
+		lambdaS.setMaximum(100);
+		lambdaS.setMinimum(0);
+		lambdaS.setMajorTickSpacing(25);
+		lambdaS.setMinorTickSpacing(1);
+		lambdaS.setPaintLabels(true);
+		lambdaS.setSnapToTicks(true);
+		lambdaPanel.add(lambdaS);
+		lambdaL.setFont(dCst.getNormalGUIFont());
+		lambdaS.setValue(LAMBDA_I);
+		setLambdaSlider();
+		lambdaS.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent evt) {
+				lambdaSStateChanged(evt);
+				if (lambdaSChange) {
+					setLambdaMultiplier();
+				}
+
+			}
+		});
+		lambdaS.addMouseListener(new MouseListener() {
+
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			public void mouseExited(MouseEvent e) {
+			}
+
+			public void mousePressed(MouseEvent e) {
+				lambdaSChange = false;
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				setLambdaMultiplier();
+				lambdaSChange = true;
+			}
+
+		});
+		lambdaS.repaint();
+
+		// S slider
+		sPanel.setLayout(new GridLayout(2, 1));
+		c.gridx = 2;
+		parametersP.add(sPanel, c);
+
+		c.gridx = 3;
+		c.weightx = 0;
+		parametersP.add(getSplitter(10, 1), c);
+		c.weightx = 0.5;
+
+		sL = new JLabel();
+		sL.setAlignmentX(SwingConstants.CENTER);
+		sPanel.add(sL);
+		sS.setMaximum(100);
+		sS.setMinimum(0);
+		sS.setMajorTickSpacing(25);
+		sS.setMinorTickSpacing(1);
+		sS.setPaintLabels(true);
+		sL.setFont(dCst.getNormalGUIFont());
+
+		sPanel.add(sS);
+
+		sMultiplier = 0.02;
+		sMultiplierChange = 1;
+		sS.setValue(S_I);
+
+		setSSlider();
+		sS.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent evt) {
+				sSStateChanged(evt);
+				if (sSChange) {
+					setSMultiplier();
+				}
+			}
+		});
+		sS.addMouseListener(new MouseListener() {
+
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			public void mouseExited(MouseEvent e) {
+			}
+
+			public void mousePressed(MouseEvent e) {
+				sSChange = false;
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				setSMultiplier();
+				sSChange = true;
+			}
+
+		});
+
+		// queueBuffer slider
+		buffPanel.setLayout(new GridLayout(2, 1));
+		c.gridx = 4;
+		buffPanel.setVisible(false);
+		parametersP.add(buffPanel, c);
+		buffL = new JLabel();
+		buffL.setAlignmentX(SwingConstants.CENTER);
+		buffL.setFont(dCst.getNormalGUIFont());
+		buffPanel.add(buffL);
+		buffS.setValue(BUFF_I);
+		buffS.setMaximum(31);
+		buffS.setMinimum(1);
+		buffS.setMajorTickSpacing(5);
+		buffS.setMinorTickSpacing(1);
+		buffS.setPaintLabels(true);
+		buffPanel.add(buffS);
+		buffL.setText(bufStrS + buffS.getValue() + bufStrE);
+		buffS.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent evt) {
+				buffSStateChanged(evt);
+			}
+		});
+
+
+
+
 		add(buttonPanel, BorderLayout.LINE_START);
 		add(interfacePanel, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+	}
+
+	private void generateSimulationStats(JPanel resultsP) {
+		// media
+
+		mediaJobsL.setText(nStrS + "0" + nStrE);
+		mediaJobsL.setFont(dCst.getNormalGUIFont());
+		resultsP.add(mediaJobsL);
+
+		// utilization
+
+		utilizationL.setText(uStrS + "0" + uStrE);
+		utilizationL.setFont(dCst.getNormalGUIFont());
+		resultsP.add(utilizationL);
+
+		// throughput
+		thrL.setText(thrStrS + "0" + thrStrE);
+		thrL.setFont(dCst.getNormalGUIFont());
+		resultsP.add(thrL);
+
+		// response time
+		responseL.setText(respStrS + "0" + respStrE);
+		responseL.setFont(dCst.getNormalGUIFont());
+		resultsP.add(responseL);
 	}
 
 	private void generateQueueDrawer(JPanel interfacePanel) {
@@ -125,6 +491,8 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 				} else {
 					paused = true;
 				}
+				start.setEnabled(true);
+				pause.setEnabled(false);
 			}
 		});
 
@@ -166,7 +534,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
 	private void addSpeedSlider(JPanel accelerationP) {
 
-		DrawConstrains dCst = new DrawNormal();
+		dCst = new DrawNormal();
 
 		accelerationP.setBorder(addTitle("Simulation Options", dCst.getSmallGUIFont()));
 		JLabel accelerationL = new JLabel("Time x0.0");
@@ -227,4 +595,204 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 	private TitledBorder addTitle(String title, Font f) {
 		return new TitledBorder(null, title, TitledBorder.LEADING, TitledBorder.TOP, f, new java.awt.Color(0, 0, 0));
 	}
+
+	protected JPanel getSplitter(int widht, int height) {
+		JPanel splitPane = new JPanel();
+		Dimension dim = new Dimension(widht, height);
+		splitPane.setEnabled(false);
+		splitPane.setPreferredSize(dim);
+		splitPane.setMaximumSize(dim);
+		splitPane.setMinimumSize(dim);
+		return splitPane;
+	}
+
+	public void setLambdaSlider() {
+		Dictionary<Integer, JLabel> ld = lambdaS.getLabelTable();
+
+		for (int i = lambdaS.getMinimum(); i <= lambdaS.getMaximum(); i += lambdaS.getMajorTickSpacing()) {
+			ld.put(new Integer(i), new JLabel("" + Formatter.formatNumber(i * lambdaMultiplier, 2)));
+		}
+
+		//for (int i = 0; i <= 4; i++) {
+		//	ld.put(new Integer(i * 25), new JLabel("" + Formatter.formatNumber(i * 0.25, 2)));
+		//}
+		lambdaS.setLabelTable(ld);
+		ql.setLambda(lambdaMultiplier * lambdaS.getValue());
+		lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
+	}
+
+	public void setLambdaMultiplier() {
+		while (true) {
+			if (lambdaS.getValue() > lambdaS.getMaximum() * 0.95) {
+				if (lambdaMultiplierChange <= 4) {
+					if (lambdaMultiplierChange % 2 == 0) {
+						lambdaMultiplier *= 2;
+						setLambdaSlider();
+						lambdaS.setValue((lambdaS.getValue() + 1) / 2);
+					} else {
+						lambdaMultiplier *= 5;
+						setLambdaSlider();
+						lambdaS.setValue((lambdaS.getValue() + 1) / 5);
+					}
+					lambdaMultiplierChange++;
+					//System.out.println("LambdaMultiplier:" + lambdaMultiplier);
+				} else {
+					break;
+				}
+			} else if (lambdaS.getValue() < lambdaS.getMaximum() * 0.05) {
+				if (lambdaMultiplierChange > 0) {
+					if (lambdaMultiplierChange % 2 == 1) {
+						lambdaMultiplier /= 2;
+						setLambdaSlider();
+						lambdaS.setValue(lambdaS.getValue() * 2);
+					} else {
+						lambdaMultiplier /= 5;
+						setLambdaSlider();
+						lambdaS.setValue(lambdaS.getValue() * 5);
+					}
+					lambdaMultiplierChange--;
+					//System.out.println("LambdaMultiplier:" + lambdaMultiplier);
+				} else {
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+	}
+
+	public void setSMultiplier() {
+		while (true) {
+			if (sS.getValue() > sS.getMaximum() * 0.95) {
+				if (sMultiplierChange <= 4) {
+					if (sMultiplierChange % 2 == 0) {
+						sMultiplier *= 2;
+						setSSlider();
+						sS.setValue((sS.getValue() + 1) / 2);
+					} else {
+						sMultiplier *= 5;
+						setSSlider();
+						sS.setValue((sS.getValue() + 1) / 5);
+					}
+					sMultiplierChange++;
+					//System.out.println("SMultiplier:" + sMultiplier);
+				} else {
+					break;
+				}
+			} else if (sS.getValue() < sS.getMaximum() * 0.05) {
+				if (sMultiplierChange > 0) {
+					if (sMultiplierChange % 2 == 1) {
+						sMultiplier /= 2;
+						setSSlider();
+						sS.setValue(sS.getValue() * 2);
+					} else {
+						sMultiplier /= 5;
+						setSSlider();
+						sS.setValue(sS.getValue() * 5);
+					}
+					sMultiplierChange--;
+					//System.out.println("SMultiplier:" + sMultiplier);
+				} else {
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+	}
+
+	MM1Logic ql = new MM1Logic(0.0, 0.0);
+
+
+	public void setSSlider() {
+		//sMultiplier = ql.getMaxErgodicS();
+		Dictionary<Integer, JLabel> d = sS.getLabelTable();
+		//for (int i = 0; i < 6; i++) {
+		//	d.put(new Integer(i * 25), new JLabel("" + Formatter.formatNumber(i * sMultiplier ), 2));
+		//}
+		for (int i = sS.getMinimum(); i <= sS.getMaximum(); i += sS.getMajorTickSpacing()) {
+			d.put(new Integer(i), new JLabel("" + Formatter.formatNumber(i * sMultiplier, 2)));
+		}
+		sS.setLabelTable(d);
+		sL.setText(sStrS + Formatter.formatNumber(sS.getValue() * sMultiplier, 2) + sStrE);
+		sS.repaint();
+		ql.setS(sS.getValue() * sMultiplier);
+	}
+	protected void lambdaSStateChanged(ChangeEvent evt) {
+		if (lambdaS.getValue() == 0) {
+			lambdaMultiplier = 0.01;
+			lambdaMultiplierChange = 0;
+			lambdaS.setValue(1);
+		}
+		ql.setLambda(lambdaMultiplier * lambdaS.getValue());
+		lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
+		setSSlider();
+		updateFields();
+	}
+
+	protected void sSStateChanged(ChangeEvent evt) {
+		setSSlider();
+		updateFields();
+	}
+
+	private void updateFields() {
+		try {
+			Q = ql.mediaJobs();
+			U = ql.utilization();
+			utilizationL.setForeground(Color.BLACK);
+			utilizationL.setText(uStrS + Formatter.formatNumber(U, 2) + uStrE);
+			mediaJobsL.setText(nStrS + Formatter.formatNumber(Q, 2) + nStrE);
+
+			thrL.setText(thrStrS + Formatter.formatNumber(ql.throughput(), 2) + thrStrE);
+			responseL.setText(respStrS + Formatter.formatNumber(ql.responseTime(), 2) + respStrE);
+			nonErgodic = false;
+
+			if (sim != null && ql.getLambda() > 0) {
+				sim.setLambdaZero(false);
+			}
+		} catch (NonErgodicException e) {
+			Q = 0.0;
+			U = 0.0;
+			mediaJobsL.setText(nStrS + "Saturation");
+
+			utilizationL.setForeground(Color.RED);
+			utilizationL.setText(uStrS + "Saturation");
+			thrL.setText(thrStrS + "Saturation");
+			responseL.setText(respStrS + "Saturation");
+			nonErgodic = true;
+		}
+		queueDrawer.setMediaJobs(Q - U);
+		statiDrawer.repaint();
+
+		if (sim == null || !sim.isStarted()) {
+			setLogAnalyticalResults();
+		} else {
+			outputTA.setAnalyticalResult();
+		}
+	}
+	protected void buffSStateChanged(ChangeEvent evt) {
+		buffer = buffS.getValue() - cpuNum;
+		if (buffer < 1) {
+			buffS.setValue(1);
+			buffer = 1;
+		}
+		ql.setMaxStates(buffer);
+		queueDrawer.setMaxJobs(buffer + 1);
+		statiDrawer.setMaxJobs(buffer + cpuNum);
+		buffL.setText(bufStrS + buffS.getValue() + bufStrE);
+		updateFields();
+	}
+	private void setLogAnalyticalResults() {
+		try {
+			if (ql.getMaxStates() == 0) {
+				outputTA.setAnalyticalResult(ql.mediaJobs(), ql.utilization(), ql.throughput(), ql.responseTime(), ql.getLambda(), ql.getS(), 0);
+			} else {
+				outputTA.setAnalyticalResult(ql.mediaJobs(), ql.utilization(), ql.throughput(), ql.responseTime(), ql.getLambda(), ql.getS(), ql
+						.getStatusProbability(ql.getMaxStates() + ql.getNumberServer()));
+			}
+		} catch (NonErgodicException e) {
+			outputTA.setAnalyticalResult();
+		}
+	}
+
 }
