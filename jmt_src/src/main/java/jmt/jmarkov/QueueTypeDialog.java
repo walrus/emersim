@@ -1,6 +1,6 @@
 package jmt.jmarkov;
 
-import jmt.jmarkov.SpatialQueue.SpatialQueueFrame;
+import jmt.jmarkov.SpatialQueue.gui.SpatialQueueFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

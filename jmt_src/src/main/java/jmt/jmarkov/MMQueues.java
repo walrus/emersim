@@ -210,8 +210,7 @@ public class MMQueues extends JMTFrame {
 	private JMenu queueMenu;
 	private Action selectQueueRB;
 	private JRadioButtonMenuItem gradientItem;
-	// spatial queue
-	private JMenu spatialMenu;
+
 	// settings
 	private JMenu settingsMenu;
 	// colors
@@ -1222,7 +1221,7 @@ public class MMQueues extends JMTFrame {
 		}
 	}
 
-	private JPanel getSplitter(int widht, int height) {
+	protected JPanel getSplitter(int widht, int height) {
 		JPanel splitPane = new JPanel();
 		Dimension dim = new Dimension(widht, height);
 		splitPane.setEnabled(false);
