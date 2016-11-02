@@ -20,8 +20,8 @@ public class MapConfig extends MapView {
     private boolean placeMarker;
     private boolean placeAreaVertex;
     private Map map;
-    private LinkedList<Polygon> clientRegions = new LinkedList<>();
-    private LinkedList<Marker> receiverMarkers = new LinkedList<>();
+    static LinkedList<Polygon> clientRegions = new LinkedList<>();
+    static LinkedList<Marker> receiverMarkers = new LinkedList<>();
 
     public MapConfig(MapViewOptions options) {
         super(options);
@@ -56,15 +56,22 @@ public class MapConfig extends MapView {
                             // Creating an information window
                             final InfoWindow infoWindow = new InfoWindow(map);
                             // Putting the address and location to the content of the information window
-                            infoWindow.setContent("<b>Reciever #" + receiverMarkers.size() + "</b>");
+                            infoWindow.setContent("<b>Receiver #" + receiverMarkers.size() + "</b>");
                             // Moving the information window to the result location
                             infoWindow.setPosition(marker.getPosition());
                             // Showing of the information window
                             infoWindow.open(map, marker);
+                            final ReceiverEntity entity = new ReceiverEntity(marker, infoWindow);
                             marker.addEventListener("click", new MapMouseEvent() {
                                 @Override
                                 public void onEvent(MouseEvent mouseEvent) {
                                     infoWindow.open(map, marker);
+                                }
+                            });
+                            marker.addEventListener("rightclick", new MapMouseEvent() {
+                                @Override
+                                public void onEvent(MouseEvent mouseEvent) {
+                                    new MapEntityOptionsDialog(entity);
                                 }
                             });
                             placeMarker = false;
@@ -251,6 +258,13 @@ public class MapConfig extends MapView {
                             @Override
                             public void onEvent(MouseEvent mouseEvent) {
                                 infoWindow.open(map, polygon.getPaths()[0][0]);
+                            }
+                        });
+                        final ClientEntity entity = new ClientEntity(polygon, infoWindow);
+                        polygon.addEventListener("rightclick", new MapMouseEvent() {
+                            @Override
+                            public void onEvent(MouseEvent mouseEvent) {
+                                new MapEntityOptionsDialog(entity);
                             }
                         });
 
