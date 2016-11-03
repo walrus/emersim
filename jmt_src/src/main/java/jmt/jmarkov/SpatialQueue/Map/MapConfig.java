@@ -4,6 +4,7 @@ import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.MouseEvent;
 import com.teamdev.jxmaps.Polygon;
 import com.teamdev.jxmaps.swing.MapView;
+import jmt.jmarkov.SpatialQueue.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Location;
 
 import javax.swing.*;
@@ -196,18 +197,12 @@ public class MapConfig extends MapView {
         drawNewArea = true;
     }
 
-    public Location[][] getAreasAsLocations() {
-        LinkedList<Location[]> areas = new LinkedList<>();
-        for (Polygon p : clientRegions) {
-            LatLng[] path = p.getPath();
-            Location[] pathAsLocation = new Location[path.length];
-            for (int i=0; i<path.length; i++) {
-                pathAsLocation[i] = translateCoordinate(path[i]);
-            }
-            areas.add(pathAsLocation);
+    public ClientRegion[] getClientRegions() {
+        ClientRegion[] regions = new ClientRegion[clientRegions.size()];
+        for (int i=0; i<clientRegions.size(); i++) {
+            regions[i] = new ClientRegion(clientRegions.get(i).getPath());
         }
-        Location[][] result = new Location[areas.size()][];
-        return areas.toArray(result);
+        return regions;
     }
 
     private Location translateCoordinate(LatLng location) {
