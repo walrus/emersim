@@ -9,8 +9,11 @@ import jmt.jmarkov.Graphics.Notifier;
 import jmt.jmarkov.Job;
 import jmt.jmarkov.Queues.Arrivals;
 import jmt.jmarkov.Queues.Processor;
-import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+
 import jmt.jmarkov.SpatialQueue.Sender;
+import jmt.jmarkov.SpatialQueue.Location;
+
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -21,7 +24,7 @@ public class Simulator implements Runnable {
     //list which contains jobs waiting in the simulator.
     private LinkedList<Job> jobList;
 
-    private Location[] area;
+    private Location[][] areas;
 
     private Notifier[] notifier;
 
@@ -48,16 +51,16 @@ public class Simulator implements Runnable {
 
     private boolean started = false;
 
-    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier, Location[] area) {
+    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier, MapConfig mapConfig) {
         super();
 
-        jobList = new LinkedList<Job>();
+        jobList = new LinkedList<>();
         this.arrival = arrival;
         currentTime = 0;
         this.processors = processors;
         setTimeMultiplier(timeMultiplier);
         this.notifier = notifier;
-        this.area = area;
+        this.areas = mapConfig.getAreasAsLocations();
     }
 
     public static boolean isLocationWithinArea(Location location, Location[] polygon) {
@@ -98,6 +101,7 @@ public class Simulator implements Runnable {
             Sender sender = new Sender();
             //setLocation maybe?
         }
+        return null;
     }
     public void run() {
         running = true;

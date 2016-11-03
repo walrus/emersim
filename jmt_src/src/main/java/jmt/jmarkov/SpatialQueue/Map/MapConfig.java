@@ -17,11 +17,13 @@ public class MapConfig extends MapView {
 
     private static final String INITIAL_LOCATION = "Imperial College London, SW7 2AZ";
     private OptionsWindow optionsWindow;
-    private boolean placeMarker;
-    private boolean placeAreaVertex;
-    private Map map;
-    private LinkedList<Polygon> clientRegions = new LinkedList<>();
-    private LinkedList<Marker> receiverMarkers = new LinkedList<>();
+    private boolean placeMarker = false;
+    private boolean drawNewArea = false;
+    static boolean drawingInProgess = false;
+    static ClientEntity areaBeingDrawn;
+    static Map map;
+    static LinkedList<Polygon> clientRegions = new LinkedList<>();
+    static LinkedList<Marker> receiverMarkers = new LinkedList<>();
 
     public MapConfig(MapViewOptions options) {
         super(options);
@@ -49,26 +51,8 @@ public class MapConfig extends MapView {
                     @Override
                     public void onEvent(MouseEvent mouseEvent) {
                         if (placeMarker) {
-                            // Creating a new marker
-                            final Marker marker = new Marker(map);
-                            // Move marker to the position where user clicked
-                            marker.setPosition(mouseEvent.latLng());
-                            // Creating an information window
-                            final InfoWindow infoWindow = new InfoWindow(map);
-                            // Putting the address and location to the content of the information window
-                            infoWindow.setContent("<b>Reciever #" + receiverMarkers.size() + "</b>");
-                            // Moving the information window to the result location
-                            infoWindow.setPosition(marker.getPosition());
-                            // Showing of the information window
-                            infoWindow.open(map, marker);
-                            marker.addEventListener("click", new MapMouseEvent() {
-                                @Override
-                                public void onEvent(MouseEvent mouseEvent) {
-                                    infoWindow.open(map, marker);
-                                }
-                            });
                             placeMarker = false;
-                            receiverMarkers.add(marker);
+                            new ReceiverEntity(mouseEvent);
                         }
                     }
                 });
@@ -77,13 +61,18 @@ public class MapConfig extends MapView {
                 map.addEventListener("click", new MapMouseEvent() {
                     @Override
                     public void onEvent(MouseEvent mouseEvent) {
-                        if (placeAreaVertex)
-                            addPointToArea(mouseEvent);
+                        if (drawNewArea) {
+                            drawNewArea = false;
+                            areaBeingDrawn = new ClientEntity(mouseEvent);
+                            drawingInProgess = true;
+                        }
+                        if (drawingInProgess) {
+                            areaBeingDrawn.addPointToArea(mouseEvent);
+                        }
                     }
                 });
             }
         });
-
     }
 
     @Override
@@ -199,94 +188,29 @@ public class MapConfig extends MapView {
         });
     }
 
-    private Polyline pathLine;
-    private LinkedList<LatLng> path = new LinkedList<>();
-    private void addPointToArea(MouseEvent mouseEvent) {
-        path.add(mouseEvent.latLng());
-        LatLng[] pathArray = new LatLng[path.size()];
-        pathLine.setPath(path.toArray(pathArray));
-        if (path.size() == 1) {
-            final Marker marker = new Marker(map);
-            marker.setPosition(mouseEvent.latLng());
-            marker.addEventListener("click", new MapMouseEvent() {
-                @Override
-                public void onEvent(MouseEvent mouseEvent) {
-                    if (path.size() < 3) {
-                        // Error, area must have >= 3 vertices
-                        // TODO: Display error dialog
-                        JDialog errorDialog = new JDialog();
-
-                    } else {
-                        placeAreaVertex = false;
-                        pathLine.setVisible(false);
-                        final Polygon polygon = new Polygon(map);
-                        // Initializing the polygon with the created path
-                        LatLng[] pathArray = new LatLng[path.size()];
-                        polygon.setPath(path.toArray(pathArray));
-                        // Creating a polyline options object
-                        PolygonOptions options = new PolygonOptions();
-                        // Setting fill color value
-                        options.setFillColor("#FF0000");
-                        // Setting fill opacity value
-                        options.setFillOpacity(0.35);
-                        // Setting stroke color value
-                        options.setStrokeColor("#FF0000");
-                        // Setting stroke opacity value
-                        options.setStrokeOpacity(0.8);
-                        // Setting stroke weight value
-                        options.setStrokeWeight(2.0);
-                        // Applying options to the polygon
-                        polygon.setOptions(options);
-
-                        // Creating an information window
-                        final InfoWindow infoWindow = new InfoWindow(map);
-                        // Putting the address and location to the content of the information window
-                        infoWindow.setContent("<b>Client region #" + clientRegions.size() + "</b>");
-                        // Moving the information window to the result location
-                        infoWindow.setPosition(polygon.getPaths()[0][0]);
-                        // Showing of the information window
-                        infoWindow.open(map, polygon.getPaths()[0][0]);
-                        polygon.addEventListener("click", new MapMouseEvent() {
-                            @Override
-                            public void onEvent(MouseEvent mouseEvent) {
-                                infoWindow.open(map, polygon.getPaths()[0][0]);
-                            }
-                        });
-
-                        // Delete current path
-                        path = new LinkedList<>();
-                        // Remove first vertex marker
-                        marker.setVisible(false);
-                        // Store area for use in simulation
-                        clientRegions.add(polygon);
-                    }
-                }
-            });
-        }
-    }
-
     public void toggleMarkerPlacement() {
         placeMarker = true;
     }
 
     public void toggleAreaPlacement() {
-        placeAreaVertex = true;
-        pathLine = new Polyline(map);
-        // Creating a polyline options object
-        PolylineOptions options = new PolylineOptions();
-        // Setting geodesic property value
-        options.setGeodesic(true);
-        // Setting stroke color value
-        options.setStrokeColor("#FF0000");
-        // Setting stroke opacity value
-        options.setStrokeOpacity(1.0);
-        // Setting stroke weight value
-        options.setStrokeWeight(2.0);
-        // Applying options to the polyline
-        pathLine.setOptions(options);
+        drawNewArea = true;
     }
 
-    public Location translateCoordinate(LatLng location) {
+    public Location[][] getAreasAsLocations() {
+        LinkedList<Location[]> areas = new LinkedList<>();
+        for (Polygon p : clientRegions) {
+            LatLng[] path = p.getPath();
+            Location[] pathAsLocation = new Location[path.length];
+            for (int i=0; i<path.length; i++) {
+                pathAsLocation[i] = translateCoordinate(path[i]);
+            }
+            areas.add(pathAsLocation);
+        }
+        Location[][] result = new Location[areas.size()][];
+        return areas.toArray(result);
+    }
+
+    private Location translateCoordinate(LatLng location) {
         Location loc = new Location(location.getLng(), location.getLat());
         return loc;
     }
