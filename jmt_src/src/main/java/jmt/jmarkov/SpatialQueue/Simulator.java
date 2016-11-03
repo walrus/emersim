@@ -8,7 +8,6 @@ package jmt.jmarkov.SpatialQueue;
 import jmt.jmarkov.Graphics.Notifier;
 import jmt.jmarkov.Job;
 import jmt.jmarkov.Queues.Arrivals;
-import jmt.jmarkov.Queues.Processor;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
 import jmt.jmarkov.SpatialQueue.Sender;
@@ -36,12 +35,6 @@ public class Simulator implements Runnable {
     //(if lambda set to zero new jobs will not be created
     private boolean lambdaZero = false;
 
-    //Arrival class
-    private Arrivals arrival;
-
-    //array of processor
-    private Processor[] processors;
-
     //it saves the data if the simulator is paused or not
     private boolean paused = false;
 
@@ -52,21 +45,20 @@ public class Simulator implements Runnable {
 
     private boolean started = false;
 
-    public Simulator(Arrivals arrival,
-                     Processor[] processors,
-                     double timeMultiplier,
+    private int currentRequestID;
+
+    public Simulator(double timeMultiplier,
                      Notifier[] notifier,
                      Receiver receiver,
                      MapConfig mapConfig) {
         super();
 
-        this.arrival = arrival;
         currentTime = 0;
-        this.processors = processors;
         setTimeMultiplier(timeMultiplier);
         this.notifier = notifier;
         this.receiver = receiver;
         this.regions = mapConfig.getClientRegions();
+        this.currentRequestID = 0;
     }
 
     private Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
@@ -88,8 +80,7 @@ public class Simulator implements Runnable {
         //this is the first job which is created
         //if job list is not empty this means run is called from the paused situation
         if (this.receiver.getQueue().isEmpty()) {
-            arrival.createJob(currentTime); // this is the first job which is created after pressed start
-            //it is called in order calculate first arrival time to the system
+            this.receiver.handleRequest(this.createRequest());
         }
 
         //if there is still some job is waiting for processing it is running recursive
@@ -112,93 +103,20 @@ public class Simulator implements Runnable {
 
             Request job = dequeueJob();
             currentTime = job.getNextEventTime();
-            switch (job.getCurrentStateType()) {
-                case Job.CURRENT_STATE_CREATED:
-                    newJobArrival(job);
-                    break;
-                case Job.CURRENT_STATE_ANIMATION:
-                    if ((long) currentTimeMultiplied + 300 > realTimeCurrent) {
-                        animate(job);
-                    }
-                    //No animation
-                    break;
-                case Job.CURRENT_STATE_IN_CPU:
-                    exitProcessor(job);
-                    break;
-            }
         }
         running = false;
     }
 
-    private void newJobArrival(Request job) {
-        //the job whose arrival time has calculated entering the queue
-        arrival.addQ(job, currentTime);
-        //the new job is creating for calculating arrival time
-        arrival.createJob(currentTime);
-        // if (numberOfTotalProcessor > numberOfWorkingProcessor) {
-        startProcess();// if there is an empty processor start it
-        //for the red circle animation
-        createAnimation(job);
+    private int getNextRequestID() {
+        int r = this.currentRequestID;
+        this.currentRequestID ++;
+        return r;
     }
 
-    private void createAnimation(Request job) {
-        Request cloneJob;
-        double nextEventTime;
-        if (!this.receiver.getQueue().isEmpty()) {
-            nextEventTime = peekJob().getNextEventTime();
-        } else {
-            nextEventTime = currentTime + 100;
-        }
-        cloneJob = (Request) job.clone();
-        cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 1 / 4);
-        this.enqueueJob(cloneJob);
-        cloneJob = (Request) job.clone();
-        cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 2 / 4);
-        this.enqueueJob(cloneJob);
-        cloneJob = (Request) job.clone();
-        cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 3 / 4);
-        this.enqueueJob(cloneJob);
-    }
-
-    private void animate(Request job) {
-        arrival.animate(job, currentTime);
-        for (Processor processor : processors) {
-            processor.animate(currentTime);
-        }
-    }
-
-    private void startProcess() {// if there is an empty processor start it
-        int i;
-        //assign randomly to free one
-        int numFreeProcessor = 0;
-        for (i = 0; i < processors.length; i++) {
-            if (!processors[i].isProcessing()) {
-                numFreeProcessor++;
-            }
-        }
-        if (numFreeProcessor != 0) {
-            int assigned = new Random().nextInt(numFreeProcessor);
-            for (i = 0; i < processors.length; i++) {
-                if (!processors[i].isProcessing()) {
-                    if (assigned == 0) {
-                        processors[i].process(currentTime);
-                        break;
-                    }
-                    assigned--;
-                }
-            }
-        }
-
-    }
-
-    private void exitProcessor(Request job) {
-        job.getProcessor().endProcessing(currentTime);// this processor is stopped
-        job.setStateExitSystem();// set the state of the job as finished
-        for (Notifier element : notifier) {
-            element.exitSystem(job.getJobId(), job.getProcessorId(), job.getEnteringQueueTime(), job.getEnteringCpuTime(), job.getSystemExitTime());
-        }
-        startProcess();
-        createAnimation(job);
+    public Request createRequest() {
+        //Current implementation: create a new sender then generate a request from them
+        Sender sender = this.generateNewSenderWithinArea(this.regions[0]);
+        return new Request(getNextRequestID(), this.currentTime, sender);
     }
 
     public void enqueueJob(Request newRequest) {
@@ -229,7 +147,6 @@ public class Simulator implements Runnable {
         } else {
             paused = true;
         }
-
     }
 
     public void start() {
