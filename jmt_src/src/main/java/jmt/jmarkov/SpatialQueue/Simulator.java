@@ -4,20 +4,28 @@
 
 package jmt.jmarkov.SpatialQueue;
 
+
+import jmt.jmarkov.Graphics.Notifier;
+import jmt.jmarkov.Job;
+import jmt.jmarkov.Queues.Arrivals;
+import jmt.jmarkov.Queues.Processor;
+import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+
+import jmt.jmarkov.SpatialQueue.Sender;
+import jmt.jmarkov.SpatialQueue.Location;
+
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
-
-import jmt.jmarkov.Job;
-import jmt.jmarkov.Graphics.Notifier;
-import jmt.jmarkov.Queues.Arrivals;
-import jmt.jmarkov.Queues.Processor;
 
 public class Simulator implements Runnable {
 
     // Receiver is the server that deals with requests.
     // All logic related to dealing with requests is delegated to it
     private Receiver receiver;
+
+    private ClientRegion[] regions;
 
     private Notifier[] notifier;
 
@@ -48,7 +56,8 @@ public class Simulator implements Runnable {
                      Processor[] processors,
                      double timeMultiplier,
                      Notifier[] notifier,
-                     Receiver receiver) {
+                     Receiver receiver,
+                     MapConfig mapConfig) {
         super();
 
         this.arrival = arrival;
@@ -57,7 +66,12 @@ public class Simulator implements Runnable {
         setTimeMultiplier(timeMultiplier);
         this.notifier = notifier;
         this.receiver = receiver;
+        this.regions = mapConfig.getClientRegions();
     }
+
+    private Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
+        Location senderLocation = clientRegion.generatePoint();
+        return new Sender(senderLocation);    }
 
     public void run() {
         running = true;

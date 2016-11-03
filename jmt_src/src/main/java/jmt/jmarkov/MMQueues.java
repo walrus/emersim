@@ -210,8 +210,7 @@ public class MMQueues extends JMTFrame {
 	private JMenu queueMenu;
 	private Action selectQueueRB;
 	private JRadioButtonMenuItem gradientItem;
-	// spatial queue
-	private JMenu spatialMenu;
+
 	// settings
 	private JMenu settingsMenu;
 	// colors
