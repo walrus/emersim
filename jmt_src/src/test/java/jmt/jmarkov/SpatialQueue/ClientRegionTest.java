@@ -29,4 +29,9 @@ public class ClientRegionTest {
     public void getCanTellWhetherPointIsOutsideRegion() {
         Assert.assertFalse(polygon.contains(new Point(10, 0)));
     }
+
+    @Test
+    public void getGenerateRandomPointWithinRegion() {
+        Assert.assertNotNull(polygon.generatePoint());
+    }
 }

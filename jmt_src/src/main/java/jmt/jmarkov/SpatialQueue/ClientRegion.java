@@ -18,7 +18,7 @@ public class ClientRegion implements Shape {
         this.mapEntity = clientEntity;
         vertices = new Point2D.Double[areaVertices.length];
         for (int i=0; i<areaVertices.length; i++) {
-            vertices[i] = new Point2D.Double(areaVertices[i].getLat(), areaVertices[i].getLng());
+            vertices[i] = new Point2D.Double(areaVertices[i].getLng(), areaVertices[i].getLat());
         }
     }
 
@@ -29,10 +29,10 @@ public class ClientRegion implements Shape {
 
     @Override
     public Rectangle2D getBounds2D() {
-        Double maxX = vertices[0].getX();
-        Double minX = vertices[0].getX();
-        Double maxY = vertices[0].getY();
-        Double minY = vertices[0].getY();
+        Double maxX = Double.MIN_VALUE;
+        Double minX = Double.MAX_VALUE;
+        Double maxY = Double.MIN_VALUE;
+        Double minY = Double.MAX_VALUE;
         for (Point2D.Double p : vertices) {
             maxX = Math.max(maxX, p.getX());
             minX = Math.min(minX, p.getX());
@@ -71,9 +71,10 @@ public class ClientRegion implements Shape {
         do {
             x = r.getX() + r.getWidth() * Math.random();
             y = r.getY() + r.getHeight() * Math.random();
-        } while(!contains(x,y));
+        } while(!contains(new Point2D.Double(x, y)));
 
-        mapEntity.displayRequestLocationOnMap(new Location(x, y));
+        if (mapEntity != null)
+            mapEntity.displayRequestLocationOnMap(new Location(x, y));
         return new Location(x, y);
     }
 
