@@ -48,6 +48,7 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
 
     private DrawNormal dCst;
     private JPanel resultsP;
+    private JPanel sideButtons;
 
     private JLabel serviceL = new JLabel();
     private JLabel customerL = new JLabel();
@@ -55,6 +56,10 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
     private JLabel utilizationL = new JLabel();
     private JLabel thrL = new JLabel();
     private JLabel responseL = new JLabel();
+
+    private JButton save;
+    private JButton load;
+    private JButton compare;
 
 
     public StatisticalSummaryFrame(double TotalCustomers, double AvgService,
@@ -66,6 +71,7 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
         this.AvgUtilization = AvgUtilization;
         this.AvgThroughput = AvgThroughput;
         this.AvgResponse = AvgResponse;
+        dCst = new DrawNormal();
         init();
     }
 
@@ -80,17 +86,48 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
         // creates statistics panel
         resultsP = new JPanel(new GridLayout(3,2));
         resultsP.setBorder(new TitledBorder("Simulation Statistics Summary"));
-        dCst = new DrawNormal();
         generateStatisticsPanel(resultsP, TotalCustomers, AvgService,
                            AvgCust, AvgUtilization, AvgThroughput, AvgResponse);
-        add(resultsP);
 
+        // creates button panel
+        generateSideButtons(sideButtons);
 
         // window settings
         pack();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
+    }
+
+    private void generateSideButtons(JPanel sideButtons) {
+        sideButtons = new JPanel(new GridLayout(3,1));
+
+        save = new JButton("Save");
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
+        load = new JButton("Load");
+        load.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
+        compare = new JButton("Compare");
+        compare.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+
+        sideButtons.add(save);
+        sideButtons.add(load);
+        sideButtons.add(compare);
+
+        add(sideButtons, BorderLayout.WEST);
     }
 
 
@@ -130,6 +167,8 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
         responseL.setText(respStrS + AvgResponse + respStrE);
         responseL.setFont(dCst.getNormalGUIFont());
         resultsP.add(responseL);
+
+        add(resultsP, BorderLayout.CENTER);
     }
 
 
