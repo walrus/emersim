@@ -1,13 +1,13 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
+import jmt.jmarkov.SpatialQueue.Location;
 
-import javax.swing.*;
 import java.util.LinkedList;
 
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.*;
 
-class ClientEntity implements Entity {
+public class ClientEntity implements Entity {
     private Polygon polygon;
     private InfoWindow infoWindow;
     private Marker marker;
@@ -104,9 +104,9 @@ class ClientEntity implements Entity {
             // Remove first vertex marker
             marker.setVisible(false);
             // Store area for use in simulation
-            clientRegions.add(polygon);
+            clientRegions.add(this);
             areaBeingDrawn = null;
-            drawingInProgess = false;
+            drawingInProgress = false;
         }
     }
 
@@ -114,11 +114,48 @@ class ClientEntity implements Entity {
     public void remove() {
         polygon.setVisible(false);
         infoWindow.close();
-        clientRegions.remove(polygon);
+        clientRegions.remove(this);
     }
 
     @Override
     public void rename(String newName) {
         infoWindow.setContent("<b>" + newName + "</b>");
+    }
+
+    public Polygon getPolygon() {
+        return polygon;
+    }
+
+    public void displayRequestLocationOnMap(Location location) {
+        LatLng[] line1Path = new LatLng[2];
+        LatLng[] line2Path = new LatLng[2];
+        Double x = location.getX();
+        Double y = location.getY();
+        System.out.println("long: " + x);
+        System.out.println("lat: " + y);
+        line1Path[0] = new LatLng(y, x - 0.00005);
+        line1Path[1] = new LatLng(y, x + 0.00005);
+        line2Path[0] = new LatLng(y + 0.00003, x);
+        line2Path[1] = new LatLng(y - 0.00003, x);
+
+        Polyline line1 = new Polyline(map);
+        Polyline line2 = new Polyline(map);
+        // Creating a polyline options object
+        PolylineOptions options = new PolylineOptions();
+        // Setting geodesic property value
+        options.setGeodesic(true);
+        // Setting stroke color value
+        options.setStrokeColor("#0000FF");
+        // Setting stroke opacity value
+        options.setStrokeOpacity(1.0);
+        // Setting stroke weight value
+        options.setStrokeWeight(1.5);
+        // Applying options to the polyline
+        line1.setOptions(options);
+        line2.setOptions(options);
+
+        // Set current perimeter
+        line1.setPath(line1Path);
+        line2.setPath(line2Path);
     }
 }

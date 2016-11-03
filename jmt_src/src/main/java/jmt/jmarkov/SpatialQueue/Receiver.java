@@ -1,5 +1,6 @@
 package jmt.jmarkov.SpatialQueue;
 
+import java.util.LinkedList;
 /**
  * Receivers handle requests from Senders
  */
@@ -7,18 +8,27 @@ public class Receiver {
 
     private Location location;
 
-    public Location getLocation() {
-        return location;
-    }
+    private LinkedList<Request> requestQueue;
 
     public Receiver(Location location) {
         this.location = location;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
     //Given a (newly arrived) Request, add it to the queue.
     //This should be overridden to implement different behaviours
+    //TODO: actual implementation rather than default from JMCH
     public void handleRequest(Request request) {
-        //TODO: implement
+        int i;
+        for (i = 0; i < this.requestQueue.size(); i++) {
+            if (this.requestQueue.get(i).getNextEventTime() > request.getNextEventTime()) {
+                break;
+            }
+        }
+        this.requestQueue.add(i, request);
     }
 
     // Given a Request object, calculate the response time in seconds
@@ -30,24 +40,17 @@ public class Receiver {
         double yDistance = senderLocation.getY() - receiverLocation.getY();
 
         //Straight line distance in degrees
-        double overalldistance = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
-
-        //Divide by 60 to give Nautical Miles, then 1.852 for Km
-        overalldistance = overalldistance/(60 * 1.852);
-
-        //Now assume that everything moves at 50 kmh
-        return overalldistance * 3600 / 50;
-    }
-
-    //Given the request, respond to it.
-    public void serveRequest(Request request) {
-        //TODO: implement
+        return Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
     }
 
     //Find the next request in the queue. This should
     //be overridden to implement different behaviours
     public Request getNextRequest() {
-        //TODO: implement
-        return null;
+        //TODO: implement better algorithm that uses distances
+        return this.requestQueue.removeFirst();
+    }
+
+    public LinkedList<Request> getQueue() {
+        return this.requestQueue;
     }
 }

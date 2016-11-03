@@ -2,8 +2,8 @@ package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.MouseEvent;
-import com.teamdev.jxmaps.Polygon;
 import com.teamdev.jxmaps.swing.MapView;
+import jmt.jmarkov.SpatialQueue.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Location;
 
 import javax.swing.*;
@@ -19,10 +19,10 @@ public class MapConfig extends MapView {
     private OptionsWindow optionsWindow;
     private boolean placeMarker = false;
     private boolean drawNewArea = false;
-    static boolean drawingInProgess = false;
+    static boolean drawingInProgress = false;
     static ClientEntity areaBeingDrawn;
     static Map map;
-    static LinkedList<Polygon> clientRegions = new LinkedList<>();
+    static LinkedList<ClientEntity> clientRegions = new LinkedList<>();
     static LinkedList<Marker> receiverMarkers = new LinkedList<>();
 
     public MapConfig(MapViewOptions options) {
@@ -64,9 +64,9 @@ public class MapConfig extends MapView {
                         if (drawNewArea) {
                             drawNewArea = false;
                             areaBeingDrawn = new ClientEntity(mouseEvent);
-                            drawingInProgess = true;
+                            drawingInProgress = true;
                         }
-                        if (drawingInProgess) {
+                        if (drawingInProgress) {
                             areaBeingDrawn.addPointToArea(mouseEvent);
                         }
                     }
@@ -196,7 +196,15 @@ public class MapConfig extends MapView {
         drawNewArea = true;
     }
 
-    public Location translateCoordinate(LatLng location) {
+    public ClientRegion[] getClientRegions() {
+        ClientRegion[] regions = new ClientRegion[clientRegions.size()];
+        for (int i=0; i<clientRegions.size(); i++) {
+            regions[i] = new ClientRegion(clientRegions.get(i).getPolygon().getPath(), clientRegions.get(i));
+        }
+        return regions;
+    }
+
+    private Location translateCoordinate(LatLng location) {
         Location loc = new Location(location.getLng(), location.getLat());
         return loc;
     }

@@ -4,19 +4,28 @@
 
 package jmt.jmarkov.SpatialQueue;
 
+
+import jmt.jmarkov.Graphics.Notifier;
+import jmt.jmarkov.Job;
+import jmt.jmarkov.Queues.Arrivals;
+import jmt.jmarkov.Queues.Processor;
+import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+
+import jmt.jmarkov.SpatialQueue.Sender;
+import jmt.jmarkov.SpatialQueue.Location;
+
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
 
-import jmt.jmarkov.Job;
-import jmt.jmarkov.Graphics.Notifier;
-import jmt.jmarkov.Queues.Arrivals;
-import jmt.jmarkov.Queues.Processor;
-
 public class Simulator implements Runnable {
 
-    //list which contains jobs waiting in the simulator.
-    private LinkedList<Job> jobList;
+    // Receiver is the server that deals with requests.
+    // All logic related to dealing with requests is delegated to it
+    private Receiver receiver;
+
+    private ClientRegion[] regions;
 
     private Notifier[] notifier;
 
@@ -43,16 +52,26 @@ public class Simulator implements Runnable {
 
     private boolean started = false;
 
-    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier) {
+    public Simulator(Arrivals arrival,
+                     Processor[] processors,
+                     double timeMultiplier,
+                     Notifier[] notifier,
+                     Receiver receiver,
+                     MapConfig mapConfig) {
         super();
 
-        jobList = new LinkedList<Job>();
         this.arrival = arrival;
         currentTime = 0;
         this.processors = processors;
         setTimeMultiplier(timeMultiplier);
         this.notifier = notifier;
+        this.receiver = receiver;
+        this.regions = mapConfig.getClientRegions();
     }
+
+    private Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
+        Location senderLocation = clientRegion.generatePoint();
+        return new Sender(senderLocation);    }
 
     public void run() {
         running = true;
@@ -68,14 +87,14 @@ public class Simulator implements Runnable {
 
         //this is the first job which is created
         //if job list is not empty this means run is called from the paused situation
-        if (jobList.isEmpty()) {
+        if (this.receiver.getQueue().isEmpty()) {
             arrival.createJob(currentTime); // this is the first job which is created after pressed start
             //it is called in order calculate first arrival time to the system
         }
 
         //if there is still some job is waiting for processing it is running recursive
         //if paused the running will stop.
-        while (jobList.size() > 0 && !paused) {
+        while (this.receiver.getQueue().size() > 0 && !paused) {
             //this is calculating how long system will sleep
             currentTimeMultiplied += (peekJob().getNextEventTime() - currentTime) / timeMultiplier;
             //this is calculating how long system will sleep
@@ -91,7 +110,7 @@ public class Simulator implements Runnable {
                 realTimeCurrent = new Date().getTime() - realTimeStart;
             }
 
-            Job job = dequeueJob();
+            Request job = dequeueJob();
             currentTime = job.getNextEventTime();
             switch (job.getCurrentStateType()) {
                 case Job.CURRENT_STATE_CREATED:
@@ -111,7 +130,7 @@ public class Simulator implements Runnable {
         running = false;
     }
 
-    private void newJobArrival(Job job) {
+    private void newJobArrival(Request job) {
         //the job whose arrival time has calculated entering the queue
         arrival.addQ(job, currentTime);
         //the new job is creating for calculating arrival time
@@ -122,26 +141,26 @@ public class Simulator implements Runnable {
         createAnimation(job);
     }
 
-    private void createAnimation(Job job) {
-        Job cloneJob;
+    private void createAnimation(Request job) {
+        Request cloneJob;
         double nextEventTime;
-        if (!jobList.isEmpty()) {
+        if (!this.receiver.getQueue().isEmpty()) {
             nextEventTime = peekJob().getNextEventTime();
         } else {
             nextEventTime = currentTime + 100;
         }
-        cloneJob = (Job) job.clone();
+        cloneJob = (Request) job.clone();
         cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 1 / 4);
         this.enqueueJob(cloneJob);
-        cloneJob = (Job) job.clone();
+        cloneJob = (Request) job.clone();
         cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 2 / 4);
         this.enqueueJob(cloneJob);
-        cloneJob = (Job) job.clone();
+        cloneJob = (Request) job.clone();
         cloneJob.setAnimationTime(currentTime + (nextEventTime - currentTime) * 3 / 4);
         this.enqueueJob(cloneJob);
     }
 
-    private void animate(Job job) {
+    private void animate(Request job) {
         arrival.animate(job, currentTime);
         for (Processor processor : processors) {
             processor.animate(currentTime);
@@ -172,7 +191,7 @@ public class Simulator implements Runnable {
 
     }
 
-    private void exitProcessor(Job job) {
+    private void exitProcessor(Request job) {
         job.getProcessor().endProcessing(currentTime);// this processor is stopped
         job.setStateExitSystem();// set the state of the job as finished
         for (Notifier element : notifier) {
@@ -182,22 +201,16 @@ public class Simulator implements Runnable {
         createAnimation(job);
     }
 
-    public void enqueueJob(Job newJob) {// priority queue wrt their next job
-        int i;
-        for (i = 0; i < jobList.size(); i++) {
-            if (jobList.get(i).getNextEventTime() > newJob.getNextEventTime()) {
-                break;
-            }
-        }
-        jobList.add(i, newJob);
+    public void enqueueJob(Request newRequest) {
+        this.receiver.handleRequest(newRequest);
     }
 
-    public Job dequeueJob() {
-        return jobList.removeFirst();
+    public Request dequeueJob() {
+        return this.receiver.getNextRequest();
     }
 
-    public Job peekJob() {
-        return jobList.element();
+    public Request peekJob() {
+        return this.receiver.getQueue().element();
     }
 
     public boolean isLambdaZero() {
