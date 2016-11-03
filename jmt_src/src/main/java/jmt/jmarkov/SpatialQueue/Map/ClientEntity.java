@@ -3,13 +3,11 @@ package jmt.jmarkov.SpatialQueue.Map;
 import com.teamdev.jxmaps.*;
 import jmt.jmarkov.SpatialQueue.Location;
 
-import javax.swing.*;
-import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.*;
 
-class ClientEntity implements Entity {
+public class ClientEntity implements Entity {
     private Polygon polygon;
     private InfoWindow infoWindow;
     private Marker marker;
@@ -106,9 +104,9 @@ class ClientEntity implements Entity {
             // Remove first vertex marker
             marker.setVisible(false);
             // Store area for use in simulation
-            clientRegions.add(polygon);
+            clientRegions.add(this);
             areaBeingDrawn = null;
-            drawingInProgess = false;
+            drawingInProgress = false;
         }
     }
 
@@ -116,12 +114,16 @@ class ClientEntity implements Entity {
     public void remove() {
         polygon.setVisible(false);
         infoWindow.close();
-        clientRegions.remove(polygon);
+        clientRegions.remove(this);
     }
 
     @Override
     public void rename(String newName) {
         infoWindow.setContent("<b>" + newName + "</b>");
+    }
+
+    public Polygon getPolygon() {
+        return polygon;
     }
 
     public void displayRequestLocationOnMap(Location location) {

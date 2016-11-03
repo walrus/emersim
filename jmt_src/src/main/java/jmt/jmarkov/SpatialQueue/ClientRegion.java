@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue;
 
 import com.teamdev.jxmaps.LatLng;
+import jmt.jmarkov.SpatialQueue.Map.ClientEntity;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -11,8 +12,10 @@ import java.awt.geom.Rectangle2D;
 public class ClientRegion implements Shape {
 
     Point2D.Double[] vertices;
+    ClientEntity mapEntity;
 
-    public ClientRegion(LatLng[] areaVertices) {
+    public ClientRegion(LatLng[] areaVertices, ClientEntity clientEntity) {
+        this.mapEntity = clientEntity;
         vertices = new Point2D.Double[areaVertices.length];
         for (int i=0; i<areaVertices.length; i++) {
             vertices[i] = new Point2D.Double(areaVertices[i].getLat(), areaVertices[i].getLng());
@@ -70,6 +73,7 @@ public class ClientRegion implements Shape {
             y = r.getY() + r.getHeight() * Math.random();
         } while(!contains(x,y));
 
+        mapEntity.displayRequestLocationOnMap(new Location(x, y));
         return new Location(x, y);
     }
 
