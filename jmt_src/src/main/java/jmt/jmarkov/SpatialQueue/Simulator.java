@@ -4,19 +4,27 @@
 
 package jmt.jmarkov.SpatialQueue;
 
+
+import jmt.jmarkov.Graphics.Notifier;
+import jmt.jmarkov.Job;
+import jmt.jmarkov.Queues.Arrivals;
+import jmt.jmarkov.Queues.Processor;
+import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+
+import jmt.jmarkov.SpatialQueue.Sender;
+import jmt.jmarkov.SpatialQueue.Location;
+
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
-
-import jmt.jmarkov.Job;
-import jmt.jmarkov.Graphics.Notifier;
-import jmt.jmarkov.Queues.Arrivals;
-import jmt.jmarkov.Queues.Processor;
 
 public class Simulator implements Runnable {
 
     //list which contains jobs waiting in the simulator.
     private LinkedList<Job> jobList;
+
+    private ClientRegion[] regions;
 
     private Notifier[] notifier;
 
@@ -43,15 +51,21 @@ public class Simulator implements Runnable {
 
     private boolean started = false;
 
-    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier) {
+    public Simulator(Arrivals arrival, Processor[] processors, double timeMultiplier, Notifier[] notifier, MapConfig mapConfig) {
         super();
 
-        jobList = new LinkedList<Job>();
+        jobList = new LinkedList<>();
         this.arrival = arrival;
         currentTime = 0;
         this.processors = processors;
         setTimeMultiplier(timeMultiplier);
         this.notifier = notifier;
+        this.regions = mapConfig.getClientRegions();
+    }
+
+    private Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
+        Location senderLocation = clientRegion.generatePoint();
+        return new Sender(senderLocation);
     }
 
     public void run() {
