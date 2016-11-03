@@ -1,12 +1,15 @@
 package jmt.jmarkov.SpatialQueue.gui;
 
 
+import com.teamdev.jxmaps.MapViewOptions;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Graphics.constants.DrawSmall;
+import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import org.fest.swing.util.Range;
 
 import javax.swing.*;
+import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,8 +32,8 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
     private static String tStrE = "";
     private double TotalCustomers;
 
-    private static String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
-    private static String nStrE = " cust.";
+    private static String nStrS = "Avg. Cust. in Station (Queue + Service) = ";
+    private static String nStrE = "";
     private double AvgCust;
 
     private static String uStrS = "Avg. Utilization (Sum of All Servers) U = ";
@@ -47,8 +50,11 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
 
 
     private DrawNormal dCst;
+    private MapConfig mapView;
+
     private JPanel resultsP;
-    private JPanel sideButtons;
+    private JPanel sideButtonsP;
+    private JPanel mapViewP;
 
     private JLabel serviceL = new JLabel();
     private JLabel customerL = new JLabel();
@@ -80,7 +86,7 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
         setTitle("Simulation Summary");
 
         // window creation
-        Dimension d = new Dimension(900,300);
+        Dimension d = new Dimension(800,600);
         setPreferredSize(d);
 
         // creates statistics panel
@@ -90,7 +96,11 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
                            AvgCust, AvgUtilization, AvgThroughput, AvgResponse);
 
         // creates button panel
-        generateSideButtons(sideButtons);
+        generateSideButtons(sideButtonsP);
+
+        // will create a visual display of the route taken by the simulation
+        // currently for debugging the layout simply displays google maps
+        generateMapRoute(mapViewP);
 
         // window settings
         pack();
@@ -99,8 +109,20 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
         setVisible(true);
     }
 
-    private void generateSideButtons(JPanel sideButtons) {
-        sideButtons = new JPanel(new GridLayout(3,1));
+    private void generateMapRoute(JPanel mapRouteP) {
+        mapRouteP = new JPanel(new BorderLayout());
+        MapViewOptions mapOptions = new MapViewOptions();
+        mapOptions.importPlaces();
+        mapView = new MapConfig(mapOptions);
+        mapView.setPreferredSize(new Dimension(300, 375));
+        mapRouteP.add(mapView);
+        mapRouteP.setBorder(new TitledBorder("Map of the simulation parameters "));
+        add(mapRouteP, BorderLayout.NORTH);
+    }
+
+    private void generateSideButtons(JPanel sideButtonsP) {
+        sideButtonsP = new JPanel(new GridLayout(3,1));
+
 
         save = new JButton("Save");
         save.addActionListener(new ActionListener() {
@@ -123,11 +145,11 @@ public class StatisticalSummaryFrame extends JFrame implements ActionListener, P
             }
         });
 
-        sideButtons.add(save);
-        sideButtons.add(load);
-        sideButtons.add(compare);
+        sideButtonsP.add(save);
+        sideButtonsP.add(load);
+        sideButtonsP.add(compare);
 
-        add(sideButtons, BorderLayout.WEST);
+        add(sideButtonsP, BorderLayout.WEST);
     }
 
 
