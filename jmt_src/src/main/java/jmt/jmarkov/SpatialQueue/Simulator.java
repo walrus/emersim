@@ -2,7 +2,7 @@
  * Based on the standard Jmarkov Simulator
  */
 
-package src.main.java.jmt.jmarkov.SpatialQueue;
+package jmt.jmarkov.SpatialQueue;
 
 
 import jmt.jmarkov.Graphics.Notifier;
@@ -10,6 +10,7 @@ import jmt.jmarkov.Job;
 import jmt.jmarkov.Queues.Arrivals;
 import jmt.jmarkov.Queues.Processor;
 import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Sender;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -59,7 +60,7 @@ public class Simulator implements Runnable {
         this.area = area;
     }
 
-    private boolean isLocationWithinArea(Location location, Location[] polygon) {
+    public static boolean isLocationWithinArea(Location location, Location[] polygon) {
         double minX = polygon[0].getX();
         double maxX = polygon[0].getX();
         double minY = polygon[0].getY();
