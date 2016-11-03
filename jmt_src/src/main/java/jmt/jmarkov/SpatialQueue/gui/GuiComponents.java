@@ -1,12 +1,14 @@
 package jmt.jmarkov.SpatialQueue.gui;
 
 import com.teamdev.jxmaps.MapViewOptions;
-import jmt.jmarkov.Graphics.JobsDrawer;
-import jmt.jmarkov.Graphics.QueueDrawer;
-import jmt.jmarkov.Graphics.StatiDrawer;
+import jmt.jmarkov.Graphics.*;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Queues.Arrivals;
+import jmt.jmarkov.Queues.JobQueue;
 import jmt.jmarkov.Queues.MM1Logic;
+import jmt.jmarkov.Queues.Processor;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+import jmt.jmarkov.SpatialQueue.Receiver;
 import jmt.jmarkov.SpatialQueue.Simulator;
 import jmt.jmarkov.utils.Formatter;
 import javax.swing.*;
@@ -20,6 +22,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Dictionary;
+
+import static jmt.jmarkov.SpatialQueue.gui.StatsUtils.*;
 
 /**
  * Created by joshuazeltser on 02/11/2016.
@@ -71,6 +75,9 @@ public class GuiComponents {
     private QueueDrawer queueDrawer;
     private StatiDrawer statiDrawer;
     private MapConfig mapView;
+    private JobsDrawer jobsDrawer;
+    private JSlider accelerationS;
+    private LogFile logFile;
 
     public GuiComponents() {
         init();
@@ -163,6 +170,24 @@ public class GuiComponents {
         return receiver;
     }
 
+    public void stopProcessing() {
+        sim.stop();
+        while (sim.isRunning()) {
+            //waiting to stop
+            try {Thread.sleep(100);}
+            catch (InterruptedException e) {}
+        }
+        try {Thread.sleep(100);}
+        catch (InterruptedException e) {}
+        outputTA.reset();
+        logFile.reset();
+        queueDrawer.reset();
+        statiDrawer.reset();
+        jobsDrawer.reset();
+
+        updateFields(ql, utilizationL, mediaJobsL, sim, queueDrawer, statiDrawer);
+    }
+
     // create a stop button
     private void stopButton() {
 //        stop.setMaximumSize(new Dimension(100,40));
@@ -173,6 +198,7 @@ public class GuiComponents {
                 start.setEnabled(true);
                 stop.setEnabled(false);
                 pause.setEnabled(false);
+                stopProcessing();
             }
         });
     }
@@ -183,9 +209,27 @@ public class GuiComponents {
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+//                JobQueue jq = new JobQueue();
+                queueDrawer.setMediaJobs(Q - U);
+//                queueDrawer.setTotalJobs(jobsDialog.getValidatedValue());
+//                jobsDrawer.setTotalJobs(jobsDialog.getValidatedValue());
+                queueDrawer.setTotalJobs(100);
+                jobsDrawer.setTotalJobs(100);
+                Notifier[] tan = new Notifier[5];
+                logFile = new LogFile();
+                tan[0] = new TANotifier();
+                tan[1] = queueDrawer;
+                tan[2] = statiDrawer;
+                tan[3] = jobsDrawer;
+                tan[4] = logFile;
+
+                sim = new Simulator(accelerationS.getValue(), tan, new Receiver(mapView.getReceiverLocation()), mapView);
+
+                sim.start();
                 start.setEnabled(false);
                 stop.setEnabled(true);
                 pause.setEnabled(true);
+                setLogAnalyticalResults(ql, (TANotifier) tan[0]);
             }
         });
     }
@@ -199,7 +243,7 @@ public class GuiComponents {
             public void actionPerformed(ActionEvent e) {
                 if (paused) {
                     paused = false;
-//					sim.pause();
+					sim.pause();
                 } else {
                     paused = true;
                 }
@@ -220,7 +264,7 @@ public class GuiComponents {
         accelerationL.setHorizontalAlignment(SwingConstants.CENTER);
         accelerationP.add(accelerationL);
 
-        final JSlider accelerationS = makeSlider();
+        accelerationS = makeSlider();
 
         accelerationP.add(accelerationS);
         accelerationS.setValue(50);
@@ -271,7 +315,7 @@ public class GuiComponents {
     }
 
     private void addJobsPanel(JPanel jobsP) {
-        JobsDrawer jobsDrawer = new JobsDrawer();
+        jobsDrawer = new JobsDrawer();
         jobsP.add(jobsDrawer);
     }
 

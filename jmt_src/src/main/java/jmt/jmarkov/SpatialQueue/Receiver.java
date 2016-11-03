@@ -8,7 +8,7 @@ public class Receiver {
 
     private Location location;
 
-    private LinkedList<Request> requestQueue;
+    private LinkedList<Request> requestQueue = new LinkedList<>();
 
     public Receiver(Location location) {
         this.location = location;

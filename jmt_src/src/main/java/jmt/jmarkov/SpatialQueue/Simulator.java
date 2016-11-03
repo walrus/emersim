@@ -6,17 +6,8 @@ package jmt.jmarkov.SpatialQueue;
 
 
 import jmt.jmarkov.Graphics.Notifier;
-import jmt.jmarkov.Job;
-import jmt.jmarkov.Queues.Arrivals;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
-
-import jmt.jmarkov.SpatialQueue.Sender;
-import jmt.jmarkov.SpatialQueue.Location;
-
-
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.Random;
 
 public class Simulator implements Runnable {
 

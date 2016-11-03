@@ -18,8 +18,8 @@ import java.util.Dictionary;
  */
 public class StatsUtils {
 
-    private static double U; // Utilization [%]
-    private static double Q; // Average customer in station
+    static double U; // Utilization [%]
+    static double Q; // Average customer in station
 
     private static JLabel responseL;
     private static JLabel thrL;
@@ -39,7 +39,7 @@ public class StatsUtils {
     private static String sStrS = "Avg. Service Time S = ";
     private static String sStrE = " s";
 
-    private static TANotifier outputTA;
+    static TANotifier outputTA = new TANotifier();
     private static boolean nonErgodic;//if the utilization is less than 1
 
     private static int buffer; //number of place for the waiting queue
