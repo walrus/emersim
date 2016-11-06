@@ -65,7 +65,7 @@ public class GuiComponents {
     private boolean paused;
     private boolean lambdaSChange = true;
 
-    private DrawNormal dCst;
+   static DrawNormal dCst;
     private Simulator sim;
     private MM1Logic ql;
     private QueueDrawer queueDrawer;
@@ -97,6 +97,8 @@ public class GuiComponents {
         start = new JButton("Start");
         pause = new JButton("Pause");
         stop = new JButton("Stop");
+        sL = new JLabel();
+        dCst = new DrawNormal();
     }
 
     //Create queueDrawer for queue visualisation
@@ -212,8 +214,6 @@ public class GuiComponents {
     //create a slider to control simulation speed
     protected void addSpeedSlider(JPanel accelerationP) {
 
-        dCst = new DrawNormal();
-
         accelerationP.setBorder(addTitle("Simulation Options", dCst.getSmallGUIFont()));
         JLabel accelerationL = new JLabel("Time x0.0");
         accelerationL.setFont(dCst.getNormalGUIFont());
@@ -313,62 +313,20 @@ public class GuiComponents {
 
     // create a service time slider
     protected void createSSlider(GridBagConstraints c) {
-        sPanel.setLayout(new GridLayout(2, 1));
-        c.gridx = 2;
-        parametersP.add(sPanel, c);
 
-        c.gridx = 3;
-        c.weightx = 0;
-        parametersP.add(getSplitter(10, 1), c);
-        c.weightx = 0.5;
-
-        sL = new JLabel();
-        sL.setAlignmentX(SwingConstants.CENTER);
-        sPanel.add(sL);
-        sS.setMaximum(100);
-        sS.setMinimum(0);
         sS.setMajorTickSpacing(25);
         sS.setMinorTickSpacing(1);
         sS.setPaintLabels(true);
-        sL.setFont(dCst.getNormalGUIFont());
+        sL.setFont(GuiComponents.dCst.getNormalGUIFont());
 
-        sPanel.add(sS);
 
         sMultiplier = 0.02;
         sMultiplierChange = 1;
+
         sS.setValue(S_I);
 
         StatsUtils.setSSlider(sS, sMultiplier, sL, ql);
-        sS.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent evt) {
-                StatsUtils.sSStateChanged(ql, utilizationL, mediaJobsL, sim, queueDrawer, statiDrawer, sS, sMultiplier,
-                        sL);
-                if (sSChange) {
-                    StatsUtils.setSMultiplier(sS, sMultiplier, sL, ql, sMultiplierChange);
-                }
-            }
-        });
-        sS.addMouseListener(new MouseListener() {
 
-            public void mouseClicked(MouseEvent e) {
-            }
-
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            public void mouseExited(MouseEvent e) {
-            }
-
-            public void mousePressed(MouseEvent e) {
-                sSChange = false;
-            }
-
-            public void mouseReleased(MouseEvent e) {
-                StatsUtils.setSMultiplier(sS, sMultiplier, sL, ql, sMultiplierChange);
-                sSChange = true;
-            }
-
-        });
     }
 
     //create a lambda slider
