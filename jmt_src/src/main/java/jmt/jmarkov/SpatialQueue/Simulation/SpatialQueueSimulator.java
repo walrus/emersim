@@ -73,7 +73,7 @@ public class SpatialQueueSimulator implements Runnable {
         //this is the first request which is created
         //if request queue is not empty this means run is called from the paused situation
         if (this.receiver.getQueue().isEmpty()) {
-            this.receiver.handleRequest(this.createRequest());
+            this.enqueueRequest(this.createRequest());
         }
 
         //if there is still at least one request waiting for a response it is running recursive(?)
@@ -108,8 +108,9 @@ public class SpatialQueueSimulator implements Runnable {
 
     public Request createRequest() {
         //Current implementation: create a new sender then generate a request from them
+        //Future implementation could take existing sender (generate before running sim)
         Sender sender = this.generateNewSenderWithinArea(this.regions[0]);
-        return new Request(getNextRequestID(), this.currentTime, sender);
+        return sender.makeRequest(getNextRequestID(), this.currentTime);
     }
 
     public void enqueueRequest(Request newRequest) {

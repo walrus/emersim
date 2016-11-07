@@ -8,27 +8,31 @@ import jmt.jmarkov.SpatialQueue.Location;
 public class Sender {
 
     private Location location;
+
     //How many requests the Sender should send
+    //For now, hard coded to 1
     private int requestsToSend;
+    private int requestsSent;
 
     public Sender(Location location) {
         this.location = location;
-        //this.requestsToSend = requestsToSend;
+        this.requestsToSend = 1;
+        this.requestsSent = 0;
     }
 
     //Return the Sender's location
     public Location getLocation() {
-        //TODO: implement
         return location;
     }
 
-    //Send a variable number of requests to the Receiver
-    public void sendRequests() {
-        //TODO: implement
-    }
-
     //Send a request to the Receiver
-    public void makeRequest() {
-        //TODO: implement
+    //Called by the simulator, which provides jobid and time
+    public Request makeRequest(int jobid, double time) {
+        if (requestsSent > requestsToSend) {
+            requestsSent++;
+            return new Request(jobid, time, this);
+        } else {
+            return null;
+        }
     }
 }
