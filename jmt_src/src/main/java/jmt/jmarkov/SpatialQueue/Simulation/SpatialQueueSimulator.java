@@ -25,7 +25,7 @@ public class SpatialQueueSimulator implements Runnable {
     private double currentTime;// in milliseconds
 
     //if lambda is zero this value is set to true
-    //(if lambda set to zero new jobs will not be created
+    //(if lambda set to zero new requests will not be created
     private boolean lambdaZero = false;
 
     //it saves the data if the simulator is paused or not
@@ -70,17 +70,17 @@ public class SpatialQueueSimulator implements Runnable {
         currentTimeMultiplied = 0;
         realTimeStart = new Date().getTime();
 
-        //this is the first job which is created
-        //if job list is not empty this means run is called from the paused situation
+        //this is the first request which is created
+        //if request queue is not empty this means run is called from the paused situation
         if (this.receiver.getQueue().isEmpty()) {
             this.receiver.handleRequest(this.createRequest());
         }
 
-        //if there is still some job is waiting for processing it is running recursive
+        //if there is still at least one request waiting for a response it is running recursive(?)
         //if paused the running will stop.
         while (this.receiver.getQueue().size() > 0 && !paused) {
             //this is calculating how long system will sleep
-            currentTimeMultiplied += (peekJob().getNextEventTime() - currentTime) / timeMultiplier;
+            currentTimeMultiplied += (peekRequest().getNextEventTime() - currentTime) / timeMultiplier;
             //this is calculating how long system will sleep
             realTimeCurrent = new Date().getTime() - realTimeStart;
 
@@ -94,8 +94,8 @@ public class SpatialQueueSimulator implements Runnable {
                 realTimeCurrent = new Date().getTime() - realTimeStart;
             }
 
-            Request job = dequeueJob();
-            currentTime = job.getNextEventTime();
+            Request request = dequeueRequest();
+            currentTime = request.getNextEventTime();
         }
         running = false;
     }
@@ -112,15 +112,15 @@ public class SpatialQueueSimulator implements Runnable {
         return new Request(getNextRequestID(), this.currentTime, sender);
     }
 
-    public void enqueueJob(Request newRequest) {
+    public void enqueueRequest(Request newRequest) {
         this.receiver.handleRequest(newRequest);
     }
 
-    public Request dequeueJob() {
+    public Request dequeueRequest() {
         return this.receiver.getNextRequest();
     }
 
-    public Request peekJob() {
+    public Request peekRequest() {
         return this.receiver.getQueue().element();
     }
 
