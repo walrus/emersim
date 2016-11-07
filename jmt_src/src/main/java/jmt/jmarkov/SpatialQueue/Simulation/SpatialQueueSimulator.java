@@ -1,15 +1,17 @@
 /**
- * Based on the standard Jmarkov Simulator
+ * Based on the standard Jmarkov SpatialQueueSimulator
  */
 
-package jmt.jmarkov.SpatialQueue;
+package jmt.jmarkov.SpatialQueue.Simulation;
 
 
 import jmt.jmarkov.Graphics.Notifier;
+import jmt.jmarkov.SpatialQueue.*;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+
 import java.util.Date;
 
-public class Simulator implements Runnable {
+public class SpatialQueueSimulator implements Runnable {
 
     // Receiver is the server that deals with requests.
     // All logic related to dealing with requests is delegated to it
@@ -38,10 +40,10 @@ public class Simulator implements Runnable {
 
     private int currentRequestID;
 
-    public Simulator(double timeMultiplier,
-                     Notifier[] notifier,
-                     Receiver receiver,
-                     MapConfig mapConfig) {
+    public SpatialQueueSimulator(double timeMultiplier,
+                                 Notifier[] notifier,
+                                 Receiver receiver,
+                                 MapConfig mapConfig) {
         super();
 
         currentTime = 0;

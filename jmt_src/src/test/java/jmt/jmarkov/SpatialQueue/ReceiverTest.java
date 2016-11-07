@@ -1,7 +1,6 @@
 package jmt.jmarkov.SpatialQueue;
 
-import jmt.jmarkov.SpatialQueue.Receiver;
-import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Simulation.Receiver;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

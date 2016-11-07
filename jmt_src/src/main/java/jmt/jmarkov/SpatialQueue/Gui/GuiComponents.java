@@ -3,13 +3,10 @@ package jmt.jmarkov.SpatialQueue.gui;
 import com.teamdev.jxmaps.MapViewOptions;
 import jmt.jmarkov.Graphics.*;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
-import jmt.jmarkov.Queues.Arrivals;
-import jmt.jmarkov.Queues.JobQueue;
 import jmt.jmarkov.Queues.MM1Logic;
-import jmt.jmarkov.Queues.Processor;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
-import jmt.jmarkov.SpatialQueue.Receiver;
-import jmt.jmarkov.SpatialQueue.Simulator;
+import jmt.jmarkov.SpatialQueue.Simulation.Receiver;
+import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -70,7 +67,7 @@ public class GuiComponents {
     private boolean lambdaSChange = true;
 
     private DrawNormal dCst;
-    private Simulator sim;
+    private SpatialQueueSimulator sim;
     private MM1Logic ql;
     private QueueDrawer queueDrawer;
     private StatiDrawer statiDrawer;
@@ -223,7 +220,7 @@ public class GuiComponents {
                 tan[3] = jobsDrawer;
                 tan[4] = logFile;
 
-                sim = new Simulator(accelerationS.getValue(), tan, new Receiver(mapView.getReceiverLocation()), mapView);
+                sim = new SpatialQueueSimulator(accelerationS.getValue(), tan, new Receiver(mapView.getReceiverLocation()), mapView);
 
                 sim.start();
                 start.setEnabled(false);

@@ -1,4 +1,4 @@
-package jmt.jmarkov.SpatialQueue;
+package jmt.jmarkov.SpatialQueue.Simulation;
 
 import jmt.jmarkov.SpatialQueue.Location;
 

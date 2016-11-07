@@ -1,6 +1,7 @@
-package jmt.jmarkov.SpatialQueue;
+package jmt.jmarkov.SpatialQueue.Simulation;
 
 import jmt.jmarkov.Job;
+import jmt.jmarkov.SpatialQueue.Simulation.Sender;
 
 /**
  * Requests are sent by Senders to Receivers

@@ -1,4 +1,7 @@
-package jmt.jmarkov.SpatialQueue;
+package jmt.jmarkov.SpatialQueue.Simulation;
+
+import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Simulation.Request;
 
 import java.util.LinkedList;
 /**
