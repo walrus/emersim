@@ -142,6 +142,8 @@ public class StatsUtils {
         //for (int i = 0; i < 6; i++) {
         //	d.put(new Integer(i * 25), new JLabel("" + Formatter.formatNumber(i * sMultiplier ), 2));
         //}
+
+
         for (int i = sS.getMinimum(); i <= sS.getMaximum(); i += sS.getMajorTickSpacing()) {
             d.put(new Integer(i), new JLabel("" + Formatter.formatNumber(i * sMultiplier, 2)));
         }
