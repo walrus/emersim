@@ -6,7 +6,7 @@ import jmt.jmarkov.Graphics.TANotifier;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.Queues.MM1Logic;
-import jmt.jmarkov.SpatialQueue.Simulator;
+import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
 
 import javax.swing.*;
@@ -18,8 +18,8 @@ import java.util.Dictionary;
  */
 public class StatsUtils {
 
-    private static double U; // Utilization [%]
-    private static double Q; // Average customer in station
+    static double U; // Utilization [%]
+    static double Q; // Average customer in station
 
     private static JLabel responseL;
     private static JLabel thrL;
@@ -39,7 +39,7 @@ public class StatsUtils {
     private static String sStrS = "Avg. Service Time S = ";
     private static String sStrE = " s";
 
-    private static TANotifier outputTA;
+    static TANotifier outputTA = new TANotifier();
     private static boolean nonErgodic;//if the utilization is less than 1
 
     private static int buffer; //number of place for the waiting queue
@@ -61,7 +61,7 @@ public class StatsUtils {
 
     protected static void buffSStateChanged(JSlider buffS, JLabel utilizationL, JLabel mediaJobsL,
                                             MM1Logic ql, QueueDrawer queueDrawer,
-                                            StatiDrawer statiDrawer, JLabel buffL, Simulator sim) {
+                                            StatiDrawer statiDrawer, JLabel buffL, SpatialQueueSimulator sim) {
 
         buffer = buffS.getValue() - cpuNum;
         if (buffer < 1) {
@@ -76,7 +76,7 @@ public class StatsUtils {
     }
 
     protected static void updateFields(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL,
-                                       Simulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer  ) {
+                                       SpatialQueueSimulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer  ) {
         try {
             Q = ql.mediaJobs();
             U = ql.utilization();
@@ -114,14 +114,14 @@ public class StatsUtils {
         }
     }
 
-    protected static void sSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, Simulator sim,
+    protected static void sSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim,
                                          QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider sS,
                                          double sMultiplier, JLabel sL) {
         setSSlider(sS, sMultiplier, sL, ql);
         updateFields(ql, utilizationL, mediaJobsL,sim, queueDrawer, statiDrawer);
     }
 
-    protected static void lambdaSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, Simulator sim,
+    protected static void lambdaSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim,
                                               QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider lambdaS,
                                               double lambdaMultiplier, int lambdaMultiplierChange, JLabel lambdaL,
                                               JSlider sS, double sMultiplier, JLabel sL) {

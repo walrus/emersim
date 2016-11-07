@@ -975,6 +975,7 @@ public class MMQueues extends JMTFrame {
 				}
 			}
 
+
 			jq = new JobQueue();
 			queueDrawer.setMediaJobs(Q - U);
 			queueDrawer.setTotalJobs(jobsDialog.getValidatedValue());
@@ -984,7 +985,6 @@ public class MMQueues extends JMTFrame {
 			tan[2] = statiDrawer;
 			tan[3] = jobsDrawer;
 			tan[4] = logFile;
-
 			arrival = new Arrivals(ql, jq, tan, jobsDialog.getValidatedValue());
 
 			int numServer;
@@ -1091,10 +1091,10 @@ public class MMQueues extends JMTFrame {
 		sim.stop();
 		while (sim.isRunning()) {
 			//waiting to stop
-			try {Thread.sleep(100);} 
+			try {Thread.sleep(100);}
 			catch (InterruptedException e) {}
 		}
-		try {Thread.sleep(100);} 
+		try {Thread.sleep(100);}
 		catch (InterruptedException e) {}
 		jq.clearQueue();
 		outputTA.reset();

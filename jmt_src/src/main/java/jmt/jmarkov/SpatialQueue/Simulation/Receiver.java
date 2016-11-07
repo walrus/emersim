@@ -1,4 +1,7 @@
-package jmt.jmarkov.SpatialQueue;
+package jmt.jmarkov.SpatialQueue.Simulation;
+
+import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Simulation.Request;
 
 import java.util.LinkedList;
 /**
@@ -8,7 +11,7 @@ public class Receiver {
 
     private Location location;
 
-    private LinkedList<Request> requestQueue;
+    private LinkedList<Request> requestQueue = new LinkedList<>();
 
     public Receiver(Location location) {
         this.location = location;

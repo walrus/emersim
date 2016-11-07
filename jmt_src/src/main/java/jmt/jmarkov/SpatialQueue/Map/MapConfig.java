@@ -204,6 +204,11 @@ public class MapConfig extends MapView {
         return regions;
     }
 
+    public Location getReceiverLocation() {
+        Marker marker = receiverMarkers.get(0);
+        return new Location(marker.getPosition().getLng(), marker.getPosition().getLat());
+    }
+
     private Location translateCoordinate(LatLng location) {
         Location loc = new Location(location.getLng(), location.getLat());
         return loc;
