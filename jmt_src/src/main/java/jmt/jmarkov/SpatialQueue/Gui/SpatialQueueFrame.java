@@ -1,4 +1,4 @@
-package jmt.jmarkov.SpatialQueue.gui;
+package jmt.jmarkov.SpatialQueue.Gui;
 
 import javax.swing.*;
 import java.awt.*;

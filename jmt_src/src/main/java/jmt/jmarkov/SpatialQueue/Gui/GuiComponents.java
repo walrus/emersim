@@ -1,4 +1,4 @@
-package jmt.jmarkov.SpatialQueue.gui;
+package jmt.jmarkov.SpatialQueue.Gui;
 
 import com.teamdev.jxmaps.MapViewOptions;
 import jmt.jmarkov.Graphics.*;
@@ -20,7 +20,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Dictionary;
 
-import static jmt.jmarkov.SpatialQueue.gui.StatsUtils.*;
+import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
 
 /**
  * Created by joshuazeltser on 02/11/2016.

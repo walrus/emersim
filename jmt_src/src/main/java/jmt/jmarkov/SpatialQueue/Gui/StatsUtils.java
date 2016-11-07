@@ -1,4 +1,4 @@
-package jmt.jmarkov.SpatialQueue.gui;
+package jmt.jmarkov.SpatialQueue.Gui;
 
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.StatiDrawer;

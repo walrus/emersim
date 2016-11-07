@@ -2,7 +2,7 @@ package jmt.jmarkov.SpatialQueue;
 
 import jmt.gui.common.startScreen.GraphStartScreen;
 import jmt.jmarkov.QueueTypeDialog;
-import jmt.jmarkov.SpatialQueue.gui.SpatialQueueFrame;
+import jmt.jmarkov.SpatialQueue.Gui.SpatialQueueFrame;
 import jmt.util.ShortDescriptionButtonMatcher;
 import jmt.util.TextButtonMatcher;
 import org.fest.swing.edt.GuiActionRunner;
