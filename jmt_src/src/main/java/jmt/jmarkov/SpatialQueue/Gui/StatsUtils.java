@@ -19,9 +19,6 @@ public class StatsUtils {
     static double U; // Utilization [%]
     static double Q; // Average customer in station
 
-    private static JLabel responseL;
-    private static JLabel thrL;
-
     private static String bufStrS = "Max Station Capacity k = ";
     private static String bufStrE = " cust.";
     private static String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
@@ -80,9 +77,7 @@ public class StatsUtils {
             utilizationL.setText(uStrS + Formatter.formatNumber(U, 2) + uStrE);
             mediaJobsL.setText(nStrS + Formatter.formatNumber(Q, 2) + nStrE);
 
-            thrL = new JLabel();
             thrL.setText(thrStrS + Formatter.formatNumber(ql.throughput(), 2) + thrStrE);
-            responseL = new JLabel();
             responseL.setText(respStrS + Formatter.formatNumber(ql.responseTime(), 2) + respStrE);
             nonErgodic = false;
 
@@ -96,13 +91,14 @@ public class StatsUtils {
 
             utilizationL.setForeground(Color.RED);
             utilizationL.setText(uStrS + "Saturation");
-//            thrL.setText(thrStrS + "Saturation");
-//            responseL.setText(respStrS + "Saturation");
+
+            thrL.setText(thrStrS + "Saturation");
+            responseL.setText(respStrS + "Saturation");
             nonErgodic = true;
         }
         queueDrawer.setMediaJobs(Q - U);
         statiDrawer.repaint();
-        outputTA = new TANotifier();
+
         if (sim == null || !sim.isStarted()) {
             setLogAnalyticalResults();
         } else {
@@ -253,13 +249,13 @@ public class StatsUtils {
         resultsP.add(utilizationL);
 
         // throughput
-        thrL = new JLabel();
+
         thrL.setText(thrStrS + "0" + thrStrE);
         thrL.setFont(dCst.getNormalGUIFont());
         resultsP.add(thrL);
 
         // response time
-        responseL = new JLabel();
+
         responseL.setText(respStrS + "0" + respStrE);
         responseL.setFont(dCst.getNormalGUIFont());
         resultsP.add(responseL);

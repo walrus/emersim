@@ -76,6 +76,8 @@ public class GuiComponents {
     private JobsDrawer jobsDrawer;
     private JSlider accelerationS;
     private LogFile logFile;
+    static JLabel thrL;
+    static JLabel responseL;
 
     public GuiComponents() {
         init();
@@ -106,11 +108,12 @@ public class GuiComponents {
         stop = new JButton("Stop");
         sL = new JLabel();
         dCst = new DrawNormal();
+        thrL = new JLabel();
+        responseL = new JLabel();
     }
 
     //Create queueDrawer for queue visualisation
     protected void generateQueueDrawer(JPanel interfacePanel) {
-        QueueDrawer queueDrawer = new QueueDrawer(ql);
         queueDrawer.setPreferredSize(new Dimension(300, 150));
         interfacePanel.add(queueDrawer);
     }
@@ -218,7 +221,7 @@ public class GuiComponents {
                 queueDrawer.setMediaJobs(Q - U);
                 Notifier[] tan = new Notifier[5];
                 logFile = new LogFile();
-                tan[0] = new TANotifier();
+                tan[0] = outputTA;
                 tan[1] = queueDrawer;
                 tan[2] = statiDrawer;
                 tan[3] = jobsDrawer;
