@@ -26,6 +26,9 @@ import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
  */
 public class GuiComponents {
 
+    //To change service time change this variable
+    private int S_I =  70;
+
     private JPanel buffPanel;
     private JPanel sPanel;
     private JPanel lambdaPanel;
@@ -39,19 +42,17 @@ public class GuiComponents {
     private JButton receiver;
 
     private JLabel buffL;
-    private JLabel sL;
     private JLabel lambdaL;
     private JLabel mediaJobsL;
     private JLabel utilizationL;
 
     private JSlider buffS;
     private JSlider lambdaS;
-    protected static JSlider sS;
 
     private int BUFF_I = 15;
 
     static int sMultiplierChange = 1; //for the service slide bar
-    private int S_I = 95;
+
     static int lambdaMultiplierChange = 0; //for the lambda slide bar
     private int LAMBDA_I = 50;
 
@@ -65,7 +66,7 @@ public class GuiComponents {
     private boolean paused;
     private boolean lambdaSChange = true;
 
-    private SpatialQueueSimulator sim;
+    static SpatialQueueSimulator sim;
 
     static DrawNormal dCst;
 
@@ -93,7 +94,6 @@ public class GuiComponents {
         buffS = new JSlider();
         sPanel = new JPanel();
         lambdaS = new JSlider();
-        sS = new JSlider();
         ql = new MM1Logic(0.0, 0.0);
         queueDrawer = new QueueDrawer(ql);
         statiDrawer = new StatiDrawer(ql);
@@ -104,12 +104,16 @@ public class GuiComponents {
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
         start = new JButton("Start");
+        start.setEnabled(false);
         pause = new JButton("Pause");
         stop = new JButton("Stop");
-        sL = new JLabel();
+        client = new JButton("Add Client");
+        client.setEnabled(false);
+        receiver = new JButton("Add Receiver");
         dCst = new DrawNormal();
         thrL = new JLabel();
         responseL = new JLabel();
+        jobsDrawer = new JobsDrawer();
     }
 
     //Create queueDrawer for queue visualisation
@@ -151,12 +155,13 @@ public class GuiComponents {
 
     // create an add client button
     private JButton clientButton() {
-        client = new JButton("Add Client");
+
 //        client.setMaximumSize(new Dimension(100,40));
         client.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapView.toggleAreaPlacement();
+                start.setEnabled(true);
             }
         });
         return client;
@@ -164,14 +169,17 @@ public class GuiComponents {
 
     // create an add receiver button
     private JButton receiverButton() {
-        receiver = new JButton("Add Receiver");
+
 //        receiver.setMaximumSize(new Dimension(100,40));
         receiver.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapView.toggleMarkerPlacement();
+                receiver.setEnabled(false);
+                client.setEnabled(true);
             }
         });
+
         return receiver;
     }
 
@@ -210,11 +218,13 @@ public class GuiComponents {
                 stopProcessing();
             }
         });
+
     }
 
     // create a start button
     private void startButton() {
-        start.setEnabled(true);
+        start.setEnabled(false);
+
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -271,12 +281,12 @@ public class GuiComponents {
         accelerationP.add(accelerationS);
         accelerationS.setValue(50);
         final JLabel finalAccelerationL = accelerationL;
-        makeSliderFunctional(accelerationS, finalAccelerationL);
+        makeSpeedSliderFunctional(accelerationS, finalAccelerationL);
         accelerationL.setText("Time x" + Formatter.formatNumber(accelerationS.getValue(), 2));
     }
 
     // functionality for the speed slider
-    private void makeSliderFunctional(final JSlider accelerationS, final JLabel finalAccelerationL) {
+    private void makeSpeedSliderFunctional(final JSlider accelerationS, final JLabel finalAccelerationL) {
         accelerationS.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent evt) {
                 int value = accelerationS.getValue();
@@ -317,7 +327,6 @@ public class GuiComponents {
     }
 
     private void addJobsPanel(JPanel jobsP) {
-        jobsDrawer = new JobsDrawer();
         jobsP.add(jobsDrawer);
     }
 
@@ -332,49 +341,17 @@ public class GuiComponents {
         return splitPane;
     }
 
-    // create a queue buffer slider
-    protected void createQueueBufferSlider(GridBagConstraints c) {
-
-        buffPanel.setLayout(new GridLayout(2, 1));
-        c.gridx = 4;
-        buffPanel.setVisible(false);
-        parametersP.add(buffPanel, c);
-        buffL.setAlignmentX(SwingConstants.CENTER);
-        buffL.setFont(dCst.getNormalGUIFont());
-        buffPanel.add(buffL);
-        buffS.setValue(BUFF_I);
-        buffS.setMaximum(31);
-        buffS.setMinimum(1);
-        buffS.setMajorTickSpacing(5);
-        buffS.setMinorTickSpacing(1);
-        buffS.setPaintLabels(true);
-        buffPanel.add(buffS);
-        buffL.setText(bufStrS + buffS.getValue() + bufStrE);
-        buffS.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent evt) {
-                StatsUtils.buffSStateChanged(buffS, utilizationL, mediaJobsL, buffL, sim);
-            }
-        });
-    }
-
     // create a service time slider
-    protected void createSSlider(GridBagConstraints c) {
-
-        sS.setMajorTickSpacing(25);
-        sS.setMinorTickSpacing(1);
-        sS.setPaintLabels(true);
-        sL.setFont(GuiComponents.dCst.getNormalGUIFont());
-
+    protected void setupServiceTime() {
         sMultiplier = 0.02;
         sMultiplierChange = 1;
-
-        sS.setValue(S_I);
-
-        StatsUtils.setSSlider(sS, sL);
+        ql.setS(S_I * sMultiplier);
     }
 
     //create a lambda slider
     protected void createLambdaSlider(GridBagConstraints c) {
+        setupServiceTime();
+
         lambdaPanel.setLayout(new GridLayout(2, 1));
         c.weightx = 0.5;
 
@@ -390,7 +367,6 @@ public class GuiComponents {
         lambdaMultiplier = 0.01;
         lambdaMultiplierChange = 0;
 
-
         lambdaS.setMaximum(100);
         lambdaS.setMinimum(0);
         lambdaS.setMajorTickSpacing(25);
@@ -401,9 +377,11 @@ public class GuiComponents {
         lambdaL.setFont(dCst.getNormalGUIFont());
         lambdaS.setValue(LAMBDA_I);
         StatsUtils.setLambdaSlider(lambdaS, lambdaL);
+
         lambdaS.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent evt) {
-                StatsUtils.lambdaSStateChanged(utilizationL, mediaJobsL, sim, lambdaS, lambdaL, sS, sL);
+                StatsUtils.lambdaSStateChanged(utilizationL, mediaJobsL, sim, lambdaS, lambdaL);
+
                 if (lambdaSChange) {
                     StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
                 }
@@ -455,6 +433,7 @@ public class GuiComponents {
         StatsUtils.generateSimulationStats(resultsP, mediaJobsL, utilizationL);
     }
 
+    //setup queue visualisation and pointer
     protected void showQueue(int cpuNumber) {
         buffer = BUFF_I;
         cpuNum = cpuNumber;
@@ -462,11 +441,10 @@ public class GuiComponents {
         buffS.setMinimum(cpuNumber + 1);
         buffS.setValue(buffer + cpuNumber);
 
-
         buffer = 0;
-        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), sS.getValue() * sMultiplier);
+        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), S_I * sMultiplier);
+
         buffPanel.setVisible(false);
-        sS.setValue(S_I);
         lambdaS.setValue(LAMBDA_I);
         statiDrawer.updateLogic(ql);
         queueDrawer.updateLogic(ql);
@@ -474,6 +452,5 @@ public class GuiComponents {
         statiDrawer.setMaxJobs(0);
         queueDrawer.setCpuNumber(1);
         StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
-
     }
 }

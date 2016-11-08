@@ -1,5 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
+import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -35,7 +37,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 		init();
 	}
 
-	public void init(){
+	public void init() {
 		setTitle("Create a new Spatial Queue");
 
         initObjects();
@@ -46,7 +48,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
         //Create button panel for left side of window
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+		buttonPanel.setLayout(new GridLayout(0,1));
 		guiComponents.generateSideButtons(buttonPanel);
 
         //Create panel for map and queue drawer
@@ -73,13 +75,6 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
         // create lamda slider
         guiComponents.createLambdaSlider(c);
 
-
-		// create S slider
-        guiComponents.createSSlider(c);
-
-		// create queueBuffer slider
-//        guiComponents.createQueueBufferSlider(c);
-
         // window settings
 		pack();
 		setLocationRelativeTo(null);
@@ -97,7 +92,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {}
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
 		new SpatialQueueFrame();
 	}
 }
