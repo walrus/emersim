@@ -1,17 +1,15 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
-import jmt.jmarkov.Graphics.QueueDrawer;
-import jmt.jmarkov.Graphics.StatiDrawer;
 import jmt.jmarkov.Graphics.TANotifier;
-import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
-import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Dictionary;
+
+import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.*;
 
 /**
  * Created by joshuazeltser on 02/11/2016.
@@ -42,11 +40,11 @@ public class StatsUtils {
     static TANotifier outputTA = new TANotifier();
     private static boolean nonErgodic;//if the utilization is less than 1
 
-    private static int buffer; //number of place for the waiting queue
-    private static int cpuNum; //number of server in the system
+    static int buffer; //number of place for the waiting queue
+    static int cpuNum; //number of server in the system
 
 
-    protected static void setLogAnalyticalResults(MM1Logic ql, TANotifier outputTA) {
+    protected static void setLogAnalyticalResults() {
         try {
             if (ql.getMaxStates() == 0) {
                 outputTA.setAnalyticalResult(ql.mediaJobs(), ql.utilization(), ql.throughput(), ql.responseTime(), ql.getLambda(), ql.getS(), 0);
@@ -59,9 +57,8 @@ public class StatsUtils {
         }
     }
 
-    protected static void buffSStateChanged(JSlider buffS, JLabel utilizationL, JLabel mediaJobsL,
-                                            MM1Logic ql, QueueDrawer queueDrawer,
-                                            StatiDrawer statiDrawer, JLabel buffL, SpatialQueueSimulator sim) {
+    protected static void buffSStateChanged(JSlider buffS, JLabel utilizationL, JLabel mediaJobsL, JLabel buffL,
+                                            SpatialQueueSimulator sim) {
 
         buffer = buffS.getValue() - cpuNum;
         if (buffer < 1) {
@@ -72,11 +69,10 @@ public class StatsUtils {
         queueDrawer.setMaxJobs(buffer + 1);
         statiDrawer.setMaxJobs(buffer + cpuNum);
         buffL.setText(bufStrS + buffS.getValue() + bufStrE);
-        updateFields(ql, utilizationL, mediaJobsL,sim, queueDrawer, statiDrawer);
+        updateFields(utilizationL, mediaJobsL,sim);
     }
 
-    protected static void updateFields(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL,
-                                       SpatialQueueSimulator sim, QueueDrawer queueDrawer, StatiDrawer statiDrawer  ) {
+    protected static void updateFields(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim) {
         try {
             Q = ql.mediaJobs();
             U = ql.utilization();
@@ -100,31 +96,28 @@ public class StatsUtils {
 
             utilizationL.setForeground(Color.RED);
             utilizationL.setText(uStrS + "Saturation");
-            thrL.setText(thrStrS + "Saturation");
-            responseL.setText(respStrS + "Saturation");
+//            thrL.setText(thrStrS + "Saturation");
+//            responseL.setText(respStrS + "Saturation");
             nonErgodic = true;
         }
         queueDrawer.setMediaJobs(Q - U);
         statiDrawer.repaint();
         outputTA = new TANotifier();
         if (sim == null || !sim.isStarted()) {
-            setLogAnalyticalResults(ql, outputTA);
+            setLogAnalyticalResults();
         } else {
             outputTA.setAnalyticalResult();
         }
     }
 
-    protected static void sSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim,
-                                         QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider sS,
-                                         double sMultiplier, JLabel sL) {
-        setSSlider(sS, sMultiplier, sL, ql);
-        updateFields(ql, utilizationL, mediaJobsL,sim, queueDrawer, statiDrawer);
+    protected static void sSStateChanged(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim, JSlider sS,
+                                         JLabel sL) {
+        setSSlider(sS, sL);
+        updateFields(utilizationL, mediaJobsL,sim);
     }
 
-    protected static void lambdaSStateChanged(MM1Logic ql, JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim,
-                                              QueueDrawer queueDrawer, StatiDrawer statiDrawer, JSlider lambdaS,
-                                              double lambdaMultiplier, int lambdaMultiplierChange, JLabel lambdaL,
-                                              JSlider sS, double sMultiplier, JLabel sL) {
+    protected static void lambdaSStateChanged(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim,
+                                              JSlider lambdaS, JLabel lambdaL, JSlider sS, JLabel sL) {
         if (lambdaS.getValue() == 0) {
             lambdaMultiplier = 0.01;
             lambdaMultiplierChange = 0;
@@ -132,11 +125,11 @@ public class StatsUtils {
         }
         ql.setLambda(lambdaMultiplier * lambdaS.getValue());
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
-        setSSlider(sS, sMultiplier, sL, ql);
-        updateFields(ql, utilizationL, mediaJobsL,sim, queueDrawer, statiDrawer);
+        setSSlider(sS, sL);
+        updateFields(utilizationL, mediaJobsL,sim);
     }
 
-    protected static void setSSlider(JSlider sS, double sMultiplier, JLabel sL, MM1Logic ql) {
+    protected static void setSSlider(JSlider sS, JLabel sL) {
         //sMultiplier = ql.getMaxErgodicS();
         Dictionary<Integer, JLabel> d = sS.getLabelTable();
         //for (int i = 0; i < 6; i++) {
@@ -153,17 +146,17 @@ public class StatsUtils {
         ql.setS(sS.getValue() * sMultiplier);
     }
 
-    protected static void setSMultiplier(JSlider sS, double sMultiplier, JLabel sL, MM1Logic ql, int sMultiplierChange) {
+    protected static void setSMultiplier(JSlider sS, JLabel sL) {
         while (true) {
             if (sS.getValue() > sS.getMaximum() * 0.95) {
                 if (sMultiplierChange <= 4) {
                     if (sMultiplierChange % 2 == 0) {
                         sMultiplier *= 2;
-                        setSSlider(sS, sMultiplier, sL, ql);
+                        setSSlider(sS, sL);
                         sS.setValue((sS.getValue() + 1) / 2);
                     } else {
                         sMultiplier *= 5;
-                        setSSlider(sS, sMultiplier, sL, ql);
+                        setSSlider(sS, sL);
                         sS.setValue((sS.getValue() + 1) / 5);
                     }
                     sMultiplierChange++;
@@ -175,11 +168,11 @@ public class StatsUtils {
                 if (sMultiplierChange > 0) {
                     if (sMultiplierChange % 2 == 1) {
                         sMultiplier /= 2;
-                        setSSlider(sS, sMultiplier, sL, ql);
+                        setSSlider(sS, sL);
                         sS.setValue(sS.getValue() * 2);
                     } else {
                         sMultiplier /= 5;
-                        setSSlider(sS, sMultiplier, sL, ql);
+                        setSSlider(sS, sL);
                         sS.setValue(sS.getValue() * 5);
                     }
                     sMultiplierChange--;
@@ -192,18 +185,17 @@ public class StatsUtils {
             }
         }
     }
-    protected static void setLambdaMultiplier(JSlider lambdaS, int lambdaMultiplierChange, double lambdaMultiplier,
-                                              MM1Logic ql, JLabel lambdaL) {
+    protected static void setLambdaMultiplier(JSlider lambdaS, JLabel lambdaL) {
         while (true) {
             if (lambdaS.getValue() > lambdaS.getMaximum() * 0.95) {
                 if (lambdaMultiplierChange <= 4) {
                     if (lambdaMultiplierChange % 2 == 0) {
                         lambdaMultiplier *= 2;
-                        setLambdaSlider(lambdaS, lambdaMultiplier, ql, lambdaL);
+                        setLambdaSlider(lambdaS, lambdaL);
                         lambdaS.setValue((lambdaS.getValue() + 1) / 2);
                     } else {
                         lambdaMultiplier *= 5;
-                        setLambdaSlider(lambdaS, lambdaMultiplier, ql, lambdaL);
+                        setLambdaSlider(lambdaS, lambdaL);
                         lambdaS.setValue((lambdaS.getValue() + 1) / 5);
                     }
                     lambdaMultiplierChange++;
@@ -215,11 +207,11 @@ public class StatsUtils {
                 if (lambdaMultiplierChange > 0) {
                     if (lambdaMultiplierChange % 2 == 1) {
                         lambdaMultiplier /= 2;
-                        setLambdaSlider(lambdaS, lambdaMultiplier, ql, lambdaL);
+                        setLambdaSlider(lambdaS, lambdaL);
                         lambdaS.setValue(lambdaS.getValue() * 2);
                     } else {
                         lambdaMultiplier /= 5;
-                        setLambdaSlider(lambdaS, lambdaMultiplier, ql, lambdaL);
+                        setLambdaSlider(lambdaS, lambdaL);
                         lambdaS.setValue(lambdaS.getValue() * 5);
                     }
                     lambdaMultiplierChange--;
@@ -233,7 +225,7 @@ public class StatsUtils {
         }
     }
 
-    public static void setLambdaSlider(JSlider lambdaS, double lambdaMultiplier, MM1Logic ql, JLabel lambdaL) {
+    public static void setLambdaSlider(JSlider lambdaS, JLabel lambdaL) {
         Dictionary<Integer, JLabel> ld = lambdaS.getLabelTable();
 
         for (int i = lambdaS.getMinimum(); i <= lambdaS.getMaximum(); i += lambdaS.getMajorTickSpacing()) {
@@ -248,8 +240,7 @@ public class StatsUtils {
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
     }
 
-    protected static void generateSimulationStats(JPanel resultsP, JLabel mediaJobsL, JLabel utilizationL,
-                                                  DrawConstrains dCst) {
+    protected static void generateSimulationStats(JPanel resultsP, JLabel mediaJobsL, JLabel utilizationL) {
         // media
         mediaJobsL.setText(nStrS + "0" + nStrE);
         mediaJobsL.setFont(dCst.getNormalGUIFont());

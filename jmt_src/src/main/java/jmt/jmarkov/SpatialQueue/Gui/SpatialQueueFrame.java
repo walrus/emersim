@@ -78,7 +78,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
         guiComponents.createSSlider(c);
 
 		// create queueBuffer slider
-        guiComponents.createQueueBufferSlider(c);
+//        guiComponents.createQueueBufferSlider(c);
 
         // window settings
 		pack();
