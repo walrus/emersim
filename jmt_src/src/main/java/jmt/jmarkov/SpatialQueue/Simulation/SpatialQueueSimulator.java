@@ -100,7 +100,7 @@ public class SpatialQueueSimulator implements Runnable {
         running = false;
     }
 
-    private int getNextRequestID() {
+    private synchronized int getNextRequestID() {
         int r = this.currentRequestID;
         this.currentRequestID ++;
         return r;
@@ -122,7 +122,7 @@ public class SpatialQueueSimulator implements Runnable {
     }
 
     public Request peekRequest() {
-        return this.receiver.getQueue().element();
+        return this.receiver.getQueue().getFirst();
     }
 
     public boolean isLambdaZero() {
