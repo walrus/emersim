@@ -96,7 +96,7 @@ public class Receiver {
     //Find the next request in the queue. This should
     //be overridden to implement different behaviours
     public Request getNextRequest() {
-        //TODO: implement better algorithm that uses distances
+        //TODO: implement better algorithm that uses distances?
         return this.requestQueue.removeFirst();
     }
 

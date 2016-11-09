@@ -61,11 +61,11 @@ public class SpatialQueueSimulator implements Runnable {
     public void run() {
         running = true;
         started = true;
-        // this is the simulation time till run command is called
+        // this is the simulation time till run command is called (?)
         double currentTimeMultiplied;
-        //when calling run getting the current real time
+        //when calling run getting the current real time (?)
         long realTimeStart;
-        //this is the time after return the thread.sleep
+        //this is the time after return the thread.sleep (?)
         long realTimeCurrent;
         currentTimeMultiplied = 0;
         realTimeStart = new Date().getTime();
@@ -94,8 +94,18 @@ public class SpatialQueueSimulator implements Runnable {
                 realTimeCurrent = new Date().getTime() - realTimeStart;
             }
 
-            Request request = dequeueRequest();
+            Request request = peekRequest();
             currentTime = request.getNextEventTime();
+
+            switch (request.getCurrentState()) {
+                case IN_QUEUE:
+                    //newJobArrival(job);
+                    break;
+                case BEING_SERVED:
+                    receiver.stopServing();
+                    break;
+
+            }
         }
         running = false;
     }
@@ -114,7 +124,9 @@ public class SpatialQueueSimulator implements Runnable {
     }
 
     public void enqueueRequest(Request newRequest) {
-        this.receiver.handleRequest(newRequest);
+        if (newRequest != null){
+            this.receiver.handleRequest(newRequest);
+        }
     }
 
     public Request dequeueRequest() {

@@ -71,4 +71,8 @@ public class Request{
     public double getResponseTime() {
         return this.responseTime;
     }
+
+    public RequestState getCurrentState() {
+        return this.currentState;
+    }
 }
