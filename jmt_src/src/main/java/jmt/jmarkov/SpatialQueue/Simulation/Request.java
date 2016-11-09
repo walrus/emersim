@@ -22,7 +22,9 @@ public class Request{
 
     private double finishServiceTime;
 
-    private double nextEventTime; // Needed?
+    private double nextEventTime;
+
+    private double responseTime;
 
     private RequestState currentState;
 
@@ -35,9 +37,14 @@ public class Request{
         this.sender = sender;
     }
 
-    public void serve(double time){
+    public void serve(double currentTime, double finishTime){
         this.currentState = BEING_SERVED;
-        this.startServiceTime = time;
+        this.startServiceTime = currentTime;
+        this.finishServiceTime = finishTime;
+    }
+
+    public void setFinishServiceTime(double time){
+        this.finishServiceTime = time;
     }
 
     public void finishServing(double time){
@@ -46,6 +53,22 @@ public class Request{
     }
 
     public Sender getSender() {
-        return sender;
+        return this.sender;
+    }
+
+    public double getNextEventTime() {
+        return this.nextEventTime;
+    }
+
+    public void setNextEventTime(double time) {
+        this.nextEventTime = time;
+    }
+
+    public void setResponseTime(double time) {
+        this.responseTime = time;
+    }
+
+    public double getResponseTime() {
+        return this.responseTime;
     }
 }
