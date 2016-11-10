@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
 import com.teamdev.jxmaps.MapViewOptions;
+import jmt.jmarkov.CustomDialog;
 import jmt.jmarkov.Graphics.*;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Queues.MM1Logic;
@@ -29,7 +30,6 @@ public class GuiComponents {
     //To change service time change this variable
     private int S_I =  70;
 
-
     private JPanel parametersP;
     private JButton start;
     private JButton pause;
@@ -56,25 +56,24 @@ public class GuiComponents {
     static JLabel thrL;
     static JLabel responseL;
     static TANotifier outputTA;
+    private JFrame mf;
 
 
-    public GuiComponents() {
+    public GuiComponents(JFrame mf) {
         init();
         showQueue(1);
+        this.mf = mf;
     }
 
     //Initialise objects
     private void init() {
         sim = null;
         paused = false;
-
         lambdaS = new JSlider();
         ql = new MM1Logic(0.0, 0.0);
         queueDrawer = new QueueDrawer(ql);
         statiDrawer = new StatiDrawer(ql);
-
         parametersP = new JPanel();
-
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
         start = new JButton("Start");
@@ -200,9 +199,19 @@ public class GuiComponents {
     private void startButton() {
         start.setEnabled(false);
 
+
+
+////        logFile.setLogging(false);
+
+
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+
+                SimulationSizeDialog jobsDialog = new SimulationSizeDialog(mf);
+                jobsDialog.pack();
+                jobsDialog.setLocationRelativeTo(mf);
+                jobsDialog.setVisible(true);
                 queueDrawer.setMediaJobs(Q - U);
                 Notifier[] tan = new Notifier[5];
                 logFile = new LogFile();
