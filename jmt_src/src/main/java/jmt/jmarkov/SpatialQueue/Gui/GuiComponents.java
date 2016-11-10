@@ -126,7 +126,7 @@ public class GuiComponents {
     protected void generateMapPanel(JPanel interfacePanel) {
         MapViewOptions mapOptions = new MapViewOptions();
         mapOptions.importPlaces();
-        mapView = new MapConfig(mapOptions);
+        mapView = new MapConfig(mapOptions, this);
         mapView.setPreferredSize(new Dimension(300, 375));
         interfacePanel.add(mapView);
     }
@@ -153,6 +153,11 @@ public class GuiComponents {
         addJobsPanel(panel);
     }
 
+    public void finishClientCreation() {
+        client.setEnabled(true);
+        start.setEnabled(true);
+    }
+
     // create an add client button
     private JButton clientButton() {
 
@@ -160,8 +165,11 @@ public class GuiComponents {
         client.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapView.toggleAreaPlacement();
-                start.setEnabled(true);
+                mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_CLIENT);
+                // Disable add client button to ensure a new region is created in full
+                client.setEnabled(false);
+                // Disable start button to prevent starting with incomplete clients
+                start.setEnabled(false);
             }
         });
         return client;
@@ -174,7 +182,8 @@ public class GuiComponents {
         receiver.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapView.toggleMarkerPlacement();
+                mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_RECEIVER);
+                // Disable add receiver button (restricts to only using 1 receiver)
                 receiver.setEnabled(false);
                 client.setEnabled(true);
             }
@@ -228,6 +237,7 @@ public class GuiComponents {
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+                client.setEnabled(false);
                 queueDrawer.setMediaJobs(Q - U);
                 Notifier[] tan = new Notifier[5];
                 logFile = new LogFile();

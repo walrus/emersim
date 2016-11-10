@@ -4,6 +4,7 @@ import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.MouseEvent;
 import com.teamdev.jxmaps.swing.MapView;
 import jmt.jmarkov.SpatialQueue.ClientRegion;
+import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Location;
 
 import javax.swing.*;
@@ -17,15 +18,14 @@ public class MapConfig extends MapView {
 
     private static final String INITIAL_LOCATION = "Imperial College London, SW7 2AZ";
     private OptionsWindow optionsWindow;
-    private boolean placeMarker = false;
-    private boolean drawNewArea = false;
-    static boolean drawingInProgress = false;
     static ClientEntity areaBeingDrawn;
     static Map map;
     static LinkedList<ClientEntity> clientRegions = new LinkedList<>();
     static LinkedList<Marker> receiverMarkers = new LinkedList<>();
+    public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE};
+    static BUTTON_STATE buttonState;
 
-    public MapConfig(MapViewOptions options) {
+    public MapConfig(MapViewOptions options, final GuiComponents guiComponents) {
         super(options);
         setOnMapReadyHandler(new MapReadyHandler() {
             @Override
@@ -50,8 +50,8 @@ public class MapConfig extends MapView {
                 map.addEventListener("click", new MapMouseEvent() {
                     @Override
                     public void onEvent(MouseEvent mouseEvent) {
-                        if (placeMarker) {
-                            placeMarker = false;
+                        if (buttonState == BUTTON_STATE.ADD_RECEIVER) {
+                            buttonState = BUTTON_STATE.NONE;
                             new ReceiverEntity(mouseEvent);
                         }
                     }
@@ -61,12 +61,11 @@ public class MapConfig extends MapView {
                 map.addEventListener("click", new MapMouseEvent() {
                     @Override
                     public void onEvent(MouseEvent mouseEvent) {
-                        if (drawNewArea) {
-                            drawNewArea = false;
-                            areaBeingDrawn = new ClientEntity(mouseEvent);
-                            drawingInProgress = true;
+                        if (buttonState == BUTTON_STATE.ADD_CLIENT) {
+                            buttonState = BUTTON_STATE.DRAWING_CLIENT;
+                            areaBeingDrawn = new ClientEntity(mouseEvent, guiComponents);
                         }
-                        if (drawingInProgress) {
+                        if (buttonState == BUTTON_STATE.DRAWING_CLIENT) {
                             areaBeingDrawn.addPointToArea(mouseEvent);
                         }
                     }
@@ -188,12 +187,8 @@ public class MapConfig extends MapView {
         });
     }
 
-    public void toggleMarkerPlacement() {
-        placeMarker = true;
-    }
-
-    public void toggleAreaPlacement() {
-        drawNewArea = true;
+    public void setButtonState(BUTTON_STATE buttonState) {
+        this.buttonState = buttonState;
     }
 
     public ClientRegion[] getClientRegions() {

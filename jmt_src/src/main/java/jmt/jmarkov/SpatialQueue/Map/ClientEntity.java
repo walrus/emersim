@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
+import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Location;
 
 import java.util.LinkedList;
@@ -13,8 +14,10 @@ public class ClientEntity implements Entity {
     private Marker marker;
     private LinkedList<LatLng> path = new LinkedList<>();
     private Polyline areaPeri;
+    private GuiComponents guiComponents;
 
-    ClientEntity(MouseEvent mouseEvent) {
+    ClientEntity(MouseEvent mouseEvent, GuiComponents guiComponents) {
+        this.guiComponents = guiComponents;
         // Add first point to path
         path.add(mouseEvent.latLng());
         LatLng[] pathArray = new LatLng[path.size()];
@@ -106,7 +109,8 @@ public class ClientEntity implements Entity {
             // Store area for use in simulation
             clientRegions.add(this);
             areaBeingDrawn = null;
-            drawingInProgress = false;
+            buttonState = BUTTON_STATE.NONE;
+            guiComponents.finishClientCreation();
         }
     }
 
