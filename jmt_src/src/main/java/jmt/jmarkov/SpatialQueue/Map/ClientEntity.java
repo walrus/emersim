@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
+import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Location;
 
 import java.util.LinkedList;
@@ -13,11 +14,13 @@ public class ClientEntity implements Entity {
     private Marker marker;
     private LinkedList<LatLng> path = new LinkedList<>();
     private Polyline areaPeri;
+    private GuiComponents guiComponents;
 
-    ClientEntity(MouseEvent mouseEvent) {
+    ClientEntity(MouseEvent mouseEvent, GuiComponents guiComponents) {
+        this.guiComponents = guiComponents;
         // Add first point to path
         path.add(mouseEvent.latLng());
-        LatLng[] pathArray = new LatLng[path.size()];
+        final LatLng[] pathArray = new LatLng[path.size()];
 
         areaPeri = new Polyline(map);
         // Creating a polyline options object
@@ -38,10 +41,9 @@ public class ClientEntity implements Entity {
 
         marker = new Marker(map);
         marker.setPosition(mouseEvent.latLng());
-        marker.addEventListener("click", new MapMouseEvent() {
+        marker.addEventListener("dblclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                addPointToArea(mouseEvent);
                 finaliseArea();
             }
         });
@@ -56,7 +58,8 @@ public class ClientEntity implements Entity {
     private void finaliseArea() {
         if (path.size() < 3) {
             // Error, area must have >= 3 vertices
-            // TODO: Display error dialog
+            System.out.println("Client must have >= 3 vertices!");
+            new ClientErrorDialog();
         } else {
             areaPeri.setVisible(false);
             polygon = new Polygon(map);
@@ -106,7 +109,8 @@ public class ClientEntity implements Entity {
             // Store area for use in simulation
             clientRegions.add(this);
             areaBeingDrawn = null;
-            drawingInProgress = false;
+            buttonState = BUTTON_STATE.NONE;
+            guiComponents.finishClientCreation();
         }
     }
 
