@@ -1,7 +1,5 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
-import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

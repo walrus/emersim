@@ -16,7 +16,6 @@ public class StatsUtils {
 
     static double U; // Utilization [%]
     static double Q; // Average customer in station
-
     private static String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
     private static String nStrE = " cust.";
     private static String uStrS = "Avg. Utilization (Sum of All Servers) U = ";
@@ -27,12 +26,7 @@ public class StatsUtils {
     private static String respStrE = " s";
     private static String lambdaStrS = "Avg. Arrival Rate (lambda) = ";
     private static String lambdaStrE = " cust./s";
-
-    static TANotifier outputTA = new TANotifier();
-    private static boolean nonErgodic;//if the utilization is less than 1
-
-    static int buffer; //number of place for the waiting queue
-    static int cpuNum; //number of server in the system
+    private static boolean nonErgodic = false;//if the utilization is less than 1
 
 
     protected static void setLogAnalyticalResults() {
