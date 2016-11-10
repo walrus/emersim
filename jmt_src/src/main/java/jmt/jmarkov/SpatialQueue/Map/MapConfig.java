@@ -65,7 +65,7 @@ public class MapConfig extends MapView {
                             buttonState = BUTTON_STATE.DRAWING_CLIENT;
                             areaBeingDrawn = new ClientEntity(mouseEvent, guiComponents);
                         }
-                        if (buttonState == BUTTON_STATE.DRAWING_CLIENT) {
+                        else if (buttonState == BUTTON_STATE.DRAWING_CLIENT) {
                             areaBeingDrawn.addPointToArea(mouseEvent);
                         }
                     }

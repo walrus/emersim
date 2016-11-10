@@ -20,7 +20,7 @@ public class ClientEntity implements Entity {
         this.guiComponents = guiComponents;
         // Add first point to path
         path.add(mouseEvent.latLng());
-        LatLng[] pathArray = new LatLng[path.size()];
+        final LatLng[] pathArray = new LatLng[path.size()];
 
         areaPeri = new Polyline(map);
         // Creating a polyline options object
@@ -41,10 +41,9 @@ public class ClientEntity implements Entity {
 
         marker = new Marker(map);
         marker.setPosition(mouseEvent.latLng());
-        marker.addEventListener("click", new MapMouseEvent() {
+        marker.addEventListener("dblclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                addPointToArea(mouseEvent);
                 finaliseArea();
             }
         });
@@ -59,7 +58,8 @@ public class ClientEntity implements Entity {
     private void finaliseArea() {
         if (path.size() < 3) {
             // Error, area must have >= 3 vertices
-            // TODO: Display error dialog
+            System.out.println("Client must have >= 3 vertices!");
+            new ClientErrorDialog();
         } else {
             areaPeri.setVisible(false);
             polygon = new Polygon(map);
