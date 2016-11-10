@@ -70,41 +70,36 @@ public class SpatialQueueSimulator implements Runnable {
         currentTimeMultiplied = 0;
         realTimeStart = new Date().getTime();
 
-        //this is the first request which is created
-        //if request queue is not empty this means run is called from the paused situation
-        if (this.receiver.getQueue().isEmpty()) {
-            this.enqueueRequest(this.createRequest());
-        }
-
-        //if there is still at least one request waiting for a response it is running recursive(?)
-        //if paused the running will stop.
-        while (this.receiver.getQueue().size() > 0 && !paused) {
-            //this is calculating how long system will sleep
-            currentTimeMultiplied += (peekRequest().getNextEventTime() - currentTime) / timeMultiplier;
-            //this is calculating how long system will sleep
-            realTimeCurrent = new Date().getTime() - realTimeStart;
-
-            //this is for calculating if the system will pause or not
-            if ((long) currentTimeMultiplied > realTimeCurrent) {
-                try {
-                    Thread.sleep((long) currentTimeMultiplied - realTimeCurrent);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        // While not paused, process requests or wait for another one to be added
+        while (!paused) {
+            if (this.receiver.getQueue().size() > 0) {
+                //this is calculating how long system will sleep
+                currentTimeMultiplied += (peekRequest().getNextEventTime() - currentTime) / timeMultiplier;
+                //this is calculating how long system will sleep
                 realTimeCurrent = new Date().getTime() - realTimeStart;
-            }
 
-            Request request = peekRequest();
-            currentTime = request.getNextEventTime();
+                //this is for calculating if the system will pause or not
+                if ((long) currentTimeMultiplied > realTimeCurrent) {
+                    try {
+                        Thread.sleep((long) currentTimeMultiplied - realTimeCurrent);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    realTimeCurrent = new Date().getTime() - realTimeStart;
+                }
 
-            switch (request.getCurrentState()) {
-                case IN_QUEUE:
-                    //newJobArrival(job);
-                    break;
-                case BEING_SERVED:
-                    receiver.stopServing();
-                    break;
+                Request request = peekRequest();
+                currentTime = request.getNextEventTime();
 
+                switch (request.getCurrentState()) {
+                    case IN_QUEUE:
+                        //newJobArrival(job);
+                        break;
+                    case BEING_SERVED:
+                        receiver.stopServing();
+                        break;
+
+                }
             }
         }
         running = false;
