@@ -1,7 +1,5 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
-import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -31,6 +29,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
     private GuiComponents guiComponents;
 	private JPanel simulationP;
+	private SpatialQueueFrame mf;
 
 	/** Creates the dialog. */
 	public SpatialQueueFrame() {
@@ -82,7 +81,8 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 	}
 
     private void initObjects() {
-        guiComponents = new GuiComponents();
+		mf =this;
+        guiComponents = new GuiComponents(mf);
         simulationP = new JPanel();
     }
 
