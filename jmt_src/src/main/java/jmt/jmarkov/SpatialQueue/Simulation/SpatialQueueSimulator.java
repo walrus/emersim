@@ -97,7 +97,14 @@ public class SpatialQueueSimulator implements Runnable {
             Request request = dequeueRequest();
             currentTime = request.getNextEventTime();
         }
+
         running = false;
+
+        while(true) {
+            enqueueRequest(this.createRequest());
+            currentTimeMultiplied += generateNextTime(10, 3);
+        }
+
     }
 
     private int getNextRequestID() {
@@ -167,5 +174,9 @@ public class SpatialQueueSimulator implements Runnable {
 
     public boolean isStarted() {
         return this.started;
+    }
+
+    public double generateNextTime(float rateParameter, float random_max) {
+        return -Math.log(1.0 - Math.random()/(random_max + 1)/rateParameter);
     }
 }
