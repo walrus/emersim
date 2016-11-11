@@ -14,6 +14,8 @@ public class Receiver {
 
     private LinkedList<Request> requestQueue;
 
+    private LinkedList<Request> servedRequests;
+
     private JobQueue q;
 
     private QueueLogic ql;
@@ -29,6 +31,7 @@ public class Receiver {
         this.serving = false;
         this.currentRequest = null;
         this.requestQueue = new LinkedList<>();
+        this.servedRequests = new LinkedList<>();
     }
 
     public Location getLocation() {
@@ -37,25 +40,29 @@ public class Receiver {
 
     // Get the first request from the queue and serve it.
     // Performs a similar function to process in Processor from JMCH
-    public void serveRequest(double currentTime) {
+    public Request serveRequest(double currentTime) {
         try {
             if (!this.isServing()) {
                 if (!requestQueue.isEmpty()) {
                     Request request = getNextRequest();
                     request.serve(currentTime, currentTime + request.getResponseTime());
-                    requestQueue.getFirst().setNextEventTime(currentTime + request.getResponseTime());
                     setServing(true);
-                    currentRequest = request;
+                    this.currentRequest = request;
+                    return request;
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public void stopServing() {
+    public void stopServing(double currentTime) {
         this.setServing(false);
+        this.currentRequest.finishServing(currentTime);
+        this.servedRequests.add(this.currentRequest);
+        this.currentRequest = null;
     }
 
     private boolean isServing() {

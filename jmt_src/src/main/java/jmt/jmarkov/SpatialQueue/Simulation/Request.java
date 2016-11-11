@@ -41,6 +41,7 @@ public class Request{
         this.currentState = BEING_SERVED;
         this.startServiceTime = currentTime;
         this.finishServiceTime = finishTime;
+        this.setNextEventTime(finishTime);
     }
 
     public void setFinishServiceTime(double time){
@@ -74,5 +75,9 @@ public class Request{
 
     public RequestState getCurrentState() {
         return this.currentState;
+    }
+
+    public int getRequestId() {
+        return this.requestId;
     }
 }

@@ -28,7 +28,7 @@ public class Sender {
     //Send a request to the Receiver
     //Called by the simulator, which provides jobid and time
     public Request makeRequest(int jobid, double time) {
-        if (requestsSent > requestsToSend) {
+        if (requestsSent < requestsToSend) {
             requestsSent++;
             return new Request(jobid, time, this);
         } else {

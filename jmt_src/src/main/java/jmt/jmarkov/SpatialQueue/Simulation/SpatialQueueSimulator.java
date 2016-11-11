@@ -70,15 +70,20 @@ public class SpatialQueueSimulator implements Runnable {
         currentTimeMultiplied = 0;
         realTimeStart = new Date().getTime();
 
+        // TODO: use actual request generation
+        for (int i = 0; i < 10; i++) {
+            this.enqueueRequest(this.createRequest());
+        }
         // While not paused, process requests or wait for another one to be added
         while (!paused) {
             if (this.receiver.getQueue().size() > 0) {
-                //this is calculating how long system will sleep
-                currentTimeMultiplied += (peekRequest().getNextEventTime() - currentTime) / timeMultiplier;
+                // Serve the next request and grab a link to the request being served
+                Request currentRequest = this.receiver.serveRequest(currentTimeMultiplied);
+                currentTimeMultiplied += (currentRequest.getNextEventTime() - currentTime) / timeMultiplier;
                 //this is calculating how long system will sleep
                 realTimeCurrent = new Date().getTime() - realTimeStart;
 
-                //this is for calculating if the system will pause or not
+                // If necessary, sleep
                 if ((long) currentTimeMultiplied > realTimeCurrent) {
                     try {
                         Thread.sleep((long) currentTimeMultiplied - realTimeCurrent);
@@ -88,18 +93,11 @@ public class SpatialQueueSimulator implements Runnable {
                     realTimeCurrent = new Date().getTime() - realTimeStart;
                 }
 
-                Request request = peekRequest();
-                currentTime = request.getNextEventTime();
-
-                switch (request.getCurrentState()) {
-                    case IN_QUEUE:
-                        //newJobArrival(job);
-                        break;
-                    case BEING_SERVED:
-                        receiver.stopServing();
-                        break;
-
-                }
+                //Having waited till the request has been served, deal with it
+                currentTime = currentRequest.getNextEventTime();
+                this.receiver.stopServing(currentTime);
+            } else {
+                // No requests in queue, so just loop till another is added
             }
         }
         running = false;
@@ -115,7 +113,8 @@ public class SpatialQueueSimulator implements Runnable {
         //Current implementation: create a new sender then generate a request from them
         //Future implementation could take existing sender (generate before running sim)
         Sender sender = this.generateNewSenderWithinArea(this.regions[0]);
-        return sender.makeRequest(getNextRequestID(), this.currentTime);
+        Request r = sender.makeRequest(getNextRequestID(), this.currentTime);
+        return r;
     }
 
     public void enqueueRequest(Request newRequest) {
