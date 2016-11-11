@@ -1,7 +1,6 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
 import com.teamdev.jxmaps.MapViewOptions;
-import jmt.jmarkov.CustomDialog;
 import jmt.jmarkov.Graphics.*;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Queues.MM1Logic;

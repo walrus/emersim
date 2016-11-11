@@ -71,7 +71,7 @@ public class SpatialQueueSimulator implements Runnable {
         realTimeStart = new Date().getTime();
 
         // TODO: use actual request generation
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 500; i++) {
             this.enqueueRequest(this.createRequest());
         }
         // While not paused, process requests or wait for another one to be added

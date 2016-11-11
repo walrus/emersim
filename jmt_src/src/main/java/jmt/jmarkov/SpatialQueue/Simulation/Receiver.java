@@ -46,6 +46,7 @@ public class Receiver {
                 if (!requestQueue.isEmpty()) {
                     Request request = getNextRequest();
                     request.serve(currentTime, currentTime + request.getResponseTime());
+                    System.out.println("Serving: " + request.getRequestId() + ", distance: " + request.getResponseTime());
                     setServing(true);
                     this.currentRequest = request;
                     return request;
@@ -80,7 +81,7 @@ public class Receiver {
         calculateResponseTime(request);
         int i;
         for (i = 0; i < this.requestQueue.size(); i++) {
-            if (this.requestQueue.get(i).getResponseTime() < request.getResponseTime()) {
+            if (this.requestQueue.get(i).getResponseTime() > request.getResponseTime()) {
                 break;
             }
         }
