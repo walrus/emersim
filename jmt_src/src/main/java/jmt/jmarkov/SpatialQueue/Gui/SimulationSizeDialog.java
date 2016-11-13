@@ -55,7 +55,7 @@ public class SimulationSizeDialog extends JDialog implements ActionListener, Pro
 	/** Creates the reusable dialog. */
 	public SimulationSizeDialog(JFrame aFrame) {
 		super(aFrame, true);
-		setTitle("Enter n. of cust. to simulate");
+		setTitle("Enter number of requests to simulate");
 		textField = new JTextField(10);
 		textField.setEnabled(false);
 		textField.addKeyListener(new KeyAdapter() {
@@ -184,6 +184,10 @@ public class SimulationSizeDialog extends JDialog implements ActionListener, Pro
 
 		//Register an event handler that reacts to option pane state changes.
 		optionPane.addPropertyChangeListener(this);
+	}
+
+	public int getTypedValue() {
+		return this.typedValue;
 	}
 
 	/** This method handles events for the text field. */
