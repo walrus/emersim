@@ -40,10 +40,13 @@ public class SpatialQueueSimulator implements Runnable {
 
     private int currentRequestID;
 
+    private int maxRequests;
+
     public SpatialQueueSimulator(double timeMultiplier,
                                  Notifier[] notifier,
                                  Receiver receiver,
-                                 MapConfig mapConfig) {
+                                 MapConfig mapConfig,
+                                 int maxRequests) {
         super();
 
         currentTime = 0;
@@ -52,6 +55,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.receiver = receiver;
         this.regions = mapConfig.getClientRegions();
         this.currentRequestID = 0;
+        this.maxRequests = maxRequests;
     }
 
     private Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
@@ -71,11 +75,11 @@ public class SpatialQueueSimulator implements Runnable {
         realTimeStart = new Date().getTime();
 
         // TODO: use actual request generation
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 10; i++) {
             this.enqueueRequest(this.createRequest());
         }
         // While not paused, process requests or wait for another one to be added
-        while (!paused) {
+        while (!paused && moreRequests()) {
             if (this.receiver.getQueue().size() > 0) {
                 // Serve the next request and grab a link to the request being served
                 Request currentRequest = this.receiver.serveRequest(currentTimeMultiplied);
@@ -98,9 +102,15 @@ public class SpatialQueueSimulator implements Runnable {
                 this.receiver.stopServing(currentTime);
             } else {
                 // No requests in queue, so just loop till another is added
+                System.out.println("Total requests served: " + this.receiver.getNumberOfRequestsServed());
             }
         }
         running = false;
+        System.out.println("Stopping, total requests served: " + this.receiver.getNumberOfRequestsServed());
+    }
+    // Return true iff receiver has served fewer then maxRequests requests or if maxRequests == 0
+    private boolean moreRequests() {
+        return (this.receiver.getNumberOfRequestsServed() < this.maxRequests || maxRequests == 0);
     }
 
     private synchronized int getNextRequestID() {

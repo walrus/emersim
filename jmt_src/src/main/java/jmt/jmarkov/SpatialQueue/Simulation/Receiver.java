@@ -111,4 +111,8 @@ public class Receiver {
     public LinkedList<Request> getQueue() {
         return this.requestQueue;
     }
+
+    public int getNumberOfRequestsServed() {
+        return this.servedRequests.size();
+    }
 }

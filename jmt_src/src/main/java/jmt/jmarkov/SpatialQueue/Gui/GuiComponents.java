@@ -231,7 +231,11 @@ public class GuiComponents {
                 tan[3] = jobsDrawer;
                 tan[4] = logFile;
 
-                sim = new SpatialQueueSimulator(accelerationS.getValue(), tan, new Receiver(mapView.getReceiverLocation()), mapView);
+                sim = new SpatialQueueSimulator(accelerationS.getValue(),
+                                                tan,
+                                                new Receiver(mapView.getReceiverLocation()),
+                                                mapView,
+                                                jobsDialog.getTypedValue());
 
                 sim.start();
                 start.setEnabled(false);
