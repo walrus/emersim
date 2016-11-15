@@ -235,7 +235,8 @@ public class GuiComponents {
                                                 tan,
                                                 new Receiver(mapView.getReceiverLocation()),
                                                 mapView,
-                                                jobsDialog.getTypedValue());
+                                                jobsDialog.getTypedValue(),
+                        queueDrawer);
 
                 sim.start();
                 start.setEnabled(false);
@@ -342,6 +343,7 @@ public class GuiComponents {
     // create a service time slider
     protected void setupServiceTime() {
         sMultiplier = 0.02;
+
         ql.setS(S_I * sMultiplier);
     }
 

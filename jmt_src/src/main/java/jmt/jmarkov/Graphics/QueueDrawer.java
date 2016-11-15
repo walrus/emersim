@@ -956,6 +956,12 @@ public class QueueDrawer extends JComponent implements Notifier {
 
 	}
 
+	public void enterQueue() {
+		jobs++;
+		this.repaint();
+	}
+
+
 	public void exitProcessor(int jobId, int processorId, double time) {
 		// TODO Auto-generated method stub
 		executingJobId = 0;
@@ -964,6 +970,11 @@ public class QueueDrawer extends JComponent implements Notifier {
 	}
 
 	public void exitQueue(int jobId, double time) {
+		jobs--;
+		this.repaint();
+	}
+
+	public void exitQueue() {
 		jobs--;
 		this.repaint();
 	}
