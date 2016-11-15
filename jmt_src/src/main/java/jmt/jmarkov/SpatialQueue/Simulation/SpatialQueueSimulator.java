@@ -10,6 +10,7 @@ import jmt.jmarkov.SpatialQueue.*;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
 import java.util.Date;
+import java.util.Random;
 
 public class SpatialQueueSimulator implements Runnable {
 
@@ -122,7 +123,12 @@ public class SpatialQueueSimulator implements Runnable {
     public Request createRequest() {
         //Current implementation: create a new sender then generate a request from them
         //Future implementation could take existing sender (generate before running sim)
-        Sender sender = this.generateNewSenderWithinArea(this.regions[0]);
+        int randomInt = new Random().nextInt(this.regions.length);
+
+        Sender sender = this.generateNewSenderWithinArea(this.regions[randomInt]);
+
+        //Sender sender = this.generateNewSenderWithinArea(this.regions[0]);
+
         Request r = sender.makeRequest(getNextRequestID(), this.currentTime);
         return r;
     }
