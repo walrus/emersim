@@ -106,7 +106,6 @@ public class SpatialQueueSimulator implements Runnable {
                 System.out.println("Total requests served: " + this.receiver.getNumberOfRequestsServed());
             }
         }
-
         running = false;
         System.out.println("Stopping, total requests served: " + this.receiver.getNumberOfRequestsServed());
     }
@@ -191,9 +190,5 @@ public class SpatialQueueSimulator implements Runnable {
 
     public boolean isStarted() {
         return this.started;
-    }
-
-    public double generateNextTime(float rateParameter, float random_max) {
-        return -Math.log(1.0 - Math.random()/(random_max + 1)/rateParameter);
     }
 }
