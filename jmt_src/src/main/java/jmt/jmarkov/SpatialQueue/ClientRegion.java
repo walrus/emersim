@@ -78,6 +78,34 @@ public class ClientRegion implements Shape {
         return new Location(x, y);
     }
 
+    public Location[] generatePointsWithinRegions(ClientRegion[] regions) {
+        Location[] locations = new Location[regions.length];
+        regions = rankRegions(regions);
+        for(int i = 0; i < regions.length; i++) {
+            Location location = generatePoint();
+            locations[i] = location;
+        }
+        return locations;
+    }
+
+    public ClientRegion[] rankRegions(ClientRegion[] regions) {
+        double max_probability = regions[0].getRegionProbability();
+        ClientRegion[] rankedRegions = regions;
+        for(int i = 0; i < regions.length; i++) {
+            if (max_probability < regions[i].getRegionProbability()) {
+                max_probability = regions[i].getRegionProbability();
+                rankedRegions[0] = regions[i];
+                rankedRegions[i] = regions[0];
+            }
+        }
+        return rankedRegions;
+    }
+
+    private double getRegionProbability() {
+        //to be implemented
+        return 0;
+    }
+
 
     @Override
     public boolean intersects(double x, double y, double w, double h) {
