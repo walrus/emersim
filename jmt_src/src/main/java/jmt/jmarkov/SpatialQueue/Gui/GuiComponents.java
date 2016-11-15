@@ -29,47 +29,22 @@ public class GuiComponents {
     //To change service time change this variable
     private int S_I =  70;
 
-    private JPanel buffPanel;
-    private JPanel sPanel;
-    private JPanel lambdaPanel;
     private JPanel parametersP;
-    private JPanel resultsP;
-
     private JButton start;
     private JButton pause;
     private JButton stop;
     private JButton client;
     private JButton receiver;
-
-    private JLabel buffL;
-    private JLabel lambdaL;
     private JLabel mediaJobsL;
     private JLabel utilizationL;
-
-    private JSlider buffS;
     private JSlider lambdaS;
-
-    private int BUFF_I = 15;
-
-    static int sMultiplierChange = 1; //for the service slide bar
-
+    private boolean paused = false;
     static int lambdaMultiplierChange = 0; //for the lambda slide bar
     private int LAMBDA_I = 50;
-
-    private String bufStrS = "Max Station Capacity k = ";
-    private String bufStrE = " cust.";
-
     static double sMultiplier = 1; //service time slide bar multiplier
     static double lambdaMultiplier = 1; //lambda slide bar multiplier
-
-    private boolean sSChange = true;
-    private boolean paused;
-    private boolean lambdaSChange = true;
-
     static SpatialQueueSimulator sim;
-
     static DrawNormal dCst;
-
     static MM1Logic ql;
     static QueueDrawer queueDrawer;
     static StatiDrawer statiDrawer;
@@ -79,28 +54,25 @@ public class GuiComponents {
     private LogFile logFile;
     static JLabel thrL;
     static JLabel responseL;
+    static TANotifier outputTA;
+    private JFrame mf;
 
-    public GuiComponents() {
+
+    public GuiComponents(JFrame mf) {
         init();
         showQueue(1);
+        this.mf = mf;
     }
 
     //Initialise objects
     private void init() {
         sim = null;
         paused = false;
-        buffL = new JLabel();
-        buffPanel = new JPanel();
-        buffS = new JSlider();
-        sPanel = new JPanel();
         lambdaS = new JSlider();
         ql = new MM1Logic(0.0, 0.0);
         queueDrawer = new QueueDrawer(ql);
         statiDrawer = new StatiDrawer(ql);
-        lambdaPanel = new JPanel();
-        lambdaL = new JLabel();
         parametersP = new JPanel();
-        resultsP = new JPanel();
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
         start = new JButton("Start");
@@ -114,6 +86,7 @@ public class GuiComponents {
         thrL = new JLabel();
         responseL = new JLabel();
         jobsDrawer = new JobsDrawer();
+        outputTA = new TANotifier();
     }
 
     //Create queueDrawer for queue visualisation
@@ -234,10 +207,21 @@ public class GuiComponents {
     private void startButton() {
         start.setEnabled(false);
 
+
+
+////        logFile.setLogging(false);
+
+
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+
                 client.setEnabled(false);
+                SimulationSizeDialog jobsDialog = new SimulationSizeDialog(mf);
+                jobsDialog.pack();
+                jobsDialog.setLocationRelativeTo(mf);
+                jobsDialog.setVisible(true);
+
                 queueDrawer.setMediaJobs(Q - U);
                 Notifier[] tan = new Notifier[5];
                 logFile = new LogFile();
@@ -247,7 +231,11 @@ public class GuiComponents {
                 tan[3] = jobsDrawer;
                 tan[4] = logFile;
 
-                sim = new SpatialQueueSimulator(accelerationS.getValue(), tan, new Receiver(mapView.getReceiverLocation()), mapView);
+                sim = new SpatialQueueSimulator(accelerationS.getValue(),
+                                                tan,
+                                                new Receiver(mapView.getReceiverLocation()),
+                                                mapView,
+                                                jobsDialog.getTypedValue());
 
                 sim.start();
                 start.setEnabled(false);
@@ -354,12 +342,13 @@ public class GuiComponents {
     // create a service time slider
     protected void setupServiceTime() {
         sMultiplier = 0.02;
-        sMultiplierChange = 1;
         ql.setS(S_I * sMultiplier);
     }
 
     //create a lambda slider
     protected void createLambdaSlider(GridBagConstraints c) {
+        final boolean[] lambdaSChange = {true};
+        JPanel lambdaPanel = new JPanel();
         setupServiceTime();
 
         lambdaPanel.setLayout(new GridLayout(2, 1));
@@ -372,6 +361,7 @@ public class GuiComponents {
         parametersP.add(getSplitter(10, 1), c);
         c.weightx = 0.5;
 
+        final JLabel lambdaL = new JLabel();
         lambdaL.setAlignmentX(SwingConstants.CENTER);
         lambdaPanel.add(lambdaL);
         lambdaMultiplier = 0.01;
@@ -392,7 +382,7 @@ public class GuiComponents {
             public void stateChanged(ChangeEvent evt) {
                 StatsUtils.lambdaSStateChanged(utilizationL, mediaJobsL, sim, lambdaS, lambdaL);
 
-                if (lambdaSChange) {
+                if (lambdaSChange[0]) {
                     StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
                 }
 
@@ -410,12 +400,12 @@ public class GuiComponents {
             }
 
             public void mousePressed(MouseEvent e) {
-                lambdaSChange = false;
+                lambdaSChange[0] = false;
             }
 
             public void mouseReleased(MouseEvent e) {
                 StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
-                lambdaSChange = true;
+                lambdaSChange[0] = true;
             }
 
         });
@@ -435,6 +425,7 @@ public class GuiComponents {
 
     // create the panel that contains the simulation stats
     protected void createSimulationResultsPanel(GridBagConstraints c, JPanel simulationP) {
+        JPanel resultsP = new JPanel();
         resultsP.setLayout(new GridLayout(2, 2));
         resultsP.setBorder(addTitle("Simulation Results", dCst.getSmallGUIFont()));
         c.gridx = 0;
@@ -445,16 +436,9 @@ public class GuiComponents {
 
     //setup queue visualisation and pointer
     protected void showQueue(int cpuNumber) {
-        buffer = BUFF_I;
-        cpuNum = cpuNumber;
-        buffS.setMaximum(30 + cpuNumber + 1);
-        buffS.setMinimum(cpuNumber + 1);
-        buffS.setValue(buffer + cpuNumber);
 
-        buffer = 0;
         ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), S_I * sMultiplier);
 
-        buffPanel.setVisible(false);
         lambdaS.setValue(LAMBDA_I);
         statiDrawer.updateLogic(ql);
         queueDrawer.updateLogic(ql);
