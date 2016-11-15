@@ -20,8 +20,6 @@ public class SpatialQueueSimulator implements Runnable {
 
     private ClientRegion[] regions;
 
-    private Notifier[] notifier;
-
     //current simulation time
     private double currentTime;// in milliseconds
 
@@ -46,16 +44,15 @@ public class SpatialQueueSimulator implements Runnable {
     private QueueDrawer queueDrawer;
 
     public SpatialQueueSimulator(double timeMultiplier,
-                                 Notifier[] notifier,
+                                 QueueDrawer queueDrawer,
                                  Receiver receiver,
                                  MapConfig mapConfig,
-                                 int maxRequests,
-                                 QueueDrawer queueDrawer) {
+                                 int maxRequests
+                                 ) {
         super();
 
         currentTime = 0;
         setTimeMultiplier(timeMultiplier);
-        this.notifier = notifier;
         this.receiver = receiver;
         this.regions = mapConfig.getClientRegions();
         this.currentRequestID = 0;
