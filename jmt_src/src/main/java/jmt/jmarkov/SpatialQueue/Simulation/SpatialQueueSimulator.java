@@ -81,9 +81,10 @@ public class SpatialQueueSimulator implements Runnable {
 
         // TODO: use actual request generation
         for (int i = 0; i < 500; i++) {
-            this.enqueueRequest(this.createRequest());
+            Request newRequest = this.createRequest();
+            this.enqueueRequest(newRequest);
             //update queue visualisation
-            queueDrawer.enterQueue();
+            queueDrawer.enterQueue(newRequest.getRequestId());
         }
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {
@@ -109,12 +110,16 @@ public class SpatialQueueSimulator implements Runnable {
                 //Having waited till the request has been served, deal with it
                 currentTime = currentRequest.getNextEventTime();
                 this.receiver.stopServing(currentTime);
+
                 // update queue visualisation
                 queueDrawer.exitQueue();
+
             } else {
                 // No requests in queue, so just loop till another is added
                 System.out.println("Total requests served: " + this.receiver.getNumberOfRequestsServed());
+                break;
             }
+
         }
         running = false;
         System.out.println("Stopping, total requests served: " + this.receiver.getNumberOfRequestsServed());

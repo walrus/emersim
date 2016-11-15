@@ -135,12 +135,15 @@ public class QueueDrawer extends JComponent implements Notifier {
 
 	private int executingJobId;
 
+	private boolean spatial;
+
 	public QueueDrawer(QueueLogic ql) {
 		super();
 		this.ql = ql;
 		panelW = this.getWidth();
 		panelH = this.getHeight();
 		setCpuNumber(1);
+		spatial = false;
 		init();
 	}
 
@@ -150,6 +153,16 @@ public class QueueDrawer extends JComponent implements Notifier {
 		panelW = panelSize.width;
 		panelH = panelSize.height;
 		setCpuNumber(1);
+		init();
+	}
+
+	public QueueDrawer(QueueLogic ql, boolean spatial) {
+		super();
+		this.ql = ql;
+		panelW = this.getWidth();
+		panelH = this.getHeight();
+		setCpuNumber(1);
+		this.spatial = spatial;
 		init();
 	}
 
@@ -268,7 +281,11 @@ public class QueueDrawer extends JComponent implements Notifier {
 		if ((jobs > queueLength()) && ((queueLength() < queueMax) || (queueMax == -1))) {
 			drawMoreStatus(queueC, emptyC, Color.black, gradientF, g2d);
 		}
-		drawJobs(g2d);
+		if (spatial) {
+			drawExecutingSpatialJobs(g2d);
+		}  else {
+			drawJobs(g2d);
+		}
 		if (lostJobs > 0) {
 			drawLostJobs(Color.BLACK, Color.WHITE, Color.BLACK, true, g2d);
 		}
@@ -422,6 +439,19 @@ public class QueueDrawer extends JComponent implements Notifier {
 		//			drawCenteredText("executing cust.:" + donejobs , Color.BLACK, Color.WHITE, x - txtBounds.getWidth() / 2.0, y, g2d, true, true);
 		//		}
 		// draw box around text
+		g2d.setColor(tmp);
+	}
+
+	private void drawExecutingSpatialJobs(Graphics2D g2d) {
+		double x = getProcessorXY().x + 2 * PROC_RAD, y = getProcessorXY().y + PROC_RAD * 2 + 4 * ELEMS_GAP;
+		Color tmp = g2d.getColor();
+		//		System.out.println(nCpu);
+		if (nCpu == 1) {
+			txtBounds = drawCenteredText("Executing Job Number: " + donejobs , Color.BLACK, Color.WHITE, x,
+					y, g2d, true, false);
+			drawCenteredText("Executing Job Number: " + donejobs, Color.BLACK, Color.WHITE, x
+					- txtBounds.getWidth() / 2.0, y, g2d, true, true);
+		}
 		g2d.setColor(tmp);
 	}
 
@@ -956,7 +986,8 @@ public class QueueDrawer extends JComponent implements Notifier {
 
 	}
 
-	public void enterQueue() {
+	public void enterQueue(int jobId) {
+		donejobs = jobId;
 		jobs++;
 		this.repaint();
 	}

@@ -70,7 +70,7 @@ public class GuiComponents {
         paused = false;
         lambdaS = new JSlider();
         ql = new MM1Logic(0.0, 0.0);
-        queueDrawer = new QueueDrawer(ql);
+        queueDrawer = new QueueDrawer(ql, true);
         statiDrawer = new StatiDrawer(ql);
         parametersP = new JPanel();
         mediaJobsL = new JLabel();
