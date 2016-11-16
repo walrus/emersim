@@ -62,7 +62,7 @@ public class GuiComponents {
     static JLabel thrL;
     static JLabel responseL;
     static TANotifier outputTA;
-    private JFrame mf;
+    private SpatialQueueFrame mf;
 
     private JMenuBar menuB;
     private JMenu settingsMenu;
@@ -80,9 +80,10 @@ public class GuiComponents {
     private JMenu sizeMenu;
     private boolean gradientF = false;
     private JMenu helpMenu;
+    private JMenu fileMenu;
 
 
-    public GuiComponents(JFrame mf) {
+    public GuiComponents(SpatialQueueFrame mf) {
         init();
         showQueue(1);
         this.mf = mf;
@@ -452,25 +453,22 @@ public class GuiComponents {
         menuB = new JMenuBar();
         mf.setJMenuBar(menuB);
 
+        fileMenu = new JMenu("File");
+
+        Action resetFrame = new AbstractAction("Reset") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mf.dispose();
+                mf = new SpatialQueueFrame();
+            }
+        };
+        fileMenu.add(resetFrame);
+        menuB.add(fileMenu);
+
         // settings
         settingsMenu = new JMenu("Settings");
         colorsMenu = new JMenu("Colors");
-        Action queueCAction = new AbstractAction("Probability...") {
 
-            private static final long serialVersionUID = 1L;
-
-            public void actionPerformed(ActionEvent event) {
-                // action code goes here
-                Color tmpC;
-                tmpC = JColorChooser.showDialog(null, "Probability color", probC);
-                if (tmpC != null) {
-                    probC = tmpC;
-                    changeColors();
-                }
-            }
-
-        };
-        colorsMenu.add(queueCAction);
         Action queueFCAction = new AbstractAction("Queue...") {
 
             private static final long serialVersionUID = 1L;
@@ -504,22 +502,7 @@ public class GuiComponents {
 
         };
         colorsMenu.add(statusCAction);
-        Action animCAction = new AbstractAction("Animation...") {
 
-            private static final long serialVersionUID = 1L;
-
-            public void actionPerformed(ActionEvent event) {
-                // action code goes here
-                Color tmpC;
-                tmpC = JColorChooser.showDialog(null, "Animation color", animC);
-                if (tmpC != null) {
-                    animC = tmpC;
-                    changeColors();
-                }
-            }
-
-        };
-        colorsMenu.add(animCAction);
         colorsMenu.addSeparator();
 
         // gradientItem = new JRadioButtonMenuItem("usa gradiente", false);
@@ -607,8 +590,6 @@ public class GuiComponents {
 
         helpMenu.add(help);
 
-        // end NEW
-
         // NEW Bertoli Marco
         helpMenu.addSeparator();
 
@@ -621,18 +602,14 @@ public class GuiComponents {
              */
             public void actionPerformed(ActionEvent e) {
 //                AboutDialogFactory.showJMCH(MMQueues.this);
+
+
             }
         });
 
         helpMenu.add(about);
-        // END new
-
         menuB.add(helpMenu);
-
-
     }
-
-
 
     protected void changeSize() {
         queueDrawer.changeDrawSettings(dCst);

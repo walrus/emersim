@@ -80,6 +80,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+
 	}
 
     private void initObjects() {
