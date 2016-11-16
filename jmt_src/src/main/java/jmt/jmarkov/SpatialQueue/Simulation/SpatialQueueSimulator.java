@@ -44,6 +44,8 @@ public class SpatialQueueSimulator implements Runnable {
 
     private QueueDrawer queueDrawer;
 
+    private MapConfig mapConfig;
+
     public SpatialQueueSimulator(double timeMultiplier,
                                  QueueDrawer queueDrawer,
                                  Receiver receiver,
@@ -59,6 +61,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.currentRequestID = 0;
         this.maxRequests = maxRequests;
         this.queueDrawer = queueDrawer;
+        this.mapConfig = mapConfig;
     }
 
     protected Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
@@ -123,11 +126,15 @@ public class SpatialQueueSimulator implements Runnable {
         }
 
         running = false;
+
+        while(true & this.getReceiver().getQueue().size() < maxRequests) {
+            new RequestRunnable(timeMultiplier, queueDrawer, receiver, this.mapConfig, maxRequests).run();
+        }
         System.out.println("Stopping, total requests served: " + this.receiver.getNumberOfRequestsServed());
 
     }
     // Return true iff receiver has served fewer then maxRequests requests or if maxRequests == 0
-    private boolean moreRequests() {
+    protected boolean moreRequests() {
         return (this.receiver.getNumberOfRequestsServed() < this.maxRequests || maxRequests == 0);
     }
 
@@ -217,4 +224,19 @@ public class SpatialQueueSimulator implements Runnable {
         return regions;
     }
 
+    public QueueDrawer getQueueDrawer() {
+        return queueDrawer;
+    }
+
+    public Receiver getReceiver() {
+        return receiver;
+    }
+
+    public double getCurrentTime() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(double currentTime) {
+        this.currentTime = currentTime;
+    }
 }
