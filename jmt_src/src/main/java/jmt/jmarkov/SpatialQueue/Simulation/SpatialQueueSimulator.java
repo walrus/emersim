@@ -59,7 +59,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.maxRequests = maxRequests;
     }
 
-    private Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
+    protected Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
         Location senderLocation = clientRegion.generatePoint();
         return new Sender(senderLocation);    }
 
@@ -115,7 +115,7 @@ public class SpatialQueueSimulator implements Runnable {
         return (this.receiver.getNumberOfRequestsServed() < this.maxRequests || maxRequests == 0);
     }
 
-    private synchronized int getNextRequestID() {
+    protected synchronized int getNextRequestID() {
         int r = this.currentRequestID;
         this.currentRequestID ++;
         return r;
@@ -193,7 +193,12 @@ public class SpatialQueueSimulator implements Runnable {
         return this.started;
     }
 
-    public double generateNextTime(float rateParameter, float random_max) {
-        return -Math.log(1.0 - Math.random()/(random_max + 1)/rateParameter);
+    public int getMaxRequestNumber() {
+        return this.maxRequests;
     }
+
+    public ClientRegion[] getRegions() {
+        return regions;
+    }
+
 }
