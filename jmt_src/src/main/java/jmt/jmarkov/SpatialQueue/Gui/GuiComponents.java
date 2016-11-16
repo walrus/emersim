@@ -48,7 +48,6 @@ public class GuiComponents {
     static MM1Logic ql;
     static QueueDrawer queueDrawer;
     private MapConfig mapView;
-    private JobsDrawer jobsDrawer;
     private JSlider accelerationS;
     static JLabel thrL;
     static JLabel responseL;
@@ -82,7 +81,6 @@ public class GuiComponents {
         dCst = new DrawNormal();
         thrL = new JLabel();
         responseL = new JLabel();
-        jobsDrawer = new JobsDrawer();
         outputTA = new TANotifier();
     }
 
@@ -118,9 +116,6 @@ public class GuiComponents {
 
         //scroll bar
         addSpeedSlider(panel);
-
-        //number of arrivals
-        addJobsPanel(panel);
     }
 
     public void finishClientCreation() {
@@ -177,7 +172,6 @@ public class GuiComponents {
         }
         outputTA.reset();
         queueDrawer.reset();
-        jobsDrawer.reset();
 
         updateFields(utilizationL, mediaJobsL, sim);
     }
@@ -264,6 +258,7 @@ public class GuiComponents {
         accelerationS.setValue(50);
         final JLabel finalAccelerationL = accelerationL;
         makeSpeedSliderFunctional(accelerationS, finalAccelerationL);
+
         accelerationL.setText("Time x" + Formatter.formatNumber(accelerationS.getValue(), 2));
     }
 
@@ -308,9 +303,6 @@ public class GuiComponents {
         return new TitledBorder(null, title, TitledBorder.LEADING, TitledBorder.TOP, f, new java.awt.Color(0, 0, 0));
     }
 
-    private void addJobsPanel(JPanel jobsP) {
-        jobsP.add(jobsDrawer);
-    }
 
     // split a pane in half to view to objects side by side
     protected JPanel getSplitter(int width, int height) {
