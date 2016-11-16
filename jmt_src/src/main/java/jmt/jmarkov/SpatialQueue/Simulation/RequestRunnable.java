@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
 import jmt.jmarkov.Graphics.Notifier;
+import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
 import java.util.Random;
@@ -10,8 +11,9 @@ import java.util.Random;
  */
 public class RequestRunnable extends SpatialQueueSimulator implements Runnable {
 
-    public RequestRunnable(double timeMultiplier, Notifier[] notifier, Receiver receiver, MapConfig mapConfig, int maxRequests) {
-        super(timeMultiplier, notifier, receiver, mapConfig, maxRequests);
+    public RequestRunnable(double timeMultiplier, QueueDrawer queueDrawer, Receiver receiver, MapConfig mapConfig,
+                           int maxRequests) {
+        super(timeMultiplier,  queueDrawer, receiver, mapConfig, maxRequests);
     }
 
     @Override
