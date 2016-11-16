@@ -5,9 +5,9 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
 
-import jmt.jmarkov.Graphics.Notifier;
 import jmt.jmarkov.Graphics.QueueDrawer;
-import jmt.jmarkov.SpatialQueue.*;
+import jmt.jmarkov.SpatialQueue.ClientRegion;
+import jmt.jmarkov.SpatialQueue.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
 import java.util.Date;
