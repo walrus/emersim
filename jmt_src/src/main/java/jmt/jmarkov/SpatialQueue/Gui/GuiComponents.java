@@ -258,6 +258,7 @@ public class GuiComponents {
         accelerationS.setValue(50);
         final JLabel finalAccelerationL = accelerationL;
         makeSpeedSliderFunctional(accelerationS, finalAccelerationL);
+
         accelerationL.setText("Time x" + Formatter.formatNumber(accelerationS.getValue(), 2));
     }
 
