@@ -21,7 +21,7 @@ public class RequestRunnable extends SpatialQueueSimulator implements Runnable {
     public void run() {
         running = true;
         started = true;
-
+        
         int count = 0;
         while (running == true & count < this.getMaxRequestNumber()) {
             Request newRequest = createRequestWithPoissonDistribution();

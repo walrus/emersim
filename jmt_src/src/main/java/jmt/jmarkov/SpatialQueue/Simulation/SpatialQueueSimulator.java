@@ -81,7 +81,7 @@ public class SpatialQueueSimulator implements Runnable {
         realTimeStart = new Date().getTime();
 
         // TODO: use actual request generation
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 5; i++) {
             Request newRequest = this.createRequest();
             this.enqueueRequest(newRequest);
             //update queue visualisation
@@ -127,7 +127,7 @@ public class SpatialQueueSimulator implements Runnable {
 
         running = false;
 
-        while(true & this.getReceiver().getQueue().size() < maxRequests) {
+        while(true && this.getReceiver().getQueue().size() < maxRequests) {
             new RequestRunnable(timeMultiplier, queueDrawer, receiver, this.mapConfig, maxRequests).run();
         }
         System.out.println("Stopping, total requests served: " + this.receiver.getNumberOfRequestsServed());

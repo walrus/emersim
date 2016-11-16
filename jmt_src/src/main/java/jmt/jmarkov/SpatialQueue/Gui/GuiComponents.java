@@ -1,13 +1,22 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
 import com.teamdev.jxmaps.MapViewOptions;
+import jmt.framework.gui.controller.Manager;
+import jmt.gui.common.panels.AboutDialogFactory;
 import jmt.jmarkov.Graphics.*;
+import jmt.jmarkov.Graphics.constants.DrawBig;
+import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Graphics.constants.DrawSmall;
+import jmt.jmarkov.MMQueues;
 import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Simulation.Receiver;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
+import jmt.manual.ManualBookmarkers;
+import jmt.manual.PDFViewerBuffer;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -18,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.Dictionary;
 import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
 
@@ -44,7 +54,7 @@ public class GuiComponents {
     static double sMultiplier = 1; //service time slide bar multiplier
     static double lambdaMultiplier = 1; //lambda slide bar multiplier
     static SpatialQueueSimulator sim;
-    static DrawNormal dCst;
+    static DrawConstrains dCst;
     static MM1Logic ql;
     static QueueDrawer queueDrawer;
     private MapConfig mapView;
@@ -53,6 +63,23 @@ public class GuiComponents {
     static JLabel responseL;
     static TANotifier outputTA;
     private JFrame mf;
+
+    private JMenuBar menuB;
+    private JMenu settingsMenu;
+    private JMenu colorsMenu;
+    // Settings
+    private Color emptyC = Color.WHITE;
+
+    private Color probC = Color.GREEN;
+
+    private Color queueC = Color.BLUE;
+
+    private Color animC = Color.RED;
+    private Action selectQueueRB;
+    private JRadioButtonMenuItem gradientItem;
+    private JMenu sizeMenu;
+    private boolean gradientF = false;
+    private JMenu helpMenu;
 
 
     public GuiComponents(JFrame mf) {
@@ -214,7 +241,6 @@ public class GuiComponents {
                                                 mapView,
                                                 jobsDialog.getTypedValue()
                                                 );
-
                 sim.start();
                 start.setEnabled(false);
                 stop.setEnabled(true);
@@ -251,14 +277,11 @@ public class GuiComponents {
         accelerationL.setFont(dCst.getNormalGUIFont());
         accelerationL.setHorizontalAlignment(SwingConstants.CENTER);
         accelerationP.add(accelerationL);
-
         accelerationS = makeSlider();
-
         accelerationP.add(accelerationS);
         accelerationS.setValue(50);
         final JLabel finalAccelerationL = accelerationL;
         makeSpeedSliderFunctional(accelerationS, finalAccelerationL);
-
         accelerationL.setText("Time x" + Formatter.formatNumber(accelerationS.getValue(), 2));
     }
 
@@ -418,11 +441,211 @@ public class GuiComponents {
         ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), S_I * sMultiplier);
 
         lambdaS.setValue(LAMBDA_I);
-//        statiDrawer.updateLogic(ql);
         queueDrawer.updateLogic(ql);
         queueDrawer.setMaxJobs(0);
-//        statiDrawer.setMaxJobs(0);
         queueDrawer.setCpuNumber(1);
         StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
+    }
+
+    protected void addMenu() {
+        // menu
+        menuB = new JMenuBar();
+        mf.setJMenuBar(menuB);
+
+        // settings
+        settingsMenu = new JMenu("Settings");
+        colorsMenu = new JMenu("Colors");
+        Action queueCAction = new AbstractAction("Probability...") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                Color tmpC;
+                tmpC = JColorChooser.showDialog(null, "Probability color", probC);
+                if (tmpC != null) {
+                    probC = tmpC;
+                    changeColors();
+                }
+            }
+
+        };
+        colorsMenu.add(queueCAction);
+        Action queueFCAction = new AbstractAction("Queue...") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                Color tmpC;
+                tmpC = JColorChooser.showDialog(null, "Queue color", queueC);
+                if (tmpC != null) {
+                    queueC = tmpC;
+                    changeColors();
+                }
+            }
+
+        };
+        colorsMenu.add(queueFCAction);
+        colorsMenu.addSeparator();
+        Action statusCAction = new AbstractAction("Empty state...") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                Color tmpC;
+                tmpC = JColorChooser.showDialog(null, "Empty state color", emptyC);
+                if (tmpC != null) {
+                    emptyC = tmpC;
+                    changeColors();
+                }
+            }
+
+        };
+        colorsMenu.add(statusCAction);
+        Action animCAction = new AbstractAction("Animation...") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                Color tmpC;
+                tmpC = JColorChooser.showDialog(null, "Animation color", animC);
+                if (tmpC != null) {
+                    animC = tmpC;
+                    changeColors();
+                }
+            }
+
+        };
+        colorsMenu.add(animCAction);
+        colorsMenu.addSeparator();
+
+        // gradientItem = new JRadioButtonMenuItem("usa gradiente", false);
+        gradientItem = new JRadioButtonMenuItem("Use gradient", false);
+        gradientItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                gradientF = gradientItem.isSelected();
+                changeColors();
+            }
+        });
+        colorsMenu.add(gradientItem);
+        settingsMenu.add(colorsMenu);
+
+        // sizeMenu = new JMenu("Dimensioni");
+        sizeMenu = new JMenu("Icon size");
+
+        // Action drawSmallAction = new AbstractAction("Piccole") {
+        Action drawSmallAction = new AbstractAction("Small") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                dCst = new DrawSmall();
+                changeSize();
+            }
+
+        };
+        sizeMenu.add(drawSmallAction);
+
+        // Action drawNormalAction = new AbstractAction("Normali") {
+        Action drawNormalAction = new AbstractAction("Normal") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                dCst = new DrawNormal();
+                changeSize();
+            }
+
+        };
+        sizeMenu.add(drawNormalAction);
+        // Action drawBigAction = new AbstractAction("Grandi") {
+        Action drawBigAction = new AbstractAction("Large") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                dCst = new DrawBig();
+                changeSize();
+            }
+
+        };
+        sizeMenu.add(drawBigAction);
+        settingsMenu.add(sizeMenu);
+
+        menuB.add(settingsMenu);
+
+        // help
+        helpMenu = new JMenu("Help");
+
+        JMenuItem help = new JMenuItem();
+        help.setText("JMCH help");
+        help.setToolTipText("Show help JMCH");
+
+        help.addActionListener(new ActionListener() {
+            /**
+             * Invoked when an action occurs.
+             */
+            public void actionPerformed(ActionEvent e) {
+                Runnable r = new Runnable() {
+                    public void run() {
+                        try {
+                            new PDFViewerBuffer("JMCH manual", ManualBookmarkers.JMCH);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                EventQueue.invokeLater(r);
+            }
+        });
+
+        helpMenu.add(help);
+
+        // end NEW
+
+        // NEW Bertoli Marco
+        helpMenu.addSeparator();
+
+        JMenuItem about = new JMenuItem();
+        about.setText("About JMCH");
+        about.setToolTipText("About JMCH");
+        about.addActionListener(new ActionListener() {
+            /**
+             * Invoked when an action occurs.
+             */
+            public void actionPerformed(ActionEvent e) {
+//                AboutDialogFactory.showJMCH(MMQueues.this);
+            }
+        });
+
+        helpMenu.add(about);
+        // END new
+
+        menuB.add(helpMenu);
+
+
+    }
+
+
+
+    protected void changeSize() {
+        queueDrawer.changeDrawSettings(dCst);
+        queueDrawer.repaint();
+        outputTA.changeDrawSettings(dCst);
+        // logD.changeDrawSettings(dCst);
+        mf.validate();
+
+    }
+
+    protected void changeColors() {
+        queueDrawer.setColors(emptyC, queueC, animC, gradientF);
+        queueDrawer.repaint();
+
     }
 }
