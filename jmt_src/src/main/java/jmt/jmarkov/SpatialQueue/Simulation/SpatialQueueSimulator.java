@@ -82,13 +82,16 @@ public class SpatialQueueSimulator implements Runnable {
             Request newRequest = this.createRequest();
             this.enqueueRequest(newRequest);
             //update queue visualisation
-            queueDrawer.enterQueue(newRequest.getRequestId());
+            queueDrawer.enterQueue();
         }
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {
             if (this.receiver.getQueue().size() > 0) {
+
                 // Serve the next request and grab a link to the request being served
                 Request currentRequest = this.receiver.serveRequest(currentTimeMultiplied);
+                //notify visualisation with which job is being served
+                queueDrawer.servingJob(currentRequest.getRequestId());
                 currentTimeMultiplied += (currentRequest.getNextEventTime() - currentTime) / timeMultiplier;
                 //this is calculating how long system will sleep
                 realTimeCurrent = new Date().getTime() - realTimeStart;
@@ -117,7 +120,6 @@ public class SpatialQueueSimulator implements Runnable {
                 System.out.println("Total requests served: " + this.receiver.getNumberOfRequestsServed());
                 break;
             }
-
         }
 
         running = false;
