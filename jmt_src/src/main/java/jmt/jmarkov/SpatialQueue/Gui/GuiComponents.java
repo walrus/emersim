@@ -47,11 +47,9 @@ public class GuiComponents {
     static DrawNormal dCst;
     static MM1Logic ql;
     static QueueDrawer queueDrawer;
-    static StatiDrawer statiDrawer;
     private MapConfig mapView;
     private JobsDrawer jobsDrawer;
     private JSlider accelerationS;
-    private LogFile logFile;
     static JLabel thrL;
     static JLabel responseL;
     static TANotifier outputTA;
@@ -70,8 +68,7 @@ public class GuiComponents {
         paused = false;
         lambdaS = new JSlider();
         ql = new MM1Logic(0.0, 0.0);
-        queueDrawer = new QueueDrawer(ql);
-        statiDrawer = new StatiDrawer(ql);
+        queueDrawer = new QueueDrawer(ql, true);
         parametersP = new JPanel();
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
@@ -179,9 +176,7 @@ public class GuiComponents {
         } catch (InterruptedException e) {
         }
         outputTA.reset();
-        logFile.reset();
         queueDrawer.reset();
-        statiDrawer.reset();
         jobsDrawer.reset();
 
         updateFields(utilizationL, mediaJobsL, sim);
@@ -207,11 +202,6 @@ public class GuiComponents {
     private void startButton() {
         start.setEnabled(false);
 
-
-
-////        logFile.setLogging(false);
-
-
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -223,19 +213,13 @@ public class GuiComponents {
                 jobsDialog.setVisible(true);
 
                 queueDrawer.setMediaJobs(Q - U);
-                Notifier[] tan = new Notifier[5];
-                logFile = new LogFile();
-                tan[0] = outputTA;
-                tan[1] = queueDrawer;
-                tan[2] = statiDrawer;
-                tan[3] = jobsDrawer;
-                tan[4] = logFile;
 
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),
-                                                tan,
+                                                queueDrawer,
                                                 new Receiver(mapView.getReceiverLocation()),
                                                 mapView,
-                                                jobsDialog.getTypedValue());
+                                                jobsDialog.getTypedValue()
+                                                );
 
                 sim.start();
                 start.setEnabled(false);
@@ -342,6 +326,7 @@ public class GuiComponents {
     // create a service time slider
     protected void setupServiceTime() {
         sMultiplier = 0.02;
+
         ql.setS(S_I * sMultiplier);
     }
 
@@ -440,10 +425,10 @@ public class GuiComponents {
         ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), S_I * sMultiplier);
 
         lambdaS.setValue(LAMBDA_I);
-        statiDrawer.updateLogic(ql);
+//        statiDrawer.updateLogic(ql);
         queueDrawer.updateLogic(ql);
         queueDrawer.setMaxJobs(0);
-        statiDrawer.setMaxJobs(0);
+//        statiDrawer.setMaxJobs(0);
         queueDrawer.setCpuNumber(1);
         StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
     }

@@ -72,7 +72,7 @@ public class StatsUtils {
             nonErgodic = true;
         }
         queueDrawer.setMediaJobs(Q - U);
-        statiDrawer.repaint();
+//        statiDrawer.repaint();
 
         if (sim == null || !sim.isStarted()) {
             setLogAnalyticalResults();

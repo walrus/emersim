@@ -6,6 +6,7 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 
 
 import jmt.jmarkov.Graphics.Notifier;
+import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.*;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
@@ -19,8 +20,6 @@ public class SpatialQueueSimulator implements Runnable {
     private Receiver receiver;
 
     private ClientRegion[] regions;
-
-    private Notifier[] notifier;
 
     //current simulation time
     private double currentTime;// in milliseconds
@@ -43,20 +42,23 @@ public class SpatialQueueSimulator implements Runnable {
 
     private int maxRequests;
 
+    private QueueDrawer queueDrawer;
+
     public SpatialQueueSimulator(double timeMultiplier,
-                                 Notifier[] notifier,
+                                 QueueDrawer queueDrawer,
                                  Receiver receiver,
                                  MapConfig mapConfig,
-                                 int maxRequests) {
+                                 int maxRequests
+                                 ) {
         super();
 
         currentTime = 0;
         setTimeMultiplier(timeMultiplier);
-        this.notifier = notifier;
         this.receiver = receiver;
         this.regions = mapConfig.getClientRegions();
         this.currentRequestID = 0;
         this.maxRequests = maxRequests;
+        this.queueDrawer = queueDrawer;
     }
 
     protected Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
@@ -76,8 +78,11 @@ public class SpatialQueueSimulator implements Runnable {
         realTimeStart = new Date().getTime();
 
         // TODO: use actual request generation
-        for (int i = 0; i < 10; i++) {
-            this.enqueueRequest(this.createRequest());
+        for (int i = 0; i < 500; i++) {
+            Request newRequest = this.createRequest();
+            this.enqueueRequest(newRequest);
+            //update queue visualisation
+            queueDrawer.enterQueue(newRequest.getRequestId());
         }
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {
@@ -98,17 +103,26 @@ public class SpatialQueueSimulator implements Runnable {
                     realTimeCurrent = new Date().getTime() - realTimeStart;
                 }
 
+
+
                 //Having waited till the request has been served, deal with it
                 currentTime = currentRequest.getNextEventTime();
                 this.receiver.stopServing(currentTime);
+
+                // update queue visualisation
+                queueDrawer.exitQueue();
+
             } else {
                 // No requests in queue, so just loop till another is added
                 System.out.println("Total requests served: " + this.receiver.getNumberOfRequestsServed());
+                break;
             }
+
         }
 
         running = false;
         System.out.println("Stopping, total requests served: " + this.receiver.getNumberOfRequestsServed());
+
     }
     // Return true iff receiver has served fewer then maxRequests requests or if maxRequests == 0
     private boolean moreRequests() {
