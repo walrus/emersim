@@ -387,6 +387,7 @@ public class GuiComponents {
 
         });
         lambdaS.repaint();
+        StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
     }
 
     // create the panel that contains the parameter sliders
