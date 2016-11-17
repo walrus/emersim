@@ -1,5 +1,6 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
+import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
 import com.teamdev.jxmaps.MapViewOptions;
 import jmt.jmarkov.Graphics.*;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
@@ -424,5 +425,130 @@ public class GuiComponents {
 //        statiDrawer.setMaxJobs(0);
         queueDrawer.setCpuNumber(1);
         StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
+    }
+
+    // creates a menu bar
+    public void createMenuBar(JMenuBar menuBar) {
+
+        menuBar.add(fileMenu());
+        menuBar.add(helpMenu());
+
+    }
+
+    // creates a file menu
+    private JMenu fileMenu() {
+
+        JMenu fileMenu  = new JMenu("File");
+
+        // generates all of the menu buttons
+        Action New = new AbstractAction("New") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action Open = new AbstractAction("Open...") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action Save = new AbstractAction("Save") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action SaveAs = new AbstractAction("Save As...") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action Compare = new AbstractAction("Compare Simulations...") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+
+        fileMenu.add(New);
+        fileMenu.add(Open);
+        fileMenu.add(openRecentSubMenu());
+        fileMenu.addSeparator();
+        fileMenu.add(Save);
+        fileMenu.add(SaveAs);
+        fileMenu.addSeparator();
+        fileMenu.add(Compare);
+
+        return fileMenu;
+    }
+
+    // creates an open recent SUB menu. CURRENTLY JUST A TEMPLATE
+    private JMenu openRecentSubMenu() {
+
+        JMenu openRecentMenu = new JMenu("Open Recent");
+
+        // generates all of the sub menu buttons
+        Action NullSimulation1 = new AbstractAction("Null Simulation 1") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action NullSimulation2 = new AbstractAction("Null Simulation 2") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action NullSimulation3 = new AbstractAction("Null Simulation 3") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+
+        openRecentMenu.add(NullSimulation1);
+        openRecentMenu.add(NullSimulation2);
+        openRecentMenu.add(NullSimulation3);
+
+        return openRecentMenu;
+    }
+
+    // creates a help menu
+    private JMenu helpMenu() {
+
+        JMenu helpMenu = new JMenu("Help");
+
+        // generates all of the menu buttons
+        Action help = new AbstractAction("Spatial Queue Help") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action about = new AbstractAction("About the Spatial Queue") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+
+        helpMenu.add(help);
+        helpMenu.addSeparator();
+        helpMenu.add(about);
+
+        return helpMenu;
     }
 }
