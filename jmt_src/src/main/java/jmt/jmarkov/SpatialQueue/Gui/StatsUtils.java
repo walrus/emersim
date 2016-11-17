@@ -1,5 +1,6 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
+import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
@@ -148,6 +149,7 @@ public class StatsUtils {
 
     protected static void generateSimulationStats(JPanel resultsP, JLabel mediaJobsL, JLabel utilizationL) {
         // media
+        dCst = new DrawNormal();
         mediaJobsL.setText(nStrS + "0" + nStrE);
         mediaJobsL.setFont(dCst.getNormalGUIFont());
         resultsP.add(mediaJobsL);
