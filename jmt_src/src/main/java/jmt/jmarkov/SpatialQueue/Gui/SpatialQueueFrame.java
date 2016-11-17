@@ -74,6 +74,11 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
         // create lamda slider
         guiComponents.createLambdaSlider(c);
 
+		// create menu bar
+		JMenuBar menuB = new JMenuBar();
+		setJMenuBar(menuB);
+		guiComponents.createMenuBar(menuB);
+
 
         // window settings
 		pack();
