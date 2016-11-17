@@ -9,11 +9,9 @@ public class RequestGenerator implements Runnable {
 
     private SpatialQueueSimulator sim;
     private double currentTime;
-    private float maxInterval;
 
-    public RequestGenerator(SpatialQueueSimulator sim, float maxInterval) {
+    public RequestGenerator(SpatialQueueSimulator sim) {
         this.sim = sim;
-        this.maxInterval = maxInterval;
         this.currentTime = 0;
     }
 
@@ -32,7 +30,7 @@ public class RequestGenerator implements Runnable {
             this.sim.enqueueRequest(newRequest);
             this.sim.getQueueDrawer().enterQueue();
 
-            nextInterArrivalTime = generateNextTime(this.sim.getLambda(), this.maxInterval);
+            nextInterArrivalTime = generateNextTime(this.sim.getLambda(), this.sim.getMaxInterval());
 
             currentTimeMultiplied += (nextInterArrivalTime) / this.sim.getTimeMultiplier();
             //this is calculating how long system will sleep
@@ -48,7 +46,6 @@ public class RequestGenerator implements Runnable {
                 realTimeCurrent = new Date().getTime() - realTimeStart;
             }
 
-            //Increment the current time by a random (poisson) amount
             currentTime += nextInterArrivalTime;
         }
     }
