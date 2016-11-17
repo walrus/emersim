@@ -126,10 +126,6 @@ public class SpatialQueueSimulator implements Runnable {
         }
 
         running = false;
-
-        while(true & this.getReceiver().getQueue().size() < maxRequests) {
-            new RequestRunnable(timeMultiplier, queueDrawer, receiver, this.mapConfig, maxRequests).run();
-        }
         System.out.println("Stopping, total requests served: " + this.receiver.getNumberOfRequestsServed());
 
     }

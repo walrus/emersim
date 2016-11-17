@@ -1,43 +1,43 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
-import jmt.jmarkov.Graphics.QueueDrawer;
-import jmt.jmarkov.SpatialQueue.Map.MapConfig;
-
 import java.util.Random;
 
 /**
  * Created by risingpo on 16/11/2016.
  */
-public class RequestRunnable extends SpatialQueueSimulator implements Runnable {
+public class RequestRunnable implements Runnable {
 
     private boolean running = false;
     private boolean started = false;
 
-    public RequestRunnable(double timeMultiplier, QueueDrawer queueDrawer, Receiver receiver, MapConfig mapConfig, int maxRequests) {
-        super(timeMultiplier, queueDrawer, receiver, mapConfig, maxRequests);
+    private int maxRequests;
+    private SpatialQueueSimulator sim;
+
+    public RequestRunnable(SpatialQueueSimulator sim, int maxRequests) {
+        this.sim = sim;
+        this.maxRequests = maxRequests;
     }
 
-    @Override
     public void run() {
         running = true;
         started = true;
 
         int count = 0;
-        while (running == true & count < this.getMaxRequestNumber()) {
+        while (running == true & count < this.maxRequests) {
             Request newRequest = createRequestWithPoissonDistribution();
-            enqueueRequest(newRequest);
-            this.getQueueDrawer().enterQueue();
+            this.sim.enqueueRequest(newRequest);
+            this.sim.getQueueDrawer().enterQueue();
             count++;
         }
         running = false;
-        System.out.println("Stopping, total requests served: " + this.getReceiver().getNumberOfRequestsServed());
+        //System.out.println("Stopping, total requests served: " + this.getReceiver().getNumberOfRequestsServed());
     }
 
     public Request createRequestWithPoissonDistribution() {
 
-        int randomInt = new Random().nextInt(this.getRegions().length);
-        Sender sender = this.generateNewSenderWithinArea(this.getRegions()[randomInt]);
-        Request r = sender.makeRequest(getNextRequestID(), this.generateNextTime(10, 3));
+        int randomInt = new Random().nextInt(this.sim.getRegions().length);
+        Sender sender = this.sim.generateNewSenderWithinArea(this.sim.getRegions()[randomInt]);
+        Request r = sender.makeRequest(this.sim.getNextRequestID(), this.generateNextTime(10, 3));
 
         return r;
     }
