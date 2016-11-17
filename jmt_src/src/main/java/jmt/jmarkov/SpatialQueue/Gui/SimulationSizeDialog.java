@@ -18,16 +18,11 @@
 
 package jmt.jmarkov.SpatialQueue.Gui;
 
-import jmt.gui.common.Defaults;
-import jmt.jmarkov.Graphics.LogFile;
-
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 
 /* 1.4 example used by DialogDemo.java. */
 public class SimulationSizeDialog extends JDialog implements ActionListener, PropertyChangeListener {

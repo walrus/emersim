@@ -1,6 +1,5 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
-import jmt.jmarkov.Graphics.TANotifier;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;

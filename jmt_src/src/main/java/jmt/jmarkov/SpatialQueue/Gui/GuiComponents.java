@@ -1,6 +1,5 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
-import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
 import com.teamdev.jxmaps.MapViewOptions;
 import jmt.jmarkov.Graphics.*;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
@@ -53,10 +52,10 @@ public class GuiComponents {
     static JLabel thrL;
     static JLabel responseL;
     static TANotifier outputTA;
-    private JFrame mf;
+    private SpatialQueueFrame mf;
 
 
-    public GuiComponents(JFrame mf) {
+    public GuiComponents(SpatialQueueFrame mf) {
         init();
         showQueue(1);
         this.mf = mf;
@@ -440,13 +439,7 @@ public class GuiComponents {
 
         JMenu fileMenu  = new JMenu("File");
 
-        // generates all of the menu buttons
-        Action New = new AbstractAction("New") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-            }
-        };
 
         Action Open = new AbstractAction("Open...") {
             @Override
@@ -465,6 +458,32 @@ public class GuiComponents {
         Action SaveAs = new AbstractAction("Save As...") {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        // generates all of the menu buttons
+        Action New = new AbstractAction("New") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Custom button text
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
+                }
 
             }
         };
