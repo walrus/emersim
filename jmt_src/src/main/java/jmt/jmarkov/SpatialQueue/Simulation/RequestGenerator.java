@@ -1,49 +1,64 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
-import java.util.Random;
+import java.util.Date;
 
 /**
  * Created by risingpo on 16/11/2016.
  */
 public class RequestGenerator implements Runnable {
 
-    private boolean running = false;
-    private boolean started = false;
-
-    private int maxRequests;
     private SpatialQueueSimulator sim;
+    private double currentTime;
+    private float maxInterval;
 
-    public RequestGenerator(SpatialQueueSimulator sim, int maxRequests) {
+    public RequestGenerator(SpatialQueueSimulator sim, float maxInterval) {
         this.sim = sim;
-        this.maxRequests = maxRequests;
+        this.maxInterval = maxInterval;
+        this.currentTime = 0;
     }
 
     public void run() {
-        running = true;
-        started = true;
+        double currentTimeMultiplied;
+        //Time when run() was called
+        long realTimeStart;
+        //Time after sleeping the thread
+        long realTimeCurrent;
+        currentTimeMultiplied = 0;
+        realTimeStart = new Date().getTime();
+        double nextInterArrivalTime;
 
-        int count = 0;
-        while (running == true & count < this.maxRequests) {
-            Request newRequest = createRequestWithPoissonDistribution();
+        while (this.sim.isRunning() && this.sim.moreRequests()) {
+            Request newRequest = this.sim.createRequest();
             this.sim.enqueueRequest(newRequest);
             this.sim.getQueueDrawer().enterQueue();
-            count++;
+
+            nextInterArrivalTime = generateNextTime(this.sim.getLambda(), this.maxInterval);
+
+            currentTimeMultiplied += (nextInterArrivalTime) / this.sim.getTimeMultiplier();
+            //this is calculating how long system will sleep
+            realTimeCurrent = new Date().getTime() - realTimeStart;
+
+            // If necessary, sleep
+            if ((long) currentTimeMultiplied > realTimeCurrent) {
+                try {
+                    Thread.sleep((long) currentTimeMultiplied - realTimeCurrent);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                realTimeCurrent = new Date().getTime() - realTimeStart;
+            }
+
+            //Increment the current time by a random (poisson) amount
+            currentTime += nextInterArrivalTime;
         }
-        running = false;
-        //System.out.println("Stopping, total requests served: " + this.getReceiver().getNumberOfRequestsServed());
     }
 
-    public Request createRequestWithPoissonDistribution() {
-
-        int randomInt = new Random().nextInt(this.sim.getRegions().length);
-        Sender sender = this.sim.generateNewSenderWithinArea(this.sim.getRegions()[randomInt]);
-        Request r = sender.makeRequest(this.sim.getNextRequestID(), this.generateNextTime(10, 3));
-
-        return r;
-    }
 
     public double generateNextTime(float rateParameter, float random_max) {
         return -Math.log(1.0 - Math.random() / (random_max + 1) / rateParameter);
     }
 
 }
+
+
+

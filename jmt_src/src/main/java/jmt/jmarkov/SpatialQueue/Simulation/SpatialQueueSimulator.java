@@ -24,6 +24,9 @@ public class SpatialQueueSimulator implements Runnable {
     //current simulation time
     private double currentTime;// in milliseconds
 
+    // Number of arrivals per second
+    private float lambda;
+
     //if lambda is zero this value is set to true
     //(if lambda set to zero new requests will not be created
     private boolean lambdaZero = false;
@@ -62,6 +65,8 @@ public class SpatialQueueSimulator implements Runnable {
         this.maxRequests = maxRequests;
         this.queueDrawer = queueDrawer;
         this.mapConfig = mapConfig;
+        //TODO: make lambda changeable from front end
+        this.lambda = 5;
     }
 
     protected Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
@@ -130,7 +135,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     }
     // Return true iff receiver has served fewer then maxRequests requests or if maxRequests == 0
-    protected boolean moreRequests() {
+    protected synchronized boolean moreRequests() {
         return (this.receiver.getNumberOfRequestsServed() < this.maxRequests || maxRequests == 0);
     }
 
@@ -140,7 +145,7 @@ public class SpatialQueueSimulator implements Runnable {
         return r;
     }
 
-    public Request createRequest() {
+    public synchronized Request createRequest() {
         //Current implementation: create a new sender then generate a request from them
         //Future implementation could take existing sender (generate before running sim)
         int randomInt = new Random().nextInt(this.regions.length);
@@ -153,13 +158,13 @@ public class SpatialQueueSimulator implements Runnable {
         return r;
     }
 
-    public void enqueueRequest(Request newRequest) {
+    public synchronized void enqueueRequest(Request newRequest) {
         if (newRequest != null){
             this.receiver.handleRequest(newRequest);
         }
     }
 
-    public Request dequeueRequest() {
+    public synchronized Request dequeueRequest() {
         return this.receiver.getNextRequest();
     }
 
@@ -195,6 +200,8 @@ public class SpatialQueueSimulator implements Runnable {
         this.paused = true;
         this.started = false;
     }
+
+    public float getLambda() { return this.lambda;}
 
     public double getTimeMultiplier() {
         return this.timeMultiplier;
