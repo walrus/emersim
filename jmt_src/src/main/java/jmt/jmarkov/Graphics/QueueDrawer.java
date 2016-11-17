@@ -447,9 +447,9 @@ public class QueueDrawer extends JComponent implements Notifier {
 		Color tmp = g2d.getColor();
 		//		System.out.println(nCpu);
 		if (nCpu == 1) {
-			txtBounds = drawCenteredText("Executing Job Number: " + donejobs + " " + "Total Jobs Arrived: " + jobs
+			txtBounds = drawCenteredText("Executing Job ID: " + donejobs + " " + "Total Jobs Arrived: " + totjobs
 					, Color.BLACK, Color.WHITE, x, y, g2d, true, false);
-			drawCenteredText("Executing Job Number: " + donejobs + " " + "Total Jobs Arrived: " + jobs, Color.BLACK,
+			drawCenteredText("Executing Job ID: " + donejobs + " " + "Total Jobs Arrived: " + totjobs, Color.BLACK,
 					Color.WHITE, x - txtBounds.getWidth() / 2.0, y, g2d, true, true);
 		}
 		g2d.setColor(tmp);
@@ -987,7 +987,7 @@ public class QueueDrawer extends JComponent implements Notifier {
 	}
 
 	public void enterQueue() {
-
+		totjobs++;
 		jobs++;
 		this.repaint();
 	}
