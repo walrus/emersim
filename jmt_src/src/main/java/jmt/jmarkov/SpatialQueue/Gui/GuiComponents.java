@@ -1,9 +1,11 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
-import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
 import com.teamdev.jxmaps.MapViewOptions;
 import jmt.jmarkov.Graphics.*;
+import jmt.jmarkov.Graphics.constants.DrawBig;
+import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Graphics.constants.DrawSmall;
 import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Simulation.Receiver;
@@ -45,7 +47,7 @@ public class GuiComponents {
     static double sMultiplier = 1; //service time slide bar multiplier
     static double lambdaMultiplier = 1; //lambda slide bar multiplier
     static SpatialQueueSimulator sim;
-    static DrawNormal dCst;
+    static DrawConstrains dCst;
     static MM1Logic ql;
     static QueueDrawer queueDrawer;
     private MapConfig mapView;
@@ -53,10 +55,18 @@ public class GuiComponents {
     static JLabel thrL;
     static JLabel responseL;
     static TANotifier outputTA;
-    private JFrame mf;
+    private SpatialQueueFrame mf;
+    private JMenu settingsMenu;
+    private JMenu colorsMenu;
+    private JRadioButtonMenuItem gradientItem;
+    private Color emptyC = Color.WHITE;
+    private Color queueC = Color.BLUE;
+    private Color animC = Color.RED;
+    private JMenu sizeMenu;
+    private boolean gradientF = false;
 
 
-    public GuiComponents(JFrame mf) {
+    public GuiComponents(SpatialQueueFrame mf) {
         init();
         showQueue(1);
         this.mf = mf;
@@ -429,10 +439,9 @@ public class GuiComponents {
 
     // creates a menu bar
     public void createMenuBar(JMenuBar menuBar) {
-
         menuBar.add(fileMenu());
+        menuBar.add(settingsMenu());
         menuBar.add(helpMenu());
-
     }
 
     // creates a file menu
@@ -440,13 +449,7 @@ public class GuiComponents {
 
         JMenu fileMenu  = new JMenu("File");
 
-        // generates all of the menu buttons
-        Action New = new AbstractAction("New") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-            }
-        };
 
         Action Open = new AbstractAction("Open...") {
             @Override
@@ -465,6 +468,32 @@ public class GuiComponents {
         Action SaveAs = new AbstractAction("Save As...") {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        // generates all of the menu buttons
+        Action New = new AbstractAction("New") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Custom button text
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
+                }
 
             }
         };
@@ -550,5 +579,120 @@ public class GuiComponents {
         helpMenu.add(about);
 
         return helpMenu;
+    }
+
+    private JMenu settingsMenu() {
+
+        // settings
+        settingsMenu = new JMenu("Settings");
+        colorsMenu = new JMenu("Colors");
+
+        Action queueFCAction = new AbstractAction("Queue...") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                Color tmpC;
+                tmpC = JColorChooser.showDialog(null, "Queue color", queueC);
+                if (tmpC != null) {
+                    queueC = tmpC;
+                    changeColors();
+                }
+            }
+
+        };
+        colorsMenu.add(queueFCAction);
+        colorsMenu.addSeparator();
+        Action statusCAction = new AbstractAction("Empty state...") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                Color tmpC;
+                tmpC = JColorChooser.showDialog(null, "Empty state color", emptyC);
+                if (tmpC != null) {
+                    emptyC = tmpC;
+                    changeColors();
+                }
+            }
+
+        };
+        colorsMenu.add(statusCAction);
+
+        colorsMenu.addSeparator();
+
+        // gradientItem = new JRadioButtonMenuItem("usa gradiente", false);
+        gradientItem = new JRadioButtonMenuItem("Use gradient", false);
+        gradientItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                gradientF = gradientItem.isSelected();
+                changeColors();
+            }
+        });
+        colorsMenu.add(gradientItem);
+        settingsMenu.add(colorsMenu);
+
+        // sizeMenu = new JMenu("Dimensioni");
+        sizeMenu = new JMenu("Icon size");
+
+        // Action drawSmallAction = new AbstractAction("Piccole") {
+        Action drawSmallAction = new AbstractAction("Small") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                dCst = new DrawSmall();
+                changeSize();
+            }
+
+        };
+        sizeMenu.add(drawSmallAction);
+
+        // Action drawNormalAction = new AbstractAction("Normali") {
+        Action drawNormalAction = new AbstractAction("Normal") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                dCst = new DrawNormal();
+                changeSize();
+            }
+
+        };
+        sizeMenu.add(drawNormalAction);
+        // Action drawBigAction = new AbstractAction("Grandi") {
+        Action drawBigAction = new AbstractAction("Large") {
+
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent event) {
+                // action code goes here
+                dCst = new DrawBig();
+                changeSize();
+            }
+
+        };
+        sizeMenu.add(drawBigAction);
+        settingsMenu.add(sizeMenu);
+        return settingsMenu;
+    }
+
+    protected void changeSize() {
+        queueDrawer.changeDrawSettings(dCst);
+        queueDrawer.repaint();
+        outputTA.changeDrawSettings(dCst);
+        // logD.changeDrawSettings(dCst);
+        mf.validate();
+
+    }
+
+    protected void changeColors() {
+        queueDrawer.setColors(emptyC, queueC, animC, gradientF);
+        queueDrawer.repaint();
+
     }
 }
