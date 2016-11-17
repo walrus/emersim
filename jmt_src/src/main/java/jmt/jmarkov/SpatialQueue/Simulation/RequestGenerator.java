@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * Created by risingpo on 16/11/2016.
  */
-public class RequestRunnable implements Runnable {
+public class RequestGenerator implements Runnable {
 
     private boolean running = false;
     private boolean started = false;
@@ -13,7 +13,7 @@ public class RequestRunnable implements Runnable {
     private int maxRequests;
     private SpatialQueueSimulator sim;
 
-    public RequestRunnable(SpatialQueueSimulator sim, int maxRequests) {
+    public RequestGenerator(SpatialQueueSimulator sim, int maxRequests) {
         this.sim = sim;
         this.maxRequests = maxRequests;
     }
