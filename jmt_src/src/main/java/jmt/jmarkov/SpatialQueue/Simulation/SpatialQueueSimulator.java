@@ -55,12 +55,14 @@ public class SpatialQueueSimulator implements Runnable {
 
     private MapConfig mapConfig;
 
+    private boolean returnJourney;
+
     public SpatialQueueSimulator(double timeMultiplier,
                                  QueueDrawer queueDrawer,
                                  Receiver receiver,
                                  MapConfig mapConfig,
-                                 int maxRequests
-                                 ) {
+                                 int maxRequests,
+                                 boolean returnJourney) {
         super();
 
         currentTime = 0;
@@ -71,6 +73,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.maxRequests = maxRequests;
         this.queueDrawer = queueDrawer;
         this.mapConfig = mapConfig;
+        this.returnJourney = returnJourney;
         //TODO: make lambda and maxInterval changeable from front end
         this.lambda = 5;
         this.maxInterval = 3;
@@ -160,7 +163,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     public synchronized void enqueueRequest(Request newRequest) {
         if (newRequest != null){
-            this.receiver.handleRequest(newRequest);
+            this.receiver.handleRequest(newRequest, returnJourney);
         }
     }
 

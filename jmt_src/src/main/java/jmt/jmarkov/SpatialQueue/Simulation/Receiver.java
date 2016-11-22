@@ -77,8 +77,8 @@ public class Receiver {
     // Given a (newly arrived) Request, add it to the queue.
     // This implementation adds requests in strict order of response time
     // Can be overridden to implement different behaviours
-    public void handleRequest(Request request) {
-        calculateResponseTime(request);
+    public void handleRequest(Request request, boolean returnJourney) {
+        calculateResponseTime(request, returnJourney);
         int i;
         for (i = 0; i < this.requestQueue.size(); i++) {
             if (this.requestQueue.get(i).getResponseTime() > request.getResponseTime()) {
@@ -89,7 +89,7 @@ public class Receiver {
     }
 
     // Given a Request object, calculate the response time in seconds and store it in the request
-    public void calculateResponseTime(Request request) {
+    public void calculateResponseTime(Request request, boolean returnJourney) {
         Location senderLocation = request.getSender().getLocation();
         Location receiverLocation = this.getLocation();
 
@@ -98,7 +98,12 @@ public class Receiver {
 
         //Straight line distance in degrees
         double time = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
-        request.setResponseTime(time);
+
+        if (returnJourney) {
+            request.setResponseTime(time * 2);
+        } else {
+            request.setResponseTime(time);
+        }
     }
 
     //Find the next request in the queue. This should

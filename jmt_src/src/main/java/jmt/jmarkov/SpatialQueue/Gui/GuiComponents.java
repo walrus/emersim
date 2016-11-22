@@ -64,6 +64,8 @@ public class GuiComponents {
     private Color animC = Color.RED;
     private JMenu sizeMenu;
     private boolean gradientF = false;
+    private int numberClients;
+    private boolean returnJourney;
 
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -93,6 +95,7 @@ public class GuiComponents {
         thrL = new JLabel();
         responseL = new JLabel();
         outputTA = new TANotifier();
+        returnJourney = false;
     }
 
     //Create queueDrawer for queue visualisation
@@ -137,15 +140,35 @@ public class GuiComponents {
     // create an add client button
     private JButton clientButton() {
 
+        numberClients = 0;
 //        client.setMaximumSize(new Dimension(100,40));
         client.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_CLIENT);
+                if (numberClients == 0) {
+                    Object[] options = {"Include Return Journey",
+                            "Don't Include Return Journey"};
+                    int choice = JOptionPane.showOptionDialog(mf,
+                            "Would you like to include a return journey in your simulation?",
+                            "Return Journey",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            2,
+                            null,
+                            options,
+                            options[1]);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        returnJourney = true;
+                    } else if (choice == JOptionPane.NO_OPTION) {
+                        returnJourney = false;
+                    }
+                }
+
                 // Disable add client button to ensure a new region is created in full
                 client.setEnabled(false);
                 // Disable start button to prevent starting with incomplete clients
                 start.setEnabled(false);
+                numberClients++;
             }
         });
         return client;
@@ -183,7 +206,7 @@ public class GuiComponents {
         }
         outputTA.reset();
         queueDrawer.reset();
-
+        numberClients = 0;
         updateFields(utilizationL, mediaJobsL, sim);
     }
 
@@ -223,8 +246,8 @@ public class GuiComponents {
                                                 queueDrawer,
                                                 new Receiver(mapView.getReceiverLocation()),
                                                 mapView,
-                                                jobsDialog.getTypedValue()
-                                                );
+                                                jobsDialog.getTypedValue(),
+                                                returnJourney);
 
                 sim.start();
                 start.setEnabled(false);
