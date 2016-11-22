@@ -11,7 +11,7 @@ import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.IN_QUEUE;
 /**
  * Requests are sent by Senders to Receivers. They fulfil the same function as Jobs in JMCH.
  */
-public class Request{
+public class Request implements Comparable<Request>{
     private Sender sender;
 
     private int requestId;
@@ -35,6 +35,18 @@ public class Request{
         this.creationTime = time;
         this.currentState = IN_QUEUE;
         this.sender = sender;
+    }
+
+    @Override
+    public int compareTo(Request other) {
+        double diff = this.getResponseTime() - other.getResponseTime();
+        if (diff > 0) {
+            return 1;
+        } else if (diff < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 
     public void serve(double currentTime, double finishTime){
