@@ -30,7 +30,7 @@ import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
 public class GuiComponents {
 
     //To change service time change this variable
-    private int S_I =  70;
+    private int S_I = 70;
 
     private JPanel parametersP;
     private JButton start;
@@ -65,7 +65,16 @@ public class GuiComponents {
     private JMenu sizeMenu;
     private boolean gradientF = false;
     private int numberClients;
+
+
     private boolean returnJourney;
+
+
+    private String simReceiver;
+
+
+
+    private String simClient;
 
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -88,9 +97,9 @@ public class GuiComponents {
         start.setEnabled(false);
         pause = new JButton("Pause");
         stop = new JButton("Stop");
-        client = new JButton("Add Client");
+        client = new JButton("Add " + simClient);
         client.setEnabled(false);
-        receiver = new JButton("Add Receiver");
+        receiver = new JButton("Add " + simReceiver);
         dCst = new DrawNormal();
         thrL = new JLabel();
         responseL = new JLabel();
@@ -175,7 +184,6 @@ public class GuiComponents {
 
     // create an add receiver button
     private JButton receiverButton() {
-
 //        receiver.setMaximumSize(new Dimension(100,40));
         receiver.addActionListener(new ActionListener() {
             @Override
@@ -242,11 +250,11 @@ public class GuiComponents {
                 queueDrawer.setMediaJobs(Q - U);
 
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),
-                                                queueDrawer,
-                                                new Receiver(mapView.getReceiverLocation()),
-                                                mapView,
-                                                jobsDialog.getTypedValue(),
-                                                returnJourney);
+                        queueDrawer,
+                        new Receiver(mapView.getReceiverLocation()),
+                        mapView,
+                        jobsDialog.getTypedValue(),
+                        returnJourney);
 
                 sim.start();
                 start.setEnabled(false);
@@ -469,8 +477,7 @@ public class GuiComponents {
     // creates a file menu
     private JMenu fileMenu() {
 
-        JMenu fileMenu  = new JMenu("File");
-
+        JMenu fileMenu = new JMenu("File");
 
 
         Action Open = new AbstractAction("Open...") {
@@ -595,6 +602,7 @@ public class GuiComponents {
                 if (choice == JOptionPane.YES_OPTION) {
                     //Save the simulation
                 } else if (choice == JOptionPane.NO_OPTION) {
+                    new CustomSimulationDialog(mf);
                     mf.dispose();
                     mf = new SpatialQueueFrame();
                 }
@@ -748,5 +756,13 @@ public class GuiComponents {
         queueDrawer.setColors(emptyC, queueC, animC, gradientF);
         queueDrawer.repaint();
 
+    }
+
+    public void setSimReceiver(String simReceiver) {
+        this.simReceiver = simReceiver;
+    }
+
+    public void setSimClient(String simClient) {
+        this.simClient = simClient;
     }
 }
