@@ -390,35 +390,35 @@
   			<artifactId>jxmaps</artifactId>
   			<version>1.1</version>
   			<scope>system</scope>
-  			<systemPath>${basedir}/lib/jxmaps-1.1.jar</systemPath>
+  			<systemPath>${basedir}/lib/jxmaps-1.2.jar</systemPath>
 		</dependency>
 		<dependency>
   			<groupId>jxmaps-linux32</groupId>
   			<artifactId>jxmaps-linux32</artifactId>
   			<version>1.1</version>
   			<scope>system</scope>
-  			<systemPath>${basedir}/lib/jxmaps-linux32-1.1.jar</systemPath>
+  			<systemPath>${basedir}/lib/jxmaps-linux32-1.2.jar</systemPath>
 		</dependency>
 		<dependency>
   			<groupId>jxmaps-linux64</groupId>
   			<artifactId>jxmaps-linux64</artifactId>
   			<version>1.1</version>
   			<scope>system</scope>
-  			<systemPath>${basedir}/lib/jxmaps-linux64-1.1.jar</systemPath>
+  			<systemPath>${basedir}/lib/jxmaps-linux64-1.2.jar</systemPath>
 		</dependency>
 		<dependency>
   			<groupId>jxmaps-mac</groupId>
   			<artifactId>jxmaps-mac</artifactId>
   			<version>1.1</version>
   			<scope>system</scope>
-  			<systemPath>${basedir}/lib/jxmaps-mac-1.1.jar</systemPath>
+  			<systemPath>${basedir}/lib/jxmaps-mac-1.2.jar</systemPath>
 		</dependency>
 		<dependency>
   			<groupId>jxmaps-win</groupId>
   			<artifactId>jxmaps-win</artifactId>
   			<version>1.1</version>
   			<scope>system</scope>
-  			<systemPath>${basedir}/lib/jxmaps-win-1.1.jar</systemPath>
+  			<systemPath>${basedir}/lib/jxmaps-win-1.2.jar</systemPath>
 		</dependency>
 		<dependency>
   			<groupId>jxmaps-license</groupId>
