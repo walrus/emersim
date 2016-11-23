@@ -82,9 +82,9 @@ public class SpatialQueueSimulator implements Runnable {
         this.generator = new RequestGenerator(this);
     }
 
-    protected Sender generateNewSenderWithinArea(ClientRegion clientRegion) {
+    protected Client generateNewSenderWithinArea(ClientRegion clientRegion) {
         Location senderLocation = clientRegion.generatePoint();
-        return new Sender(senderLocation);    }
+        return new Client(senderLocation);    }
 
     public void run() {
         running = true;
@@ -151,13 +151,13 @@ public class SpatialQueueSimulator implements Runnable {
     }
 
     public synchronized Request createRequest() {
-        //Current implementation: create a new sender then generate a request from them
-        //Future implementation could take existing sender (generate before running sim)
+        //Current implementation: create a new client then generate a request from them
+        //Future implementation could take existing client (generate before running sim)
         int randomInt = new Random().nextInt(this.regions.length);
 
-        Sender sender = this.generateNewSenderWithinArea(this.regions[randomInt]);
+        Client client = this.generateNewSenderWithinArea(this.regions[randomInt]);
 
-        Request r = sender.makeRequest(getNextRequestID(), this.currentTime);
+        Request r = client.makeRequest(getNextRequestID(), this.currentTime);
         return r;
     }
 

@@ -1,7 +1,7 @@
 package jmt.jmarkov.SpatialQueue;
 
 /**
- * Class that represents the location of a Sender or Receiver.
+ * Class that represents the location of a Client or Receiver.
  * Given a pair of locations, the Receiver should be able to
  * work out the distance between them
  */

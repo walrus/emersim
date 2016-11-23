@@ -86,7 +86,7 @@ public class Server {
 
     // Given a Request object, calculate the response time in seconds and store it in the request
     public void calculateResponseTime(Request request, boolean returnJourney) {
-        Location senderLocation = request.getSender().getLocation();
+        Location senderLocation = request.getClient().getLocation();
         Location receiverLocation = this.getLocation();
 
         double xDistance = senderLocation.getX() - receiverLocation.getX();

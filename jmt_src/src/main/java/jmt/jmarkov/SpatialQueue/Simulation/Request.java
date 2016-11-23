@@ -1,9 +1,5 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
-import jmt.jmarkov.Job;
-import jmt.jmarkov.Queues.Processor;
-import jmt.jmarkov.SpatialQueue.Simulation.Sender;
-
 import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.BEING_SERVED;
 import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.FINISHED;
 import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.IN_QUEUE;
@@ -12,7 +8,7 @@ import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.IN_QUEUE;
  * Requests are sent by Senders to Receivers. They fulfil the same function as Jobs in JMCH.
  */
 public class Request implements Comparable<Request>{
-    private Sender sender;
+    private Client client;
 
     private int requestId;
 
@@ -30,11 +26,11 @@ public class Request implements Comparable<Request>{
 
     enum RequestState {IN_QUEUE, BEING_SERVED, FINISHED}
 
-    public Request(int requestId, double time, Sender sender){
+    public Request(int requestId, double time, Client client){
         this.requestId = requestId;
         this.creationTime = time;
         this.currentState = IN_QUEUE;
-        this.sender = sender;
+        this.client = client;
     }
 
     @Override
@@ -69,8 +65,8 @@ public class Request implements Comparable<Request>{
         this.finishServiceTime = time;
     }
 
-    public Sender getSender() {
-        return this.sender;
+    public Client getClient() {
+        return this.client;
     }
 
     public double getNextEventTime() {
