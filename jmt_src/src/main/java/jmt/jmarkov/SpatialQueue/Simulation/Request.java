@@ -24,13 +24,16 @@ public class Request implements Comparable<Request>{
 
     private RequestState currentState;
 
+    private double priority;
+
     enum RequestState {IN_QUEUE, BEING_SERVED, FINISHED}
 
-    public Request(int requestId, double time, Client client){
+    public Request(int requestId, double time, Client client, double priority){
         this.requestId = requestId;
         this.creationTime = time;
         this.currentState = IN_QUEUE;
         this.client = client;
+        this.priority = priority;
     }
 
     @Override

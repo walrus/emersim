@@ -30,7 +30,8 @@ public class Client {
     public Request makeRequest(int jobid, double time) {
         if (requestsSent < requestsToSend) {
             requestsSent++;
-            return new Request(jobid, time, this);
+            double priority = Math.random();
+            return new Request(jobid, time, this, priority);
         } else {
             return null;
         }
