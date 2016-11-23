@@ -35,19 +35,6 @@ public class StatsUtils {
     private static boolean nonErgodic = false;//if the utilization is less than 1
 
 
-    protected static void setLogAnalyticalResults() {
-        try {
-            if (ql.getMaxStates() == 0) {
-                outputTA.setAnalyticalResult(ql.mediaJobs(), ql.utilization(), ql.throughput(),
-                        ql.responseTime(), ql.getLambda(), ql.getS(), 0);
-            } else {
-                outputTA.setAnalyticalResult(ql.mediaJobs(), ql.utilization(), ql.throughput(), ql.responseTime(),
-                        ql.getLambda(), ql.getS(), ql.getStatusProbability(ql.getMaxStates() + ql.getNumberServer()));
-            }
-        } catch (NonErgodicException e) {
-            outputTA.setAnalyticalResult();
-        }
-    }
 
 
     protected static void updateFields(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim) {
@@ -55,11 +42,11 @@ public class StatsUtils {
             Q = ql.mediaJobs();
             U = ql.utilization();
             utilizationL.setForeground(Color.BLACK);
-            utilizationL.setText(uStrS + Formatter.formatNumber(U, 2) + uStrE);
-            mediaJobsL.setText(nStrS + Formatter.formatNumber(Q, 2) + nStrE);
+            utilizationL.setText(uStrS + Formatter.formatNumber(U, 3) + uStrE);
+            mediaJobsL.setText(nStrS + Formatter.formatNumber(Q, 3) + nStrE);
 
-            thrL.setText(thrStrS + Formatter.formatNumber(ql.throughput(), 2) + thrStrE);
-            responseL.setText(respStrS + Formatter.formatNumber(ql.responseTime(), 2) + respStrE);
+            thrL.setText(thrStrS + Formatter.formatNumber(ql.throughput(), 3) + thrStrE);
+            responseL.setText(respStrS + Formatter.formatNumber(ql.responseTime(), 3) + respStrE);
             nonErgodic = false;
 
             if (sim != null && ql.getLambda() > 0) {
@@ -80,11 +67,6 @@ public class StatsUtils {
         queueDrawer.setMediaJobs(Q - U);
 //        statiDrawer.repaint();
 
-        if (sim == null || !sim.isStarted()) {
-            setLogAnalyticalResults();
-        } else {
-            outputTA.setAnalyticalResult();
-        }
     }
 
     protected static void lambdaSStateChanged(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim,
@@ -186,7 +168,7 @@ public class StatsUtils {
     //setup queue visualisation and pointer
     protected static void showQueue(JSlider lambdaS, JLabel utilizationL, JLabel mediaJobsL) {
 
-        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), S_I * sMultiplier);
+        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), ql.getS() * sMultiplier);
 
         lambdaS.setValue(LAMBDA_I);
 //        statiDrawer.updateLogic(ql);
@@ -200,7 +182,9 @@ public class StatsUtils {
     public static void setSI(double sI) {
         S_I = sI;
         System.out.println("SERVICE TIME: " +S_I);
+        ql.setS(sI);
         updateFields(utilizationL, mediaJobsL, sim);
+
     }
 
 

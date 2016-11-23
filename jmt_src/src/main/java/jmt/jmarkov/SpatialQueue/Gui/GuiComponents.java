@@ -53,7 +53,7 @@ public class GuiComponents {
     private JSlider accelerationS;
     static JLabel thrL;
     static JLabel responseL;
-    static TANotifier outputTA;
+//    static TANotifier outputTA;
     private SpatialQueueFrame mf;
     private JMenu settingsMenu;
     private JMenu colorsMenu;
@@ -93,7 +93,7 @@ public class GuiComponents {
         dCst = new DrawNormal();
         thrL = new JLabel();
         responseL = new JLabel();
-        outputTA = new TANotifier();
+//        outputTA = new TANotifier();
         returnJourney = false;
         S_I = 70;
     }
@@ -204,7 +204,7 @@ public class GuiComponents {
             Thread.sleep(100);
         } catch (InterruptedException e) {
         }
-        outputTA.reset();
+//        outputTA.reset();
         queueDrawer.reset();
         numberClients = 0;
         updateFields(utilizationL, mediaJobsL, sim);
@@ -256,7 +256,6 @@ public class GuiComponents {
                 start.setEnabled(false);
                 stop.setEnabled(true);
                 pause.setEnabled(true);
-                setLogAnalyticalResults();
             }
         });
     }
@@ -693,7 +692,6 @@ public class GuiComponents {
     protected void changeSize() {
         queueDrawer.changeDrawSettings(dCst);
         queueDrawer.repaint();
-        outputTA.changeDrawSettings(dCst);
         // logD.changeDrawSettings(dCst);
         mf.validate();
 
