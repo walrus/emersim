@@ -1,13 +1,13 @@
 package jmt.jmarkov.SpatialQueue;
 
-import jmt.jmarkov.SpatialQueue.Simulation.Receiver;
+import jmt.jmarkov.SpatialQueue.Simulation.Server;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class ReceiverTest {
+public class ServerTest {
 
-    Receiver receiver = new Receiver(createRandomLocation());
+    Server server = new Server(createRandomLocation());
 
     private static Location createRandomLocation() {
         double x = Math.random() * 90;
@@ -18,6 +18,6 @@ public class ReceiverTest {
 
     @Test
     public void testReceiverExists() {
-        assertNotNull(this.receiver);
+        assertNotNull(this.server);
     }
 }

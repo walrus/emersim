@@ -80,7 +80,7 @@ public class SpatialQueueGuiTest {
         FrameFixture optionDialog = WindowFinder.findFrame(QueueTypeDialog.class).using(window.robot);
         optionDialog.button(new TextButtonMatcher("Spatial Queue")).click();
         FrameFixture jmch = WindowFinder.findFrame(SpatialQueueFrame.class).using(window.robot);
-        jmch.button(new TextButtonMatcher("Add Receiver")).requireEnabled();
+        jmch.button(new TextButtonMatcher("Add Server")).requireEnabled();
         jmch.show();
     }
 

@@ -8,11 +8,11 @@ import com.teamdev.jxmaps.MouseEvent;
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.map;
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.receiverMarkers;
 
-class ReceiverEntity implements Entity {
+class ServerEntity implements Entity {
     private Marker marker;
     private InfoWindow infoWindow;
 
-    ReceiverEntity(MouseEvent mouseEvent) {
+    ServerEntity(MouseEvent mouseEvent) {
         // Creating a new marker
         marker = new Marker(map);
         // Move marker to the position where user clicked
@@ -20,7 +20,7 @@ class ReceiverEntity implements Entity {
         // Creating an information window
         infoWindow = new InfoWindow(map);
         // Putting the address and location to the content of the information window
-        infoWindow.setContent("<b>Receiver #" + receiverMarkers.size() + "</b>");
+        infoWindow.setContent("<b>Server #" + receiverMarkers.size() + "</b>");
         // Moving the information window to the result location
         infoWindow.setPosition(marker.getPosition());
         // Showing of the information window

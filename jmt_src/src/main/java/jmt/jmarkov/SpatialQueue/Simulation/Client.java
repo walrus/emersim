@@ -25,7 +25,7 @@ public class Client {
         return location;
     }
 
-    //Send a request to the Receiver
+    //Send a request to the Server
     //Called by the simulator, which provides jobid and time
     public Request makeRequest(int jobid, double time) {
         if (requestsSent < requestsToSend) {

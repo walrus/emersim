@@ -8,7 +8,7 @@ import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Graphics.constants.DrawSmall;
 import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
-import jmt.jmarkov.SpatialQueue.Simulation.Receiver;
+import jmt.jmarkov.SpatialQueue.Simulation.Server;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
 import javax.swing.*;
@@ -37,7 +37,7 @@ public class GuiComponents {
     private JButton pause;
     private JButton stop;
     private JButton client;
-    private JButton receiver;
+    private JButton server;
     private JLabel mediaJobsL;
     private JLabel utilizationL;
     private JSlider lambdaS;
@@ -90,7 +90,7 @@ public class GuiComponents {
         stop = new JButton("Stop");
         client = new JButton("Add Client");
         client.setEnabled(false);
-        receiver = new JButton("Add Receiver");
+        server = new JButton("Add Server");
         dCst = new DrawNormal();
         thrL = new JLabel();
         responseL = new JLabel();
@@ -115,13 +115,13 @@ public class GuiComponents {
 
     // create side panel for functionality buttons
     protected void generateSideButtons(JPanel panel) {
-        receiverButton();
+        serverButton();
         clientButton();
         pauseButton();
         startButton();
         stopButton();
 
-        panel.add(receiver);
+        panel.add(server);
         panel.add(client);
         panel.add(start);
         panel.add(pause);
@@ -174,21 +174,21 @@ public class GuiComponents {
         return client;
     }
 
-    // create an add receiver button
-    private JButton receiverButton() {
+    // create an add server button
+    private JButton serverButton() {
 
-//        receiver.setMaximumSize(new Dimension(100,40));
-        receiver.addActionListener(new ActionListener() {
+//        server.setMaximumSize(new Dimension(100,40));
+        server.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_RECEIVER);
-                // Disable add receiver button (restricts to only using 1 receiver)
-                receiver.setEnabled(false);
+                // Disable add server button (restricts to only using 1 server)
+                server.setEnabled(false);
                 client.setEnabled(true);
             }
         });
 
-        return receiver;
+        return server;
     }
 
     public void stopProcessing() {
@@ -244,7 +244,7 @@ public class GuiComponents {
 
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),
                                                 queueDrawer,
-                                                new Receiver(mapView.getReceiverLocation()),
+                                                new Server(mapView.getReceiverLocation()),
                                                 mapView,
                                                 jobsDialog.getTypedValue(),
                                                 returnJourney);

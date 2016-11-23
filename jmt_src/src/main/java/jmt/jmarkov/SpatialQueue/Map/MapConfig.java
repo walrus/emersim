@@ -52,7 +52,7 @@ public class MapConfig extends MapView {
                     public void onEvent(MouseEvent mouseEvent) {
                         if (buttonState == BUTTON_STATE.ADD_RECEIVER) {
                             buttonState = BUTTON_STATE.NONE;
-                            new ReceiverEntity(mouseEvent);
+                            new ServerEntity(mouseEvent);
                         }
                     }
                 });

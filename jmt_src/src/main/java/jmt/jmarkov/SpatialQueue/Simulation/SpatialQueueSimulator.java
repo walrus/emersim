@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class SpatialQueueSimulator implements Runnable {
 
-    // Receiver is the server that deals with requests.
+    // Server is the server that deals with requests.
     // All logic related to dealing with requests is delegated to it
     private Server server;
 
