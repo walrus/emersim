@@ -21,9 +21,6 @@ public class SpatialQueueSimulator implements Runnable {
 
     private ClientRegion[] regions;
 
-    // Generates Requests & runs in a separate thread
-    private RequestGenerator generator;
-
     //current simulation time
     private double currentTime;// in milliseconds
 
@@ -78,8 +75,12 @@ public class SpatialQueueSimulator implements Runnable {
         this.lambda = 5;
         this.maxInterval = 3;
 
-        //Create a new request generator
-        this.generator = new RequestGenerator(this);
+        //Create a new request generator for each client region
+        for(ClientRegion cr : regions){
+            //TODO: set lambda value for request generator
+            RequestGenerator rg = new RequestGenerator(this);
+            cr.setRequestGenerator(rg);
+        }
     }
 
     protected Client generateNewSenderWithinArea(ClientRegion clientRegion) {
@@ -98,9 +99,12 @@ public class SpatialQueueSimulator implements Runnable {
         currentTimeMultiplied = 0;
         realTimeStart = new Date().getTime();
 
-        // Start a new thread and run the generator from it
-        Thread generatorThread = new Thread(this.generator);
-        generatorThread.start();
+        // For each client region, Start new thread and run the generator from it
+        for(ClientRegion cr : regions){
+            Thread generatorThread = new Thread(cr.getGenerator());
+            generatorThread.start();
+
+        }
 
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {

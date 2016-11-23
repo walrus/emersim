@@ -109,6 +109,10 @@ public class ClientRegion implements Shape {
         this.requestGenerator = generator;
     }
 
+    public RequestGenerator getGenerator(){
+        return this.requestGenerator;
+    }
+
     private double getRegionProbability() {
         //to be implemented
         return 0;
