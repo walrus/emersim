@@ -15,7 +15,7 @@ public class ClientRegion implements Shape {
 
     Point2D.Double[] vertices;
     ClientEntity mapEntity;
-    RequestGenerator requestGenerator;
+    private RequestGenerator requestGenerator;
 
     public ClientRegion(LatLng[] areaVertices, ClientEntity clientEntity) {
         this.mapEntity = clientEntity;

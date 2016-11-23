@@ -77,8 +77,7 @@ public class SpatialQueueSimulator implements Runnable {
 
         //Create a new request generator for each client region
         for(ClientRegion cr : regions){
-            //TODO: set lambda value for request generator
-            RequestGenerator rg = new RequestGenerator(this);
+            RequestGenerator rg = new RequestGenerator(this, lambda);
             cr.setRequestGenerator(rg);
         }
     }
