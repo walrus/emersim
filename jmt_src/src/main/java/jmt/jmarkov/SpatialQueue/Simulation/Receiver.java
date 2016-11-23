@@ -5,6 +5,8 @@ import jmt.jmarkov.Queues.QueueLogic;
 import jmt.jmarkov.SpatialQueue.Location;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
+
 /**
  * Receivers handle requests from Senders
  */
@@ -12,7 +14,7 @@ public class Receiver {
 
     private Location location;
 
-    private LinkedList<Request> requestQueue;
+    private PriorityQueue<Request> requestQueue;
 
     private LinkedList<Request> servedRequests;
 
@@ -30,7 +32,7 @@ public class Receiver {
         this.location = location;
         this.serving = false;
         this.currentRequest = null;
-        this.requestQueue = new LinkedList<>();
+        this.requestQueue = new PriorityQueue<>();
         this.servedRequests = new LinkedList<>();
     }
 
@@ -79,13 +81,7 @@ public class Receiver {
     // Can be overridden to implement different behaviours
     public void handleRequest(Request request, boolean returnJourney) {
         calculateResponseTime(request, returnJourney);
-        int i;
-        for (i = 0; i < this.requestQueue.size(); i++) {
-            if (this.requestQueue.get(i).getResponseTime() > request.getResponseTime()) {
-                break;
-            }
-        }
-        this.requestQueue.add(i, request);
+        this.requestQueue.offer(request);
     }
 
     // Given a Request object, calculate the response time in seconds and store it in the request
@@ -109,11 +105,10 @@ public class Receiver {
     //Find the next request in the queue. This should
     //be overridden to implement different behaviours
     public Request getNextRequest() {
-        //TODO: implement better algorithm that uses distances?
-        return this.requestQueue.removeFirst();
+        return this.requestQueue.poll();
     }
 
-    public LinkedList<Request> getQueue() {
+    public PriorityQueue<Request> getQueue() {
         return this.requestQueue;
     }
 

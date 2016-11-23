@@ -39,6 +39,10 @@ public class Request implements Comparable<Request>{
 
     @Override
     public int compareTo(Request other) {
+        if (other == null) {
+            //This should fix the NPEs?
+            return 0;
+        }
         double diff = this.getResponseTime() - other.getResponseTime();
         if (diff > 0) {
             return 1;
