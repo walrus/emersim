@@ -2,6 +2,7 @@ package jmt.jmarkov.SpatialQueue.Gui;
 
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
+import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
 import javax.swing.*;
@@ -13,6 +14,11 @@ import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.*;
  * Created by joshuazeltser on 02/11/2016.
  */
 public class StatsUtils {
+
+
+
+    //To change service time change this variable
+    static double S_I;
 
     static double U; // Utilization [%]
     static double Q; // Average customer in station
@@ -169,4 +175,35 @@ public class StatsUtils {
         responseL.setFont(dCst.getNormalGUIFont());
         resultsP.add(responseL);
     }
+
+    // create a service time slider
+    protected static void setupServiceTime() {
+        sMultiplier = 0.02;
+
+        ql.setS(S_I * sMultiplier);
+    }
+
+    //setup queue visualisation and pointer
+    protected static void showQueue(JSlider lambdaS, JLabel utilizationL, JLabel mediaJobsL) {
+
+        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), S_I * sMultiplier);
+
+        lambdaS.setValue(LAMBDA_I);
+//        statiDrawer.updateLogic(ql);
+        queueDrawer.updateLogic(ql);
+        queueDrawer.setMaxJobs(0);
+//        statiDrawer.setMaxJobs(0);
+        queueDrawer.setCpuNumber(1);
+        updateFields(utilizationL, mediaJobsL, sim);
+    }
+
+    public static void setSI(double sI) {
+        S_I = sI;
+        System.out.println("SERVICE TIME: " +S_I);
+        updateFields(utilizationL, mediaJobsL, sim);
+    }
+
+
+
+
 }

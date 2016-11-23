@@ -29,8 +29,7 @@ import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
  */
 public class GuiComponents {
 
-    //To change service time change this variable
-    private int S_I =  70;
+
 
     private JPanel parametersP;
     private JButton start;
@@ -38,12 +37,12 @@ public class GuiComponents {
     private JButton stop;
     private JButton client;
     private JButton receiver;
-    private JLabel mediaJobsL;
-    private JLabel utilizationL;
+    static JLabel mediaJobsL;
+    static JLabel utilizationL;
     private JSlider lambdaS;
     private boolean paused = false;
     static int lambdaMultiplierChange = 0; //for the lambda slide bar
-    private int LAMBDA_I = 50;
+    static int LAMBDA_I = 50;
     static double sMultiplier = 1; //service time slide bar multiplier
     static double lambdaMultiplier = 1; //lambda slide bar multiplier
     static SpatialQueueSimulator sim;
@@ -70,7 +69,7 @@ public class GuiComponents {
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
-        showQueue(1);
+        StatsUtils.showQueue(lambdaS, utilizationL, mediaJobsL);
         this.mf = mf;
     }
 
@@ -96,6 +95,7 @@ public class GuiComponents {
         responseL = new JLabel();
         outputTA = new TANotifier();
         returnJourney = false;
+        S_I = 70;
     }
 
     //Create queueDrawer for queue visualisation
@@ -242,9 +242,12 @@ public class GuiComponents {
 
                 queueDrawer.setMediaJobs(Q - U);
 
+                Receiver receiver = new Receiver(mapView.getReceiverLocation());
+
+
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),
                                                 queueDrawer,
-                                                new Receiver(mapView.getReceiverLocation()),
+                                                receiver,
                                                 mapView,
                                                 jobsDialog.getTypedValue(),
                                                 returnJourney);
@@ -349,12 +352,7 @@ public class GuiComponents {
         return splitPane;
     }
 
-    // create a service time slider
-    protected void setupServiceTime() {
-        sMultiplier = 0.02;
 
-        ql.setS(S_I * sMultiplier);
-    }
 
     //create a lambda slider
     protected void createLambdaSlider(GridBagConstraints c) {
@@ -446,19 +444,7 @@ public class GuiComponents {
         StatsUtils.generateSimulationStats(resultsP, mediaJobsL, utilizationL);
     }
 
-    //setup queue visualisation and pointer
-    protected void showQueue(int cpuNumber) {
 
-        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), S_I * sMultiplier);
-
-        lambdaS.setValue(LAMBDA_I);
-//        statiDrawer.updateLogic(ql);
-        queueDrawer.updateLogic(ql);
-        queueDrawer.setMaxJobs(0);
-//        statiDrawer.setMaxJobs(0);
-        queueDrawer.setCpuNumber(1);
-        StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
-    }
 
     // creates a menu bar
     public void createMenuBar(JMenuBar menuBar) {

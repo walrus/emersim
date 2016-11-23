@@ -7,6 +7,8 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.ClientRegion;
+import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
+import jmt.jmarkov.SpatialQueue.Gui.StatsUtils;
 import jmt.jmarkov.SpatialQueue.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
@@ -123,8 +125,7 @@ public class SpatialQueueSimulator implements Runnable {
                     realTimeCurrent = new Date().getTime() - realTimeStart;
                 }
 
-
-
+                StatsUtils.setSI(receiver.getAverageServiceTime());
                 //Having waited till the request has been served, deal with it
                 currentTime = currentRequest.getNextEventTime();
                 this.receiver.stopServing(currentTime);
