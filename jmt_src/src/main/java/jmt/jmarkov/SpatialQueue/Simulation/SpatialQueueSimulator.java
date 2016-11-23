@@ -172,7 +172,7 @@ public class SpatialQueueSimulator implements Runnable {
     }
 
     public Request peekRequest() {
-        return this.receiver.getQueue().getFirst();
+        return this.receiver.getQueue().peek();
     }
 
     public boolean isLambdaZero() {
