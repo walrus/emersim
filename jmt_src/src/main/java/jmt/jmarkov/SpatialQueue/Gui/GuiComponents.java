@@ -29,8 +29,6 @@ import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
  */
 public class GuiComponents {
 
-
-
     private JPanel parametersP;
     private JButton start;
     private JButton pause;
@@ -66,7 +64,16 @@ public class GuiComponents {
     private JMenu sizeMenu;
     private boolean gradientF = false;
     private int numberClients;
+
+
     private boolean returnJourney;
+
+
+    private String simReceiver;
+
+
+
+    private String simClient;
 
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -89,9 +96,11 @@ public class GuiComponents {
         start.setEnabled(false);
         pause = new JButton("Pause");
         stop = new JButton("Stop");
-        client = new JButton("Add Client");
+        client = new JButton("Add " + simClient);
         client.setEnabled(false);
-        server = new JButton("Add Server");
+
+        server = new JButton("Add " + simReceiver);
+
         dCst = new DrawNormal();
         thrL = new JLabel();
         responseL = new JLabel();
@@ -165,7 +174,6 @@ public class GuiComponents {
                         returnJourney = false;
                     }
                 }
-
                 // Disable add client button to ensure a new region is created in full
                 client.setEnabled(false);
                 // Disable start button to prevent starting with incomplete clients
@@ -181,6 +189,7 @@ public class GuiComponents {
 
 //        server.setMaximumSize(new Dimension(100,40));
         server.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_RECEIVER);
@@ -253,6 +262,8 @@ public class GuiComponents {
                                                 mapView,
                                                 jobsDialog.getTypedValue(),
                                                 returnJourney);
+
+
 
                 sim.start();
                 start.setEnabled(false);
@@ -457,8 +468,7 @@ public class GuiComponents {
     // creates a file menu
     private JMenu fileMenu() {
 
-        JMenu fileMenu  = new JMenu("File");
-
+        JMenu fileMenu = new JMenu("File");
 
 
         Action Open = new AbstractAction("Open...") {
@@ -482,32 +492,6 @@ public class GuiComponents {
             }
         };
 
-        // generates all of the menu buttons
-        Action New = new AbstractAction("New") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Custom button text
-                Object[] options = {"Save",
-                        "Don't Save",
-                        "Cancel"};
-                int choice = JOptionPane.showOptionDialog(mf,
-                        "Would you like to save your work?",
-                        "Create New Simulation",
-                        JOptionPane.YES_NO_CANCEL_OPTION,
-                        2,
-                        null,
-                        options,
-                        options[2]);
-                if (choice == JOptionPane.YES_OPTION) {
-                    //Save the simulation
-                } else if (choice == JOptionPane.NO_OPTION) {
-                    mf.dispose();
-                    mf = new SpatialQueueFrame();
-                }
-
-            }
-        };
-
         Action Compare = new AbstractAction("Compare Simulations...") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -516,7 +500,7 @@ public class GuiComponents {
         };
 
 
-        fileMenu.add(New);
+        fileMenu.add(newSubMenu());
         fileMenu.add(Open);
         fileMenu.add(openRecentSubMenu());
         fileMenu.addSeparator();
@@ -561,6 +545,65 @@ public class GuiComponents {
         openRecentMenu.add(NullSimulation3);
 
         return openRecentMenu;
+    }
+
+    private JMenu newSubMenu() {
+        JMenu newMenu = new JMenu("New");
+
+        Action NewStandardSimulation = new AbstractAction("Standard Simulation") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Custom button text
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
+                }
+            }
+
+        };
+
+        Action NewCustomSimulation = new AbstractAction("Custom Simulation") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    new CustomSimulationDialog(mf);
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
+                }
+
+            }
+        };
+        newMenu.add(NewStandardSimulation);
+        newMenu.add(NewCustomSimulation);
+
+        return newMenu;
     }
 
     // creates a help menu
@@ -703,5 +746,13 @@ public class GuiComponents {
         queueDrawer.setColors(emptyC, queueC, animC, gradientF);
         queueDrawer.repaint();
 
+    }
+
+    public void setSimReceiver(String simReceiver) {
+        this.simReceiver = simReceiver;
+    }
+
+    public void setSimClient(String simClient) {
+        this.simClient = simClient;
     }
 }

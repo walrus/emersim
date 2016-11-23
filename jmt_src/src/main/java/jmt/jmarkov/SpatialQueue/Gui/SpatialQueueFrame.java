@@ -27,7 +27,7 @@ import java.beans.PropertyChangeListener;
 
 public class SpatialQueueFrame extends JFrame implements ActionListener, PropertyChangeListener {
 
-    private GuiComponents guiComponents;
+    protected GuiComponents guiComponents;
 	private JPanel simulationP;
 	private SpatialQueueFrame mf;
 
