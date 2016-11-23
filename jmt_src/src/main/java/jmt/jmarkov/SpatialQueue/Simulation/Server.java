@@ -22,6 +22,8 @@ public class Server {
 
     private QueueLogic ql;
 
+    private double averageServiceTime;
+
     // True iff a request is currently being served
     private boolean serving;
 
@@ -34,6 +36,7 @@ public class Server {
         this.currentRequest = null;
         this.requestQueue = new PriorityQueue<>();
         this.servedRequests = new LinkedList<>();
+        this.averageServiceTime = 0;
     }
 
     public Location getLocation() {
@@ -66,6 +69,7 @@ public class Server {
         this.currentRequest.finishServing(currentTime);
         this.servedRequests.add(this.currentRequest);
         this.currentRequest = null;
+        this.updateAverageServiceTime(currentTime);
     }
 
     private boolean isServing() {
@@ -102,10 +106,20 @@ public class Server {
         }
     }
 
-    //Find the next request in the queue. This should
-    //be overridden to implement different behaviours
+    private void updateAverageServiceTime(double currentTime) {
+        if (this.servedRequests.isEmpty()) {
+            this.averageServiceTime = 0;
+        } else {
+            this.averageServiceTime = currentTime / this.servedRequests.size();
+        }
+    }
+
     public Request getNextRequest() {
         return this.requestQueue.poll();
+    }
+
+    public double getAverageServiceTime() {
+        return this.averageServiceTime;
     }
 
     public PriorityQueue<Request> getQueue() {
