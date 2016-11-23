@@ -17,7 +17,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     // Receiver is the server that deals with requests.
     // All logic related to dealing with requests is delegated to it
-    private Receiver receiver;
+    private Server server;
 
     private ClientRegion[] regions;
 
@@ -59,7 +59,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     public SpatialQueueSimulator(double timeMultiplier,
                                  QueueDrawer queueDrawer,
-                                 Receiver receiver,
+                                 Server server,
                                  MapConfig mapConfig,
                                  int maxRequests,
                                  boolean returnJourney) {
@@ -67,7 +67,7 @@ public class SpatialQueueSimulator implements Runnable {
 
         currentTime = 0;
         setTimeMultiplier(timeMultiplier);
-        this.receiver = receiver;
+        this.server = server;
         this.regions = mapConfig.getClientRegions();
         this.currentRequestID = 0;
         this.maxRequests = maxRequests;
@@ -104,9 +104,9 @@ public class SpatialQueueSimulator implements Runnable {
 
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {
-            if (this.receiver.getQueue().size() > 0) {
+            if (this.server.getQueue().size() > 0) {
                 // Serve the next request and grab a link to the request being served
-                Request currentRequest = this.receiver.serveRequest(currentTimeMultiplied);
+                Request currentRequest = this.server.serveRequest(currentTimeMultiplied);
                 //notify visualisation with which job is being served
                 queueDrawer.servingJob(currentRequest.getRequestId());
                 currentTimeMultiplied += (currentRequest.getNextEventTime() - currentTime) / timeMultiplier;
@@ -127,7 +127,7 @@ public class SpatialQueueSimulator implements Runnable {
 
                 //Having waited till the request has been served, deal with it
                 currentTime = currentRequest.getNextEventTime();
-                this.receiver.stopServing(currentTime);
+                this.server.stopServing(currentTime);
                 // update queue visualisation
                 queueDrawer.exitQueue();
 
@@ -136,12 +136,12 @@ public class SpatialQueueSimulator implements Runnable {
             }
         }
         running = false;
-        System.out.println("Stopping, total requests served: " + this.receiver.getNumberOfRequestsServed());
+        System.out.println("Stopping, total requests served: " + this.server.getNumberOfRequestsServed());
 
     }
-    // Return true iff receiver has served fewer then maxRequests requests or if maxRequests == 0
+    // Return true iff server has served fewer then maxRequests requests or if maxRequests == 0
     protected synchronized boolean moreRequests() {
-        return ((this.receiver.getNumberOfRequestsServed() < this.maxRequests) || maxRequests == 0);
+        return ((this.server.getNumberOfRequestsServed() < this.maxRequests) || maxRequests == 0);
     }
 
     protected synchronized int getNextRequestID() {
@@ -163,16 +163,16 @@ public class SpatialQueueSimulator implements Runnable {
 
     public synchronized void enqueueRequest(Request newRequest) {
         if (newRequest != null){
-            this.receiver.handleRequest(newRequest, returnJourney);
+            this.server.handleRequest(newRequest, returnJourney);
         }
     }
 
     public synchronized Request dequeueRequest() {
-        return this.receiver.getNextRequest();
+        return this.server.getNextRequest();
     }
 
     public Request peekRequest() {
-        return this.receiver.getQueue().peek();
+        return this.server.getQueue().peek();
     }
 
     public boolean isLambdaZero() {

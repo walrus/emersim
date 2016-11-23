@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 /**
  * Receivers handle requests from Senders
  */
-public class Receiver {
+public class Server {
 
     private Location location;
 
@@ -28,7 +28,7 @@ public class Receiver {
     // The request currently being served
     private Request currentRequest;
 
-    public Receiver(Location location) {
+    public Server(Location location) {
         this.location = location;
         this.serving = false;
         this.currentRequest = null;
