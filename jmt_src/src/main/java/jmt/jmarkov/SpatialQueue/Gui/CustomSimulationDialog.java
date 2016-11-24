@@ -25,7 +25,7 @@ public class CustomSimulationDialog extends JDialog {
     private JOptionPane optionPane;
 
 
-    private String receiverName;
+    private String serverName;
     private String clientName;
 
     private SpatialQueueFrame aFrame;
@@ -37,7 +37,7 @@ public class CustomSimulationDialog extends JDialog {
         this.aFrame = aFrame;
 
 
-        receiverName = "";
+        serverName = "";
         clientName = "";
 
         setTitle("Custom Simulation Setup");
@@ -46,10 +46,10 @@ public class CustomSimulationDialog extends JDialog {
         textField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                receiverName += e.getKeyChar();
+                serverName += e.getKeyChar();
             }
         });
-        textField.setText("Receiver");
+
 
         textField2 = new TextField(10);
         textField2.setEnabled(true);
@@ -59,7 +59,7 @@ public class CustomSimulationDialog extends JDialog {
                 clientName += e.getKeyChar();
             }
         });
-        textField2.setText("Client");
+
 
 
         //adding to panel
@@ -72,17 +72,7 @@ public class CustomSimulationDialog extends JDialog {
 
         JButton enter = new JButton("Enter");
 
-        enter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                aFrame.dispose();
-//                aFrame = new SpatialQueueFrame();
-//                aFrame.guiComponents.setSimReceiver(receiverName);
-//                aFrame.guiComponents.setSimClient(clientName);
-
-
-            }
-        });
+        enterListener(enter);
 
         //Create an array of the text and components to be displayed.
         String msgString1 = "Enter names of Receiver and Client:";
@@ -114,14 +104,9 @@ public class CustomSimulationDialog extends JDialog {
             }
         });
 
-        //Ensure the text field always gets the first focus.
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent ce) {
-                textField.requestFocusInWindow();
-            }
-        });
 
+
+        setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 
 
         //Register an event handler that reacts to option pane state changes.
@@ -131,8 +116,34 @@ public class CustomSimulationDialog extends JDialog {
         this.setVisible(true);
     }
 
+    private void enterListener(JButton enter) {
+        enter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
 
+
+//                SpatialQueueFrame sqf = new SpatialQueueFrame();
+
+
+
+
+
+                aFrame.dispose();
+                aFrame = new SpatialQueueFrame();
+                aFrame.setButtonNames(clientName, serverName);
+
+                //                System.out.println(sqf.getButtonNames());
+
+            }
+        });
+    }
+
+    void closez() {
+        setModal(false);
+        this.dispose();
+        System.out.println("Method Done");
+    }
 
 
     public static void main(String[] args) {

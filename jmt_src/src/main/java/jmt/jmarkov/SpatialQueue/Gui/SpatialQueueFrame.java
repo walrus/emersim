@@ -33,13 +33,14 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
 	/** Creates the dialog. */
 	public SpatialQueueFrame() {
+		initObjects();
 		init();
 	}
 
+	
+
 	public void init() {
 		setTitle("Create a new Spatial Queue");
-
-        initObjects();
 
         //set window size
 		Dimension d = new Dimension(1000,800);
@@ -80,6 +81,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 		guiComponents.createMenuBar(menuB);
 
 
+
         // window settings
 		pack();
 		setLocationRelativeTo(null);
@@ -101,4 +103,15 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 	public static void main(String[] args)  {
 		new SpatialQueueFrame();
 	}
+
+	public void setButtonNames(String client, String server) {
+		guiComponents.setSimServer(server);
+		guiComponents.setSimClient(client);
+	}
+
+	public String getButtonNames() {
+		return guiComponents.getSimServer() + " " + guiComponents.getSimClient();
+	}
+
+
 }

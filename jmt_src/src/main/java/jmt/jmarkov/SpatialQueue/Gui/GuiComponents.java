@@ -68,12 +68,11 @@ public class GuiComponents {
 
     private boolean returnJourney;
 
-
-    private String simReceiver;
-
-
+    private String simServer;
 
     private String simClient;
+
+
 
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -84,6 +83,8 @@ public class GuiComponents {
 
     //Initialise objects
     private void init() {
+//        simClient = "Client";
+//        simServer = "Receiver";
         sim = null;
         paused = false;
         lambdaS = new JSlider();
@@ -96,11 +97,12 @@ public class GuiComponents {
         start.setEnabled(false);
         pause = new JButton("Pause");
         stop = new JButton("Stop");
-        client = new JButton("Add " + simClient);
+        client = new JButton("Add Client" );
         client.setEnabled(false);
 
-        server = new JButton("Add " + simReceiver);
-
+        server = new JButton("Add Server");
+        simServer = "Server";
+        simClient = "Client";
         dCst = new DrawNormal();
         thrL = new JLabel();
         responseL = new JLabel();
@@ -126,6 +128,8 @@ public class GuiComponents {
 
     // create side panel for functionality buttons
     protected void generateSideButtons(JPanel panel) {
+
+
         serverButton();
         clientButton();
         pauseButton();
@@ -594,8 +598,7 @@ public class GuiComponents {
                     //Save the simulation
                 } else if (choice == JOptionPane.NO_OPTION) {
                     new CustomSimulationDialog(mf);
-                    mf.dispose();
-                    mf = new SpatialQueueFrame();
+
                 }
 
             }
@@ -748,11 +751,26 @@ public class GuiComponents {
 
     }
 
-    public void setSimReceiver(String simReceiver) {
-        this.simReceiver = simReceiver;
+    public void setSimClient(String simClient) {
+        System.out.println(simClient);
+        client.setText("Add " + simClient);
+        System.out.println(client.getText());
     }
 
-    public void setSimClient(String simClient) {
-        this.simClient = simClient;
+    public void setSimServer(String simServer) {
+        server.setText("Add " + simServer);
     }
+
+    public String getSimClient() {
+        return simClient;
+    }
+
+    public String getSimServer() {
+       return simServer;
+    }
+
+
+
+
+
 }
