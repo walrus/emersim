@@ -8,6 +8,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Random;
 
 public class ClientRegion implements Shape {
 
@@ -82,10 +83,50 @@ public class ClientRegion implements Shape {
         Location[] locations = new Location[regions.length];
         regions = rankRegions(regions);
         for(int i = 0; i < regions.length; i++) {
-            Location location = generatePoint();
+            Location location = generatePointWithProbabilityDistribution("normal");
             locations[i] = location;
         }
         return locations;
+    }
+
+    private Location generatePointWithProbabilityDistribution(String distribution) {
+
+        Rectangle2D rectangle2D = getBounds2D();
+        double x = 0;
+        double y = 0;
+
+        do {
+            double xrand = Math.random();
+            double yrand = Math.random();
+            int count = 0;
+            if (distribution.equals("uniform")) {
+                x = rectangle2D.getX() + xrand * count;
+                y = rectangle2D.getY() + yrand * count;
+                count++;
+            } else if (distribution.equals("normal")) {
+                x = getGaussian(5,1);
+                y = getGaussian(5,2);
+            } else if (distribution.equals("exponential")) {
+                x = getExponential(1);
+                y = getExponential(2);
+            }
+        } while (!contains(new Point2D.Double(x, y)));
+
+        if (mapEntity != null) {
+            mapEntity.displayRequestLocationOnMap(new Location(x, y));
+        }
+
+        return new Location(x, y);
+    }
+
+    private double getGaussian(double mean, double variance) {
+        double frandom = new Random().nextGaussian();
+        return mean + frandom * variance;
+    }
+
+    public double getExponential(double lambda) {
+        Random rand = new Random();
+        return  Math.log(1-rand.nextDouble())/(-lambda);
     }
 
     public ClientRegion[] rankRegions(ClientRegion[] regions) {
