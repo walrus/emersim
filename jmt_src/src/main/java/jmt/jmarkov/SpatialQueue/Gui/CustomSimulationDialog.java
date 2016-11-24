@@ -11,25 +11,10 @@ import java.beans.PropertyChangeListener;
  */
 public class CustomSimulationDialog extends JDialog {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private TextField textField2;
-
-    private JPanel selectionP;
-    private GridBagConstraints c;
-    private JTextField textField;
-
-
-    private JOptionPane optionPane;
-
-
     private String serverName;
     private String clientName;
 
     private SpatialQueueFrame aFrame;
-
 
     /** Creates the reusable dialog. */
     public CustomSimulationDialog(SpatialQueueFrame aFrame) {
@@ -40,74 +25,39 @@ public class CustomSimulationDialog extends JDialog {
         serverName = "";
         clientName = "";
 
-        setTitle("Custom Simulation Setup");
-        textField = new JTextField(10);
-        textField.setEnabled(true);
-        textField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                serverName += e.getKeyChar();
-            }
-        });
+        JPanel p = new JPanel(new BorderLayout(5,10));
 
+        JPanel labels = new JPanel(new GridLayout(0,1,2,5));
+        labels.add(new JLabel("Server", SwingConstants.RIGHT));
+        labels.add(new JLabel("Client", SwingConstants.RIGHT));
+        p.add(labels, BorderLayout.WEST);
 
-        textField2 = new TextField(10);
-        textField2.setEnabled(true);
-        textField2.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                clientName += e.getKeyChar();
-            }
-        });
+        JPanel params = new JPanel(new GridLayout(0,1,2,5));
+        final JTextField server = new JTextField();
+        params.add(server);
 
+        final JTextField client = new JTextField();
+        params.add(client);
 
-
-        //adding to panel
-        selectionP = new JPanel(new GridLayout(2,1));
-
-        selectionP.add(textField);
-
-        selectionP.add(textField2);
-
-
-        JButton enter = new JButton("Enter");
-
-        enterListener(enter);
-
-        //Create an array of the text and components to be displayed.
-        String msgString1 = "Enter names of Receiver and Client:";
-
-        Object[] array = { msgString1, selectionP };
-
-        //Create an array specifying the number of dialog buttons
-        //and their text.
-        Object[] options = { enter };
-
-        //Create the JOptionPane.
-        optionPane = new JOptionPane(array, JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION, null, options, options[0]);
-
-
-        //Make this dialog display it.
-        setContentPane(optionPane);
-
-        //Handle window closing correctly.
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent we) {
-				/*
-				 * Instead of directly closing the window,
-				 * we're going to change the JOptionPane's
-				 * value property.
-				 */
-                optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-            }
-        });
-
-
-
+        p.add(params, BorderLayout.CENTER);
         setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 
+        this.add(p);
+
+        int result = JOptionPane.showConfirmDialog(
+                aFrame, p, "Custom Simulation Setup", JOptionPane.OK_CANCEL_OPTION);
+
+        clientName = client.getText().toString();
+        serverName = server.getText().toString();
+
+        if (result == 0) {
+            aFrame.dispose();
+            SpatialQueueFrame newSqf = new SpatialQueueFrame();
+            newSqf.setCustomLabels(clientName, serverName);
+            if (clientName.equals("") || serverName.equals("")) {
+                newSqf.setCustomLabels("Client", "Server");
+            }
+        }
 
         //Register an event handler that reacts to option pane state changes.
 //        optionPane.addPropertyChangeListener(this);
@@ -115,36 +65,6 @@ public class CustomSimulationDialog extends JDialog {
         this.setLocationRelativeTo(aFrame);
         this.setVisible(true);
     }
-
-    private void enterListener(JButton enter) {
-        enter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-
-
-//                SpatialQueueFrame sqf = new SpatialQueueFrame();
-
-
-
-
-
-                aFrame.dispose();
-                aFrame = new SpatialQueueFrame();
-                aFrame.setButtonNames(clientName, serverName);
-
-                //                System.out.println(sqf.getButtonNames());
-
-            }
-        });
-    }
-
-    void closez() {
-        setModal(false);
-        this.dispose();
-        System.out.println("Method Done");
-    }
-
 
     public static void main(String[] args) {
         SpatialQueueFrame mf = new SpatialQueueFrame();

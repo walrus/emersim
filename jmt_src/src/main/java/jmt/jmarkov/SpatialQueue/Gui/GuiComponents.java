@@ -752,9 +752,9 @@ public class GuiComponents {
     }
 
     public void setSimClient(String simClient) {
-        System.out.println(simClient);
+
         client.setText("Add " + simClient);
-        System.out.println(client.getText());
+
     }
 
     public void setSimServer(String simServer) {
@@ -767,6 +767,10 @@ public class GuiComponents {
 
     public String getSimServer() {
        return simServer;
+    }
+
+    public void setJobParam(String job) {
+        queueDrawer.setJobName(job);
     }
 
 

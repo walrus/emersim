@@ -37,7 +37,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 		init();
 	}
 
-	
+
 
 	public void init() {
 		setTitle("Create a new Spatial Queue");
@@ -104,9 +104,10 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 		new SpatialQueueFrame();
 	}
 
-	public void setButtonNames(String client, String server) {
+	public void setCustomLabels(String client, String server) {
 		guiComponents.setSimServer(server);
 		guiComponents.setSimClient(client);
+		guiComponents.setJobParam(client);
 	}
 
 	public String getButtonNames() {
