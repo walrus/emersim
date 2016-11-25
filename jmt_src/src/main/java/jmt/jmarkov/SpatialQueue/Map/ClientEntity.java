@@ -131,6 +131,7 @@ public class ClientEntity implements Entity {
     }
 
     public void displayRequestLocationOnMap(Location location) {
+        double strokeWeight = 5;
         LatLng[] line1Path = new LatLng[2];
         LatLng[] line2Path = new LatLng[2];
         Double x = location.getX();
@@ -151,7 +152,7 @@ public class ClientEntity implements Entity {
         // Setting stroke opacity value
         options.setStrokeOpacity(1.0);
         // Setting stroke weight value
-        options.setStrokeWeight(1.5);
+        options.setStrokeWeight(strokeWeight);
         // Applying options to the polyline
         line1.setOptions(options);
         line2.setOptions(options);
