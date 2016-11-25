@@ -1,17 +1,23 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
+import com.teamdev.jxmaps.DirectionsLeg;
+import com.teamdev.jxmaps.DirectionsResult;
 import jmt.jmarkov.Queues.JobQueue;
 import jmt.jmarkov.Queues.QueueLogic;
 import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+
+import static jmt.jmarkov.SpatialQueue.Map.JxMapsAPICaller.handleDirectionCall;
 
 /**
  * Receivers handle requests from Senders
  */
 public class Server {
 
+    private final MapConfig mapConfig;
     private Location location;
 
     private PriorityQueue<Request> requestQueue;
@@ -30,7 +36,8 @@ public class Server {
     // The request currently being served
     private Request currentRequest;
 
-    public Server(Location location) {
+    public Server(MapConfig mapConfig, Location location) {
+        this.mapConfig = mapConfig;
         this.location = location;
         this.serving = false;
         this.currentRequest = null;
@@ -93,11 +100,17 @@ public class Server {
         Location senderLocation = request.getClient().getLocation();
         Location receiverLocation = this.getLocation();
 
-        double xDistance = senderLocation.getX() - receiverLocation.getX();
-        double yDistance = senderLocation.getY() - receiverLocation.getY();
-
-        //Straight line distance in degrees
-        double time = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
+//        double xDistance = senderLocation.getX() - receiverLocation.getX();
+//        double yDistance = senderLocation.getY() - receiverLocation.getY();
+//
+//        //Straight line distance in degrees
+//        double time = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
+        DirectionsResult directionsResult = handleDirectionCall(mapConfig, senderLocation.getX(), senderLocation.getY(), receiverLocation.getX(), receiverLocation.getY());
+        DirectionsLeg[] legs = directionsResult.getRoutes()[0].getLegs();
+        // Journey duration converted into milliseconds
+        double time = legs[0].getDuration().getValue() * 1000;
+        // Store directions for later
+        request.setDirectionsResult(directionsResult);
 
         if (returnJourney) {
             request.setResponseTime(time * 2);

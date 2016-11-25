@@ -244,7 +244,7 @@ public class GuiComponents {
 
                 queueDrawer.setMediaJobs(Q - U);
 
-                Server client = new Server(mapView.getReceiverLocation());
+                Server client = new Server(mapView, mapView.getReceiverLocation());
 
 
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),

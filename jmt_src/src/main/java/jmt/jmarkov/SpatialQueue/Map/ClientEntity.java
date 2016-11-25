@@ -135,8 +135,6 @@ public class ClientEntity implements Entity {
         LatLng[] line2Path = new LatLng[2];
         Double x = location.getX();
         Double y = location.getY();
-        System.out.println("long: " + x);
-        System.out.println("lat: " + y);
         line1Path[0] = new LatLng(y, x - 0.00005);
         line1Path[1] = new LatLng(y, x + 0.00005);
         line2Path[0] = new LatLng(y + 0.00003, x);

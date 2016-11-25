@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class ServerTest {
 
-    Server server = new Server(createRandomLocation());
+    Server server = new Server(null, createRandomLocation());
 
     private static Location createRandomLocation() {
         double x = Math.random() * 90;
