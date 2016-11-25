@@ -2,6 +2,7 @@ package jmt.jmarkov.SpatialQueue.Gui;
 
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
+import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
 import javax.swing.*;
@@ -13,6 +14,11 @@ import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.*;
  * Created by joshuazeltser on 02/11/2016.
  */
 public class StatsUtils {
+
+
+
+    //To change service time change this variable
+    static double S_I;
 
     static double U; // Utilization [%]
     static double Q; // Average customer in station
@@ -29,19 +35,6 @@ public class StatsUtils {
     private static boolean nonErgodic = false;//if the utilization is less than 1
 
 
-    protected static void setLogAnalyticalResults() {
-        try {
-            if (ql.getMaxStates() == 0) {
-                outputTA.setAnalyticalResult(ql.mediaJobs(), ql.utilization(), ql.throughput(),
-                        ql.responseTime(), ql.getLambda(), ql.getS(), 0);
-            } else {
-                outputTA.setAnalyticalResult(ql.mediaJobs(), ql.utilization(), ql.throughput(), ql.responseTime(),
-                        ql.getLambda(), ql.getS(), ql.getStatusProbability(ql.getMaxStates() + ql.getNumberServer()));
-            }
-        } catch (NonErgodicException e) {
-            outputTA.setAnalyticalResult();
-        }
-    }
 
 
     protected static void updateFields(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim) {
@@ -49,11 +42,11 @@ public class StatsUtils {
             Q = ql.mediaJobs();
             U = ql.utilization();
             utilizationL.setForeground(Color.BLACK);
-            utilizationL.setText(uStrS + Formatter.formatNumber(U, 2) + uStrE);
-            mediaJobsL.setText(nStrS + Formatter.formatNumber(Q, 2) + nStrE);
+            utilizationL.setText(uStrS + Formatter.formatNumber(U, 3) + uStrE);
+            mediaJobsL.setText(nStrS + Formatter.formatNumber(Q, 3) + nStrE);
 
-            thrL.setText(thrStrS + Formatter.formatNumber(ql.throughput(), 2) + thrStrE);
-            responseL.setText(respStrS + Formatter.formatNumber(ql.responseTime(), 2) + respStrE);
+            thrL.setText(thrStrS + Formatter.formatNumber(ql.throughput(), 3) + thrStrE);
+            responseL.setText(respStrS + Formatter.formatNumber(ql.responseTime(), 3) + respStrE);
             nonErgodic = false;
 
             if (sim != null && ql.getLambda() > 0) {
@@ -74,11 +67,6 @@ public class StatsUtils {
         queueDrawer.setMediaJobs(Q - U);
 //        statiDrawer.repaint();
 
-        if (sim == null || !sim.isStarted()) {
-            setLogAnalyticalResults();
-        } else {
-            outputTA.setAnalyticalResult();
-        }
     }
 
     protected static void lambdaSStateChanged(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim,
@@ -169,4 +157,37 @@ public class StatsUtils {
         responseL.setFont(dCst.getNormalGUIFont());
         resultsP.add(responseL);
     }
+
+    // create a service time slider
+    protected static void setupServiceTime() {
+        sMultiplier = 0.02;
+
+        ql.setS(S_I * sMultiplier);
+    }
+
+    //setup queue visualisation and pointer
+    protected static void showQueue(JSlider lambdaS, JLabel utilizationL, JLabel mediaJobsL) {
+
+        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), ql.getS() * sMultiplier);
+
+        lambdaS.setValue(LAMBDA_I);
+//        statiDrawer.updateLogic(ql);
+        queueDrawer.updateLogic(ql);
+        queueDrawer.setMaxJobs(0);
+//        statiDrawer.setMaxJobs(0);
+        queueDrawer.setCpuNumber(1);
+        updateFields(utilizationL, mediaJobsL, sim);
+    }
+
+    public static void setSI(double sI) {
+        S_I = sI;
+        System.out.println("SERVICE TIME: " +S_I);
+        ql.setS(sI);
+        updateFields(utilizationL, mediaJobsL, sim);
+
+    }
+
+
+
+
 }

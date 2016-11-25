@@ -1,5 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
+import com.teamdev.jxmaps.DirectionsResult;
+
 import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.BEING_SERVED;
 import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.FINISHED;
 import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.IN_QUEUE;
@@ -11,6 +13,8 @@ public class Request implements Comparable<Request>{
     private Client client;
 
     private int requestId;
+
+    private DirectionsResult directionsResult;
 
     private double creationTime;
 
@@ -91,5 +95,13 @@ public class Request implements Comparable<Request>{
 
     public int getRequestId() {
         return this.requestId;
+    }
+
+    public DirectionsResult getDirectionsResult() {
+        return directionsResult;
+    }
+
+    public void setDirectionsResult(DirectionsResult directionsResult) {
+        this.directionsResult = directionsResult;
     }
 }

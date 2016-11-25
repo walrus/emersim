@@ -29,21 +29,20 @@ import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
  */
 public class GuiComponents {
 
-    //To change service time change this variable
-    private int S_I =  70;
-
     private JPanel parametersP;
     private JButton start;
     private JButton pause;
     private JButton stop;
     private JButton client;
+
     private JButton server;
-    private JLabel mediaJobsL;
-    private JLabel utilizationL;
+    static JLabel mediaJobsL;
+    static JLabel utilizationL;
+
     private JSlider lambdaS;
     private boolean paused = false;
     static int lambdaMultiplierChange = 0; //for the lambda slide bar
-    private int LAMBDA_I = 50;
+    static int LAMBDA_I = 50;
     static double sMultiplier = 1; //service time slide bar multiplier
     static double lambdaMultiplier = 1; //lambda slide bar multiplier
     static SpatialQueueSimulator sim;
@@ -54,7 +53,7 @@ public class GuiComponents {
     private JSlider accelerationS;
     static JLabel thrL;
     static JLabel responseL;
-    static TANotifier outputTA;
+//    static TANotifier outputTA;
     private SpatialQueueFrame mf;
     private JMenu settingsMenu;
     private JMenu colorsMenu;
@@ -65,17 +64,27 @@ public class GuiComponents {
     private JMenu sizeMenu;
     private boolean gradientF = false;
     private int numberClients;
+
+
     private boolean returnJourney;
+
+    private String simServer;
+
+    private String simClient;
+
+
 
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
-        showQueue(1);
+        StatsUtils.showQueue(lambdaS, utilizationL, mediaJobsL);
         this.mf = mf;
     }
 
     //Initialise objects
     private void init() {
+//        simClient = "Client";
+//        simServer = "Receiver";
         sim = null;
         paused = false;
         lambdaS = new JSlider();
@@ -88,14 +97,18 @@ public class GuiComponents {
         start.setEnabled(false);
         pause = new JButton("Pause");
         stop = new JButton("Stop");
-        client = new JButton("Add Client");
+        client = new JButton("Add Client" );
         client.setEnabled(false);
+
         server = new JButton("Add Server");
+        simServer = "Server";
+        simClient = "Client";
         dCst = new DrawNormal();
         thrL = new JLabel();
         responseL = new JLabel();
-        outputTA = new TANotifier();
+//        outputTA = new TANotifier();
         returnJourney = false;
+        S_I = 70;
     }
 
     //Create queueDrawer for queue visualisation
@@ -115,6 +128,8 @@ public class GuiComponents {
 
     // create side panel for functionality buttons
     protected void generateSideButtons(JPanel panel) {
+
+
         serverButton();
         clientButton();
         pauseButton();
@@ -163,7 +178,6 @@ public class GuiComponents {
                         returnJourney = false;
                     }
                 }
-
                 // Disable add client button to ensure a new region is created in full
                 client.setEnabled(false);
                 // Disable start button to prevent starting with incomplete clients
@@ -179,6 +193,7 @@ public class GuiComponents {
 
 //        server.setMaximumSize(new Dimension(100,40));
         server.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_RECEIVER);
@@ -204,7 +219,7 @@ public class GuiComponents {
             Thread.sleep(100);
         } catch (InterruptedException e) {
         }
-        outputTA.reset();
+//        outputTA.reset();
         queueDrawer.reset();
         numberClients = 0;
         updateFields(utilizationL, mediaJobsL, sim);
@@ -242,18 +257,22 @@ public class GuiComponents {
 
                 queueDrawer.setMediaJobs(Q - U);
 
+                Server client = new Server(mapView, mapView.getReceiverLocation());
+
+
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),
                                                 queueDrawer,
-                                                new Server(mapView.getReceiverLocation()),
+                                                client,
                                                 mapView,
                                                 jobsDialog.getTypedValue(),
                                                 returnJourney);
+
+
 
                 sim.start();
                 start.setEnabled(false);
                 stop.setEnabled(true);
                 pause.setEnabled(true);
-                setLogAnalyticalResults();
             }
         });
     }
@@ -349,12 +368,7 @@ public class GuiComponents {
         return splitPane;
     }
 
-    // create a service time slider
-    protected void setupServiceTime() {
-        sMultiplier = 0.02;
 
-        ql.setS(S_I * sMultiplier);
-    }
 
     //create a lambda slider
     protected void createLambdaSlider(GridBagConstraints c) {
@@ -446,19 +460,7 @@ public class GuiComponents {
         StatsUtils.generateSimulationStats(resultsP, mediaJobsL, utilizationL);
     }
 
-    //setup queue visualisation and pointer
-    protected void showQueue(int cpuNumber) {
 
-        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), S_I * sMultiplier);
-
-        lambdaS.setValue(LAMBDA_I);
-//        statiDrawer.updateLogic(ql);
-        queueDrawer.updateLogic(ql);
-        queueDrawer.setMaxJobs(0);
-//        statiDrawer.setMaxJobs(0);
-        queueDrawer.setCpuNumber(1);
-        StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
-    }
 
     // creates a menu bar
     public void createMenuBar(JMenuBar menuBar) {
@@ -470,8 +472,7 @@ public class GuiComponents {
     // creates a file menu
     private JMenu fileMenu() {
 
-        JMenu fileMenu  = new JMenu("File");
-
+        JMenu fileMenu = new JMenu("File");
 
 
         Action Open = new AbstractAction("Open...") {
@@ -495,32 +496,6 @@ public class GuiComponents {
             }
         };
 
-        // generates all of the menu buttons
-        Action New = new AbstractAction("New") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Custom button text
-                Object[] options = {"Save",
-                        "Don't Save",
-                        "Cancel"};
-                int choice = JOptionPane.showOptionDialog(mf,
-                        "Would you like to save your work?",
-                        "Create New Simulation",
-                        JOptionPane.YES_NO_CANCEL_OPTION,
-                        2,
-                        null,
-                        options,
-                        options[2]);
-                if (choice == JOptionPane.YES_OPTION) {
-                    //Save the simulation
-                } else if (choice == JOptionPane.NO_OPTION) {
-                    mf.dispose();
-                    mf = new SpatialQueueFrame();
-                }
-
-            }
-        };
-
         Action Compare = new AbstractAction("Compare Simulations...") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -529,7 +504,7 @@ public class GuiComponents {
         };
 
 
-        fileMenu.add(New);
+        fileMenu.add(newSubMenu());
         fileMenu.add(Open);
         fileMenu.add(openRecentSubMenu());
         fileMenu.addSeparator();
@@ -574,6 +549,64 @@ public class GuiComponents {
         openRecentMenu.add(NullSimulation3);
 
         return openRecentMenu;
+    }
+
+    private JMenu newSubMenu() {
+        JMenu newMenu = new JMenu("New");
+
+        Action NewStandardSimulation = new AbstractAction("Standard Simulation") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Custom button text
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
+                }
+            }
+
+        };
+
+        Action NewCustomSimulation = new AbstractAction("Custom Simulation") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    new CustomSimulationDialog(mf);
+
+                }
+
+            }
+        };
+        newMenu.add(NewStandardSimulation);
+        newMenu.add(NewCustomSimulation);
+
+        return newMenu;
     }
 
     // creates a help menu
@@ -707,7 +740,6 @@ public class GuiComponents {
     protected void changeSize() {
         queueDrawer.changeDrawSettings(dCst);
         queueDrawer.repaint();
-        outputTA.changeDrawSettings(dCst);
         // logD.changeDrawSettings(dCst);
         mf.validate();
 
@@ -718,4 +750,31 @@ public class GuiComponents {
         queueDrawer.repaint();
 
     }
+
+    public void setSimClient(String simClient) {
+
+        client.setText("Add " + simClient);
+
+    }
+
+    public void setSimServer(String simServer) {
+        server.setText("Add " + simServer);
+    }
+
+    public String getSimClient() {
+        return simClient;
+    }
+
+    public String getSimServer() {
+       return simServer;
+    }
+
+    public void setJobParam(String job) {
+        queueDrawer.setJobName(job);
+    }
+
+
+
+
+
 }

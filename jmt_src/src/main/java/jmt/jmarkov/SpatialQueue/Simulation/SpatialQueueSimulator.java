@@ -7,6 +7,8 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.ClientRegion;
+import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
+import jmt.jmarkov.SpatialQueue.Gui.StatsUtils;
 import jmt.jmarkov.SpatialQueue.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
@@ -112,6 +114,7 @@ public class SpatialQueueSimulator implements Runnable {
                 Request currentRequest = this.server.serveRequest(currentTimeMultiplied);
                 //notify visualisation with which job is being served
                 queueDrawer.servingJob(currentRequest.getRequestId());
+                mapConfig.displayRoute(currentRequest.getDirectionsResult());
                 currentTimeMultiplied += (currentRequest.getNextEventTime() - currentTime) / timeMultiplier;
                 //this is calculating how long system will sleep
                 realTimeCurrent = new Date().getTime() - realTimeStart;
@@ -126,8 +129,7 @@ public class SpatialQueueSimulator implements Runnable {
                     realTimeCurrent = new Date().getTime() - realTimeStart;
                 }
 
-
-
+                StatsUtils.setSI(server.getAverageServiceTime());
                 //Having waited till the request has been served, deal with it
                 currentTime = currentRequest.getNextEventTime();
                 this.server.stopServing(currentTime);

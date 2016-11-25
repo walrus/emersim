@@ -44,6 +44,7 @@ import javax.swing.JComponent;
 
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Job;
 import jmt.jmarkov.Queues.QueueLogic;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 
@@ -137,6 +138,8 @@ public class QueueDrawer extends JComponent implements Notifier {
 
 	private boolean spatial;
 
+	private String job;
+
 	public QueueDrawer(QueueLogic ql) {
 		super();
 		this.ql = ql;
@@ -144,6 +147,7 @@ public class QueueDrawer extends JComponent implements Notifier {
 		panelH = this.getHeight();
 		setCpuNumber(1);
 		spatial = false;
+		job = "Job";
 		init();
 	}
 
@@ -163,6 +167,7 @@ public class QueueDrawer extends JComponent implements Notifier {
 		panelH = this.getHeight();
 		setCpuNumber(1);
 		this.spatial = spatial;
+		job = "Client";
 		init();
 	}
 
@@ -296,10 +301,17 @@ public class QueueDrawer extends JComponent implements Notifier {
 				jobsInTheSystem++;
 			}
 		}
-		txtBounds = drawCenteredText("cust. in the system:" + jobsInTheSystem, queueC, Color.white, panelW / 2.0, panelH - ELEM_HEIGHT, g2d, false,
-				false);
-		drawCenteredText("cust. in the station:" + jobsInTheSystem, queueC, Color.white, panelW / 2.0, panelH - txtBounds.getHeight() / 2.0, g2d,
-				false, true);
+		if (!spatial) {
+			txtBounds = drawCenteredText("cust. in the system:" + jobsInTheSystem, queueC, Color.white, panelW / 2.0, panelH - ELEM_HEIGHT, g2d, false,
+					false);
+			drawCenteredText("cust. in the station:" + jobsInTheSystem, queueC, Color.white, panelW / 2.0, panelH - txtBounds.getHeight() / 2.0, g2d,
+					false, true);
+		} else {
+			txtBounds = drawCenteredText(job + "s waiting: " + jobsInTheSystem, queueC, Color.white, panelW / 2.0, panelH - ELEM_HEIGHT, g2d, false,
+					false);
+			drawCenteredText(job + "s waiting: " + jobsInTheSystem, queueC, Color.white, panelW / 2.0, panelH - txtBounds.getHeight() / 2.0, g2d,
+					false, true);
+		}
 		drawLegend(legendaC, legendaS, dCst.getFont(), dCst.getStartingGap(), dCst.getStartingGap(), g2d, true);
 	}
 
@@ -447,10 +459,10 @@ public class QueueDrawer extends JComponent implements Notifier {
 		Color tmp = g2d.getColor();
 		//		System.out.println(nCpu);
 		if (nCpu == 1) {
-			txtBounds = drawCenteredText("Executing Job ID: " + donejobs + " " + "Total Jobs Arrived: " + totjobs
-					, Color.BLACK, Color.WHITE, x, y, g2d, true, false);
-			drawCenteredText("Executing Job ID: " + donejobs + " " + "Total Jobs Arrived: " + totjobs, Color.BLACK,
-					Color.WHITE, x - txtBounds.getWidth() / 2.0, y, g2d, true, true);
+			txtBounds = drawCenteredText("Executing " + job + " ID: " + donejobs + " " + "Total "+ job + "s Arrived: "
+							+ totjobs, Color.BLACK, Color.WHITE, x, y, g2d, true, false);
+			drawCenteredText("Executing " + job + " ID: " + donejobs + " " + "Total "+ job + "s Arrived: "
+							+ totjobs, Color.BLACK, Color.WHITE, x - txtBounds.getWidth() / 2.0, y, g2d, true, true);
 		}
 		g2d.setColor(tmp);
 	}
@@ -1048,5 +1060,9 @@ public class QueueDrawer extends JComponent implements Notifier {
 	public void updateQueue(int jobId, double time) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setJobName(String job) {
+		this.job = job;
 	}
 }

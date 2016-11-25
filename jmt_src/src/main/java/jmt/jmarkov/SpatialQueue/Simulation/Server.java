@@ -1,17 +1,23 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
+import com.teamdev.jxmaps.DirectionsLeg;
+import com.teamdev.jxmaps.DirectionsResult;
 import jmt.jmarkov.Queues.JobQueue;
 import jmt.jmarkov.Queues.QueueLogic;
 import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+
+import static jmt.jmarkov.SpatialQueue.Map.JxMapsAPICaller.handleDirectionCall;
 
 /**
  * Receivers handle requests from Senders
  */
 public class Server {
 
+    private final MapConfig mapConfig;
     private Location location;
 
     private PriorityQueue<Request> requestQueue;
@@ -22,18 +28,22 @@ public class Server {
 
     private QueueLogic ql;
 
+    private double averageServiceTime;
+
     // True iff a request is currently being served
     private boolean serving;
 
     // The request currently being served
     private Request currentRequest;
 
-    public Server(Location location) {
+    public Server(MapConfig mapConfig, Location location) {
+        this.mapConfig = mapConfig;
         this.location = location;
         this.serving = false;
         this.currentRequest = null;
         this.requestQueue = new PriorityQueue<>();
         this.servedRequests = new LinkedList<>();
+        this.averageServiceTime = 0;
     }
 
     public Location getLocation() {
@@ -66,6 +76,7 @@ public class Server {
         this.currentRequest.finishServing(currentTime);
         this.servedRequests.add(this.currentRequest);
         this.currentRequest = null;
+        this.updateAverageServiceTime(currentTime);
     }
 
     private boolean isServing() {
@@ -89,11 +100,17 @@ public class Server {
         Location senderLocation = request.getClient().getLocation();
         Location receiverLocation = this.getLocation();
 
-        double xDistance = senderLocation.getX() - receiverLocation.getX();
-        double yDistance = senderLocation.getY() - receiverLocation.getY();
-
-        //Straight line distance in degrees
-        double time = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
+//        double xDistance = senderLocation.getX() - receiverLocation.getX();
+//        double yDistance = senderLocation.getY() - receiverLocation.getY();
+//
+//        //Straight line distance in degrees
+//        double time = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
+        DirectionsResult directionsResult = handleDirectionCall(mapConfig, senderLocation.getX(), senderLocation.getY(), receiverLocation.getX(), receiverLocation.getY());
+        DirectionsLeg[] legs = directionsResult.getRoutes()[0].getLegs();
+        // Journey duration converted into milliseconds
+        double time = legs[0].getDuration().getValue() * 1000;
+        // Store directions for later
+        request.setDirectionsResult(directionsResult);
 
         if (returnJourney) {
             request.setResponseTime(time * 2);
@@ -102,10 +119,20 @@ public class Server {
         }
     }
 
-    //Find the next request in the queue. This should
-    //be overridden to implement different behaviours
+    private void updateAverageServiceTime(double currentTime) {
+        if (this.servedRequests.isEmpty()) {
+            this.averageServiceTime = 0;
+        } else {
+            this.averageServiceTime = currentTime / this.servedRequests.size();
+        }
+    }
+
     public Request getNextRequest() {
         return this.requestQueue.poll();
+    }
+
+    public double getAverageServiceTime() {
+        return this.averageServiceTime;
     }
 
     public PriorityQueue<Request> getQueue() {
