@@ -111,6 +111,7 @@ public class SpatialQueueSimulator implements Runnable {
                 Request currentRequest = this.server.serveRequest(currentTimeMultiplied);
                 //notify visualisation with which job is being served
                 queueDrawer.servingJob(currentRequest.getRequestId());
+                mapConfig.displayRoute(currentRequest.getDirectionsResult());
                 currentTimeMultiplied += (currentRequest.getNextEventTime() - currentTime) / timeMultiplier;
                 //this is calculating how long system will sleep
                 realTimeCurrent = new Date().getTime() - realTimeStart;
