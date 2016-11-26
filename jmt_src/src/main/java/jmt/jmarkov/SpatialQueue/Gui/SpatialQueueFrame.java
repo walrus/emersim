@@ -40,7 +40,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
 
 
 	public void init() {
-		setTitle("Create a new Spatial Queue");
+		setTitle("Spatial Queue Simulator");
 
         //set window size
 		Dimension d = new Dimension(1000,800);

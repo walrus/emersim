@@ -465,6 +465,7 @@ public class GuiComponents {
     // creates a menu bar
     public void createMenuBar(JMenuBar menuBar) {
         menuBar.add(fileMenu());
+        menuBar.add(simulationSettingsMenu());
         menuBar.add(settingsMenu());
         menuBar.add(helpMenu());
     }
@@ -474,7 +475,29 @@ public class GuiComponents {
 
         JMenu fileMenu = new JMenu("File");
 
-
+        Action newMenu = new AbstractAction("New") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Custom button text
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
+                }
+            }
+        };
         Action Open = new AbstractAction("Open...") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -504,7 +527,7 @@ public class GuiComponents {
         };
 
 
-        fileMenu.add(newSubMenu());
+        fileMenu.add(newMenu);
         fileMenu.add(Open);
         fileMenu.add(openRecentSubMenu());
         fileMenu.addSeparator();
@@ -551,62 +574,23 @@ public class GuiComponents {
         return openRecentMenu;
     }
 
-    private JMenu newSubMenu() {
-        JMenu newMenu = new JMenu("New");
+    private JMenu simulationSettingsMenu() {
 
-        Action NewStandardSimulation = new AbstractAction("Standard Simulation") {
+        JMenu simSettings = new JMenu("Simulation");
+
+
+
+        Action customSim = new AbstractAction("Custom Simulation") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Custom button text
-                Object[] options = {"Save",
-                        "Don't Save",
-                        "Cancel"};
-                int choice = JOptionPane.showOptionDialog(mf,
-                        "Would you like to save your work?",
-                        "Create New Simulation",
-                        JOptionPane.YES_NO_CANCEL_OPTION,
-                        2,
-                        null,
-                        options,
-                        options[2]);
-                if (choice == JOptionPane.YES_OPTION) {
-                    //Save the simulation
-                } else if (choice == JOptionPane.NO_OPTION) {
-                    mf.dispose();
-                    mf = new SpatialQueueFrame();
-                }
-            }
-
-        };
-
-        Action NewCustomSimulation = new AbstractAction("Custom Simulation") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                Object[] options = {"Save",
-                        "Don't Save",
-                        "Cancel"};
-                int choice = JOptionPane.showOptionDialog(mf,
-                        "Would you like to save your work?",
-                        "Create New Simulation",
-                        JOptionPane.YES_NO_CANCEL_OPTION,
-                        2,
-                        null,
-                        options,
-                        options[2]);
-                if (choice == JOptionPane.YES_OPTION) {
-                    //Save the simulation
-                } else if (choice == JOptionPane.NO_OPTION) {
                     new CustomSimulationDialog(mf);
 
-                }
-
             }
         };
-        newMenu.add(NewStandardSimulation);
-        newMenu.add(NewCustomSimulation);
+        simSettings.add(customSim);
 
-        return newMenu;
+
+        return simSettings;
     }
 
     // creates a help menu
