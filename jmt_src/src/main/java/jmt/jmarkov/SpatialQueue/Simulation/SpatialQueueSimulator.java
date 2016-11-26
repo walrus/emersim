@@ -74,7 +74,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.mapConfig = mapConfig;
         this.returnJourney = returnJourney;
         //TODO: make lambda and maxInterval changeable from front end
-        this.lambda = 5;
+        this.lambda = 1/3600;
         this.maxInterval = 3;
 
         //Create a new request generator for each client region
@@ -130,6 +130,9 @@ public class SpatialQueueSimulator implements Runnable {
                 }
 
                 StatsUtils.setSI(server.getAverageServiceTime());
+                StatsUtils.setLambda(lambda);
+
+
                 //Having waited till the request has been served, deal with it
                 currentTime = currentRequest.getNextEventTime();
                 this.server.stopServing(currentTime);
@@ -210,6 +213,10 @@ public class SpatialQueueSimulator implements Runnable {
     }
 
     public float getLambda() { return this.lambda;}
+
+    public void setLambda(float lambda) {
+        StatsUtils.setLambda(lambda);
+    }
 
     public float getMaxInterval() { return this.maxInterval;}
 

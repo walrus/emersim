@@ -12,6 +12,7 @@ import jmt.jmarkov.SpatialQueue.Simulation.Server;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -21,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 import java.util.Dictionary;
 import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
 
@@ -71,8 +73,7 @@ public class GuiComponents {
     private String simServer;
 
     private String simClient;
-
-
+    private JProgressBar progressBar;
 
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -368,86 +369,104 @@ public class GuiComponents {
         return splitPane;
     }
 
+    protected void addProgressBar(JPanel simulationP, GridBagConstraints c) {
+        progressBar = new JProgressBar();
+        progressBar.setVisible(true);
 
+//        progressBar.setValue(25);
+        int count = 0;
 
-    //create a lambda slider
-    protected void createLambdaSlider(GridBagConstraints c) {
-        final boolean[] lambdaSChange = {true};
-        JPanel lambdaPanel = new JPanel();
-        setupServiceTime();
+        progressBar.setStringPainted(true);
+        Border border = BorderFactory.createTitledBorder("Executing...");
+        progressBar.setBorder(border);
 
-        lambdaPanel.setLayout(new GridLayout(2, 1));
-        c.weightx = 0.5;
-
-        parametersP.add(lambdaPanel, c);
-
-        c.gridx = 1;
-        c.weightx = 0;
-        parametersP.add(getSplitter(10, 1), c);
-        c.weightx = 0.5;
-
-        final JLabel lambdaL = new JLabel();
-        lambdaL.setAlignmentX(SwingConstants.CENTER);
-        lambdaPanel.add(lambdaL);
-        lambdaMultiplier = 0.01;
-        lambdaMultiplierChange = 0;
-
-        lambdaS.setMaximum(100);
-        lambdaS.setMinimum(0);
-        lambdaS.setMajorTickSpacing(25);
-        lambdaS.setMinorTickSpacing(1);
-        lambdaS.setPaintLabels(true);
-        lambdaS.setSnapToTicks(true);
-        lambdaPanel.add(lambdaS);
-        lambdaL.setFont(dCst.getNormalGUIFont());
-        lambdaS.setValue(LAMBDA_I);
-        StatsUtils.setLambdaSlider(lambdaS, lambdaL);
-
-        lambdaS.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent evt) {
-                StatsUtils.lambdaSStateChanged(utilizationL, mediaJobsL, sim, lambdaS, lambdaL);
-
-                if (lambdaSChange[0]) {
-                    StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
-                }
-
-            }
-        });
-        lambdaS.addMouseListener(new MouseListener() {
-
-            public void mouseClicked(MouseEvent e) {
-            }
-
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            public void mouseExited(MouseEvent e) {
-            }
-
-            public void mousePressed(MouseEvent e) {
-                lambdaSChange[0] = false;
-            }
-
-            public void mouseReleased(MouseEvent e) {
-                StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
-                lambdaSChange[0] = true;
-            }
-
-        });
-        lambdaS.repaint();
-        StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
-    }
-
-    // create the panel that contains the parameter sliders
-    protected void createSimulationParametersPanel(GridBagConstraints c, JPanel simulationP) {
-        parametersP.setLayout(new GridBagLayout());
-        parametersP.setBorder(addTitle("Simulation Parameters", dCst.getSmallGUIFont()));
+        progressBar.setLayout(new GridBagLayout());
         c.weightx = 1;
         c.weighty = 0;
         c.gridx = 0;
         c.gridy = 0;
-        simulationP.add(parametersP, c);
+        simulationP.add(progressBar,c);
+
     }
+
+    //create a lambda slider
+//    protected void createLambdaSlider(GridBagConstraints c) {
+//        final boolean[] lambdaSChange = {true};
+//        JPanel lambdaPanel = new JPanel();
+//        setupServiceTime();
+//
+//        lambdaPanel.setLayout(new GridLayout(2, 1));
+//        c.weightx = 0.5;
+//
+//        parametersP.add(lambdaPanel, c);
+//
+//        c.gridx = 1;
+//        c.weightx = 0;
+//        parametersP.add(getSplitter(10, 1), c);
+//        c.weightx = 0.5;
+//
+//        final JLabel lambdaL = new JLabel();
+//        lambdaL.setAlignmentX(SwingConstants.CENTER);
+//        lambdaPanel.add(lambdaL);
+//        lambdaMultiplier = 0.01;
+//        lambdaMultiplierChange = 0;
+//
+//        lambdaS.setMaximum(100);
+//        lambdaS.setMinimum(0);
+//        lambdaS.setMajorTickSpacing(25);
+//        lambdaS.setMinorTickSpacing(1);
+//        lambdaS.setPaintLabels(true);
+//        lambdaS.setSnapToTicks(true);
+//        lambdaPanel.add(lambdaS);
+//        lambdaL.setFont(dCst.getNormalGUIFont());
+//        lambdaS.setValue(LAMBDA_I);
+//        StatsUtils.setLambdaSlider(lambdaS, lambdaL);
+//
+//        lambdaS.addChangeListener(new ChangeListener() {
+//            public void stateChanged(ChangeEvent evt) {
+//                StatsUtils.lambdaSStateChanged(utilizationL, mediaJobsL, sim, lambdaS, lambdaL);
+//
+//                if (lambdaSChange[0]) {
+//                    StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
+//                }
+//
+//            }
+//        });
+//        lambdaS.addMouseListener(new MouseListener() {
+//
+//            public void mouseClicked(MouseEvent e) {
+//            }
+//
+//            public void mouseEntered(MouseEvent e) {
+//            }
+//
+//            public void mouseExited(MouseEvent e) {
+//            }
+//
+//            public void mousePressed(MouseEvent e) {
+//                lambdaSChange[0] = false;
+//            }
+//
+//            public void mouseReleased(MouseEvent e) {
+//                StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
+//                lambdaSChange[0] = true;
+//            }
+//
+//        });
+//        lambdaS.repaint();
+//        StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
+//    }
+
+    // create the panel that contains the parameter sliders
+//    protected void createSimulationParametersPanel(GridBagConstraints c, JPanel simulationP) {
+//        parametersP.setLayout(new GridBagLayout());
+//        parametersP.setBorder(addTitle("Simulation Parameters", dCst.getSmallGUIFont()));
+//        c.weightx = 1;
+//        c.weighty = 0;
+//        c.gridx = 0;
+//        c.gridy = 0;
+//        simulationP.add(parametersP, c);
+//    }
 
     // create the panel that contains the simulation stats
     protected void createSimulationResultsPanel(GridBagConstraints c, JPanel simulationP) {
@@ -465,6 +484,7 @@ public class GuiComponents {
     // creates a menu bar
     public void createMenuBar(JMenuBar menuBar) {
         menuBar.add(fileMenu());
+        menuBar.add(simulationSettingsMenu());
         menuBar.add(settingsMenu());
         menuBar.add(helpMenu());
     }
@@ -474,7 +494,29 @@ public class GuiComponents {
 
         JMenu fileMenu = new JMenu("File");
 
-
+        Action newMenu = new AbstractAction("New") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Custom button text
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
+                }
+            }
+        };
         Action Open = new AbstractAction("Open...") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -504,7 +546,7 @@ public class GuiComponents {
         };
 
 
-        fileMenu.add(newSubMenu());
+        fileMenu.add(newMenu);
         fileMenu.add(Open);
         fileMenu.add(openRecentSubMenu());
         fileMenu.addSeparator();
@@ -551,62 +593,51 @@ public class GuiComponents {
         return openRecentMenu;
     }
 
-    private JMenu newSubMenu() {
-        JMenu newMenu = new JMenu("New");
+    private JMenu simulationSettingsMenu() {
 
-        Action NewStandardSimulation = new AbstractAction("Standard Simulation") {
+        JMenu simSettings = new JMenu("Simulation");
+
+
+
+        Action customSim = new AbstractAction("Custom Simulation") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Custom button text
-                Object[] options = {"Save",
-                        "Don't Save",
-                        "Cancel"};
-                int choice = JOptionPane.showOptionDialog(mf,
-                        "Would you like to save your work?",
-                        "Create New Simulation",
-                        JOptionPane.YES_NO_CANCEL_OPTION,
-                        2,
-                        null,
-                        options,
-                        options[2]);
-                if (choice == JOptionPane.YES_OPTION) {
-                    //Save the simulation
-                } else if (choice == JOptionPane.NO_OPTION) {
-                    mf.dispose();
-                    mf = new SpatialQueueFrame();
-                }
-            }
-
-        };
-
-        Action NewCustomSimulation = new AbstractAction("Custom Simulation") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                Object[] options = {"Save",
-                        "Don't Save",
-                        "Cancel"};
-                int choice = JOptionPane.showOptionDialog(mf,
-                        "Would you like to save your work?",
-                        "Create New Simulation",
-                        JOptionPane.YES_NO_CANCEL_OPTION,
-                        2,
-                        null,
-                        options,
-                        options[2]);
-                if (choice == JOptionPane.YES_OPTION) {
-                    //Save the simulation
-                } else if (choice == JOptionPane.NO_OPTION) {
                     new CustomSimulationDialog(mf);
 
-                }
-
             }
         };
-        newMenu.add(NewStandardSimulation);
-        newMenu.add(NewCustomSimulation);
+        simSettings.add(customSim);
 
-        return newMenu;
+        Action travelMode = new AbstractAction("Set Travel Mode") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JList list = new JList(new String[] {"Drive", "Walk", "Cycle", "Transport", "Fly"});
+                JOptionPane.showMessageDialog(
+                        mf, list, "Travel Mode", JOptionPane.INFORMATION_MESSAGE);
+
+                switch (list.getSelectedIndex()) {
+                    case 0:
+                        System.out.println("Drive");
+                        break;
+                    case 1:
+                        System.out.println("Walk");
+                        break;
+                    case 2:
+                        System.out.println("Cycle");
+                        break;
+                    case 3:
+                        System.out.println("Transport");
+                        break;
+                    case 4:
+                        System.out.println("Fly");
+                        break;
+                }
+            }
+        };
+        simSettings.add(travelMode);
+
+
+        return simSettings;
     }
 
     // creates a help menu
