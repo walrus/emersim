@@ -139,6 +139,7 @@ public class QueueDrawer extends JComponent implements Notifier {
 	private boolean spatial;
 
 	private String job;
+	private int jobsExited;
 
 	public QueueDrawer(QueueLogic ql) {
 		super();
@@ -168,6 +169,7 @@ public class QueueDrawer extends JComponent implements Notifier {
 		setCpuNumber(1);
 		this.spatial = spatial;
 		job = "Client";
+		jobsExited = 0;
 		init();
 	}
 
@@ -460,9 +462,9 @@ public class QueueDrawer extends JComponent implements Notifier {
 		//		System.out.println(nCpu);
 		if (nCpu == 1) {
 			txtBounds = drawCenteredText("Executing " + job + " ID: " + donejobs + " " + "Total "+ job + "s Arrived: "
-							+ totjobs, Color.BLACK, Color.WHITE, x, y, g2d, true, false);
+							+ jobsExited, Color.BLACK, Color.WHITE, x, y, g2d, true, false);
 			drawCenteredText("Executing " + job + " ID: " + donejobs + " " + "Total "+ job + "s Arrived: "
-							+ totjobs, Color.BLACK, Color.WHITE, x - txtBounds.getWidth() / 2.0, y, g2d, true, true);
+							+ jobsExited, Color.BLACK, Color.WHITE, x - txtBounds.getWidth() / 2.0, y, g2d, true, true);
 		}
 		g2d.setColor(tmp);
 	}
@@ -1018,6 +1020,7 @@ public class QueueDrawer extends JComponent implements Notifier {
 	}
 
 	public void exitQueue() {
+		jobsExited++;
 		jobs--;
 		this.repaint();
 	}
@@ -1039,6 +1042,7 @@ public class QueueDrawer extends JComponent implements Notifier {
 		jobs = 0;
 		donejobs = 0;
 		totjobs = 0;
+		jobsExited = 0;
 
 		for (int i = 0; i < nCpu; i++) {
 			totTime[i] = 1000;

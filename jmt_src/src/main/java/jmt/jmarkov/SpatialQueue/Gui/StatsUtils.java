@@ -30,8 +30,6 @@ public class StatsUtils {
     private static String thrStrE = " cust./s";
     private static String respStrS = "Avg. Response Time R = ";
     private static String respStrE = " s";
-    private static String lambdaStrS = "Avg. Arrival Rate (lambda) = ";
-    private static String lambdaStrE = " cust./s";
     private static boolean nonErgodic = false;//if the utilization is less than 1
 
 
@@ -69,71 +67,8 @@ public class StatsUtils {
 
     }
 
-    protected static void lambdaSStateChanged(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim,
-                                              JSlider lambdaS, JLabel lambdaL) {
-        if (lambdaS.getValue() == 0) {
-            lambdaMultiplier = 0.01;
-            lambdaMultiplierChange = 0;
-            lambdaS.setValue(1);
-        }
-        ql.setLambda(lambdaMultiplier * lambdaS.getValue());
-        lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
-        updateFields(utilizationL, mediaJobsL,sim);
-    }
-
-    protected static void setLambdaMultiplier(JSlider lambdaS, JLabel lambdaL) {
-        while (true) {
-            if (lambdaS.getValue() > lambdaS.getMaximum() * 0.95) {
-                if (lambdaMultiplierChange <= 4) {
-                    if (lambdaMultiplierChange % 2 == 0) {
-                        lambdaMultiplier *= 2;
-                        setLambdaSlider(lambdaS, lambdaL);
-                        lambdaS.setValue((lambdaS.getValue() + 1) / 2);
-                    } else {
-                        lambdaMultiplier *= 5;
-                        setLambdaSlider(lambdaS, lambdaL);
-                        lambdaS.setValue((lambdaS.getValue() + 1) / 5);
-                    }
-                    lambdaMultiplierChange++;
-                    //System.out.println("LambdaMultiplier:" + lambdaMultiplier);
-                } else {
-                    break;
-                }
-            } else if (lambdaS.getValue() < lambdaS.getMaximum() * 0.05) {
-                if (lambdaMultiplierChange > 0) {
-                    if (lambdaMultiplierChange % 2 == 1) {
-                        lambdaMultiplier /= 2;
-                        setLambdaSlider(lambdaS, lambdaL);
-                        lambdaS.setValue(lambdaS.getValue() * 2);
-                    } else {
-                        lambdaMultiplier /= 5;
-                        setLambdaSlider(lambdaS, lambdaL);
-                        lambdaS.setValue(lambdaS.getValue() * 5);
-                    }
-                    lambdaMultiplierChange--;
-                    //System.out.println("LambdaMultiplier:" + lambdaMultiplier);
-                } else {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-    }
-
-    public static void setLambdaSlider(JSlider lambdaS, JLabel lambdaL) {
-        Dictionary<Integer, JLabel> ld = lambdaS.getLabelTable();
-
-        for (int i = lambdaS.getMinimum(); i <= lambdaS.getMaximum(); i += lambdaS.getMajorTickSpacing()) {
-            ld.put(new Integer(i), new JLabel("" + Formatter.formatNumber(i * lambdaMultiplier, 2)));
-        }
 
 
-        lambdaS.setLabelTable(ld);
-        ql.setLambda(lambdaMultiplier * lambdaS.getValue());
-        lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
-
-    }
 
     protected static void generateSimulationStats(JPanel resultsP, JLabel mediaJobsL, JLabel utilizationL) {
         // media
@@ -185,6 +120,11 @@ public class StatsUtils {
         ql.setS(sI);
         updateFields(utilizationL, mediaJobsL, sim);
 
+    }
+
+    public static void setLambda(float lambda) {
+        ql.setLambda(lambda);
+        updateFields(utilizationL,mediaJobsL,sim);
     }
 
 

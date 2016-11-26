@@ -70,10 +70,10 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
         guiComponents.createSimulationResultsPanel(c, simulationP);
 
         //create Simulation parameters panel
-        guiComponents.createSimulationParametersPanel(c,simulationP);
+//        guiComponents.createSimulationParametersPanel(c,simulationP);
 
         // create lamda slider
-        guiComponents.createLambdaSlider(c);
+        guiComponents.addProgressBar(simulationP,c);
 
 		// create menu bar
 		JMenuBar menuB = new JMenuBar();
