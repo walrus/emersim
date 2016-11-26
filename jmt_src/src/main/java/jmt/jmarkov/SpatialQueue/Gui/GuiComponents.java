@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 import java.util.Dictionary;
 import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
 
@@ -588,6 +589,34 @@ public class GuiComponents {
             }
         };
         simSettings.add(customSim);
+
+        Action travelMode = new AbstractAction("Set Travel Mode") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JList list = new JList(new String[] {"Drive", "Walk", "Cycle", "Transport", "Fly"});
+                JOptionPane.showMessageDialog(
+                        mf, list, "Travel Mode", JOptionPane.INFORMATION_MESSAGE);
+
+                switch (list.getSelectedIndex()) {
+                    case 0:
+                        System.out.println("Drive");
+                        break;
+                    case 1:
+                        System.out.println("Walk");
+                        break;
+                    case 2:
+                        System.out.println("Cycle");
+                        break;
+                    case 3:
+                        System.out.println("Transport");
+                        break;
+                    case 4:
+                        System.out.println("Fly");
+                        break;
+                }
+            }
+        };
+        simSettings.add(travelMode);
 
 
         return simSettings;
