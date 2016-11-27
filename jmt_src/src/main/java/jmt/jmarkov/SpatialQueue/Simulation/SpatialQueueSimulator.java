@@ -215,6 +215,7 @@ public class SpatialQueueSimulator implements Runnable {
     public float getLambda() { return this.lambda;}
 
     public void setLambda(float lambda) {
+        this.lambda = lambda;
         StatsUtils.setLambda(lambda);
     }
 
