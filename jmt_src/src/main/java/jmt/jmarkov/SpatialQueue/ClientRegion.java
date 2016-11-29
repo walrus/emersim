@@ -2,6 +2,8 @@ package jmt.jmarkov.SpatialQueue;
 
 import com.teamdev.jxmaps.LatLng;
 import jmt.jmarkov.SpatialQueue.Map.ClientEntity;
+import jmt.jmarkov.SpatialQueue.Simulation.Request;
+import jmt.jmarkov.SpatialQueue.Simulation.RequestGenerator;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -14,6 +16,7 @@ public class ClientRegion implements Shape {
 
     Point2D.Double[] vertices;
     ClientEntity mapEntity;
+    private RequestGenerator requestGenerator;
 
     public ClientRegion(LatLng[] areaVertices, ClientEntity clientEntity) {
         this.mapEntity = clientEntity;
@@ -140,6 +143,15 @@ public class ClientRegion implements Shape {
             }
         }
         return rankedRegions;
+    }
+
+    /* Set the request generator for this client region with rate parameter */
+    public void setRequestGenerator(RequestGenerator generator){
+        this.requestGenerator = generator;
+    }
+
+    public RequestGenerator getGenerator(){
+        return this.requestGenerator;
     }
 
     private double getRegionProbability() {

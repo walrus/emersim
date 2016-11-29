@@ -8,6 +8,7 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
+import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
 import jmt.jmarkov.SpatialQueue.Gui.StatsUtils;
 import jmt.jmarkov.SpatialQueue.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
@@ -22,9 +23,6 @@ public class SpatialQueueSimulator implements Runnable {
     private Server server;
 
     private ClientRegion[] regions;
-
-    // Generates Requests & runs in a separate thread
-    private RequestGenerator generator;
 
     //current simulation time
     private double currentTime;// in milliseconds
@@ -77,11 +75,14 @@ public class SpatialQueueSimulator implements Runnable {
         this.mapConfig = mapConfig;
         this.returnJourney = returnJourney;
         //TODO: make lambda and maxInterval changeable from front end
-        this.lambda = 5;
+        this.lambda = 1/3600;
         this.maxInterval = 3;
 
-        //Create a new request generator
-        this.generator = new RequestGenerator(this);
+        //Create a new request generator for each client region
+        for(ClientRegion cr : regions){
+            RequestGenerator rg = new RequestGenerator(this, lambda);
+            cr.setRequestGenerator(rg);
+        }
     }
 
     protected Client generateNewSenderWithinArea(ClientRegion clientRegion) {
@@ -100,17 +101,31 @@ public class SpatialQueueSimulator implements Runnable {
         currentTimeMultiplied = 0;
         realTimeStart = new Date().getTime();
 
-        // Start a new thread and run the generator from it
-        Thread generatorThread = new Thread(this.generator);
-        generatorThread.start();
+        // For each client region, Start new thread and run the generator from it
+        for(ClientRegion cr : regions){
+            Thread generatorThread = new Thread(cr.getGenerator());
+            generatorThread.start();
+        }
+
+        // Start progress bar thread
+        ProgressBar progressBar = new ProgressBar(timeMultiplier);
+        Thread progressBarThread = new Thread(progressBar);
+        progressBarThread.start();
 
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {
             if (this.server.getQueue().size() > 0) {
                 // Serve the next request and grab a link to the request being served
                 Request currentRequest = this.server.serveRequest(currentTimeMultiplied);
-                //notify visualisation with which job is being served
+                // notify visualisation with which job is being served
                 queueDrawer.servingJob(currentRequest.getRequestId());
+                mapConfig.displayRoute(currentRequest.getDirectionsResult());
+                // notify progress bar and update the job time and time multiplier
+                progressBar.setJobLength(currentRequest.getResponseTime());
+                progressBar.setTimeMultiplier(timeMultiplier);
+                synchronized (progressBar) {
+                    progressBar.notify();
+                }
                 currentTimeMultiplied += (currentRequest.getNextEventTime() - currentTime) / timeMultiplier;
                 //this is calculating how long system will sleep
                 realTimeCurrent = new Date().getTime() - realTimeStart;
@@ -126,6 +141,9 @@ public class SpatialQueueSimulator implements Runnable {
                 }
 
                 StatsUtils.setSI(server.getAverageServiceTime());
+                StatsUtils.setLambda(lambda);
+
+
                 //Having waited till the request has been served, deal with it
                 currentTime = currentRequest.getNextEventTime();
                 this.server.stopServing(currentTime);
@@ -206,6 +224,11 @@ public class SpatialQueueSimulator implements Runnable {
     }
 
     public float getLambda() { return this.lambda;}
+
+    public void setLambda(float lambda) {
+        this.lambda = lambda;
+        StatsUtils.setLambda(lambda);
+    }
 
     public float getMaxInterval() { return this.maxInterval;}
 

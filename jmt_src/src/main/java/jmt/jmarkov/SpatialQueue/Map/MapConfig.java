@@ -187,6 +187,10 @@ public class MapConfig extends MapView {
         });
     }
 
+    public void displayRoute(DirectionsResult directionsResult) {
+        map.getDirectionsRenderer().setDirections(directionsResult);
+    }
+
     public void setButtonState(BUTTON_STATE buttonState) {
         this.buttonState = buttonState;
     }

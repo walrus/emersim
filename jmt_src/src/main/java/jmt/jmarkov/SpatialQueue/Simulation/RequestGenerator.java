@@ -9,10 +9,12 @@ public class RequestGenerator implements Runnable {
 
     private SpatialQueueSimulator sim;
     private double currentTime;
+    private float lambda;
 
-    public RequestGenerator(SpatialQueueSimulator sim) {
+    public RequestGenerator(SpatialQueueSimulator sim, float lambda) {
         this.sim = sim;
         this.currentTime = 0;
+        this.lambda = lambda;
     }
 
     public void run() {
@@ -30,7 +32,7 @@ public class RequestGenerator implements Runnable {
             this.sim.enqueueRequest(newRequest);
             this.sim.getQueueDrawer().enterQueue();
 
-            nextInterArrivalTime = generateNextTime(this.sim.getLambda(), this.sim.getMaxInterval());
+            nextInterArrivalTime = generateNextTime(lambda, this.sim.getMaxInterval());
 
             currentTimeMultiplied += (nextInterArrivalTime) / this.sim.getTimeMultiplier();
             //this is calculating how long system will sleep
