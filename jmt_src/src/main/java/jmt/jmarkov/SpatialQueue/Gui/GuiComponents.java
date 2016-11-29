@@ -73,7 +73,7 @@ public class GuiComponents {
     private String simServer;
 
     private String simClient;
-    private JProgressBar progressBar;
+    private static JProgressBar progressBar;
 
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -387,6 +387,10 @@ public class GuiComponents {
         c.gridy = 0;
         simulationP.add(progressBar,c);
 
+    }
+
+    public static void setProgressBarValue(int percentage) {
+        progressBar.setValue(percentage);
     }
 
     //create a lambda slider
