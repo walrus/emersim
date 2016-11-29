@@ -7,7 +7,7 @@ import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Dictionary;
+
 import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.*;
 
 /**
@@ -122,7 +122,7 @@ public class StatsUtils {
 
     }
 
-    public static void setLambda(float lambda) {
+    public static void setLambda(double lambda) {
         ql.setLambda(lambda);
         updateFields(utilizationL,mediaJobsL,sim);
     }
