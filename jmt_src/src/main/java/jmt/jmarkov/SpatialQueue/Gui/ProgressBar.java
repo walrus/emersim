@@ -15,7 +15,7 @@ public class ProgressBar implements Runnable {
 
     @Override
     public synchronized void run() {
-        int percentageStep = 5;
+        int percentageStep = 1;
         while (true) {
             int progressPercentage = 0;
             while (progressPercentage < 100 && jobLength > 0) {

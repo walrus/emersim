@@ -117,9 +117,10 @@ public class SpatialQueueSimulator implements Runnable {
             if (this.server.getQueue().size() > 0) {
                 // Serve the next request and grab a link to the request being served
                 Request currentRequest = this.server.serveRequest(currentTimeMultiplied);
-                //notify visualisation with which job is being served
+                // notify visualisation with which job is being served
                 queueDrawer.servingJob(currentRequest.getRequestId());
                 mapConfig.displayRoute(currentRequest.getDirectionsResult());
+                // notify progress bar and update the job time and time multiplier
                 progressBar.setJobLength(currentRequest.getResponseTime());
                 progressBar.setTimeMultiplier(timeMultiplier);
                 synchronized (progressBar) {
