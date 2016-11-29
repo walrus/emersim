@@ -73,7 +73,9 @@ public class GuiComponents {
     private String simServer;
 
     private String simClient;
-    private JProgressBar progressBar;
+    private static JProgressBar progressBar;
+    private JCheckBoxMenuItem on;
+    private JCheckBoxMenuItem off;
 
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -162,23 +164,7 @@ public class GuiComponents {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_CLIENT);
-                if (numberClients == 0) {
-                    Object[] options = {"Include Return Journey",
-                            "Don't Include Return Journey"};
-                    int choice = JOptionPane.showOptionDialog(mf,
-                            "Would you like to include a return journey in your simulation?",
-                            "Return Journey",
-                            JOptionPane.YES_NO_CANCEL_OPTION,
-                            2,
-                            null,
-                            options,
-                            options[1]);
-                    if (choice == JOptionPane.YES_OPTION) {
-                        returnJourney = true;
-                    } else if (choice == JOptionPane.NO_OPTION) {
-                        returnJourney = false;
-                    }
-                }
+             
                 // Disable add client button to ensure a new region is created in full
                 client.setEnabled(false);
                 // Disable start button to prevent starting with incomplete clients
@@ -389,6 +375,10 @@ public class GuiComponents {
 
     }
 
+    public static void setProgressBarValue(int percentage) {
+        progressBar.setValue(percentage);
+    }
+
     //create a lambda slider
 //    protected void createLambdaSlider(GridBagConstraints c) {
 //        final boolean[] lambdaSChange = {true};
@@ -597,8 +587,6 @@ public class GuiComponents {
 
         JMenu simSettings = new JMenu("Simulation");
 
-
-
         Action customSim = new AbstractAction("Custom Simulation") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -606,38 +594,90 @@ public class GuiComponents {
 
             }
         };
+
+
+
+
         simSettings.add(customSim);
-
-        Action travelMode = new AbstractAction("Set Travel Mode") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JList list = new JList(new String[] {"Drive", "Walk", "Cycle", "Transport", "Fly"});
-                JOptionPane.showMessageDialog(
-                        mf, list, "Travel Mode", JOptionPane.INFORMATION_MESSAGE);
-
-                switch (list.getSelectedIndex()) {
-                    case 0:
-                        System.out.println("Drive");
-                        break;
-                    case 1:
-                        System.out.println("Walk");
-                        break;
-                    case 2:
-                        System.out.println("Cycle");
-                        break;
-                    case 3:
-                        System.out.println("Transport");
-                        break;
-                    case 4:
-                        System.out.println("Fly");
-                        break;
-                }
-            }
-        };
-        simSettings.add(travelMode);
+        simSettings.add(setTravelModeSubMenu());
+        simSettings.add(setReturnJourney());
 
 
         return simSettings;
+    }
+
+    private JMenu setReturnJourney() {
+        JMenu setReturnJourney = new JMenu("Return Journey");
+        on = new JCheckBoxMenuItem("On");
+        off = new JCheckBoxMenuItem("Off");
+
+
+        on.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                off.setSelected(false);
+                returnJourney = true;
+
+            }
+        });
+
+        off.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                on.setSelected(false);
+                returnJourney = false;
+            }
+        });
+        setReturnJourney.add(on);
+        setReturnJourney.add(off);
+        return setReturnJourney;
+    }
+
+    private JMenu setTravelModeSubMenu() {
+        JMenu travelMode = new JMenu("Travel Mode");
+
+
+        Action drive = new AbstractAction("Drive") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action walk = new AbstractAction("Walk") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action cycle = new AbstractAction("Cycle") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action transport = new AbstractAction("Transport") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action fly = new AbstractAction("Fly") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        travelMode.add(drive);
+        travelMode.add(walk);
+        travelMode.add(cycle);
+        travelMode.add(transport);
+        travelMode.add(fly);
+
+        return travelMode;
     }
 
     // creates a help menu
