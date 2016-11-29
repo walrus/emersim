@@ -74,6 +74,8 @@ public class GuiComponents {
 
     private String simClient;
     private static JProgressBar progressBar;
+    private JCheckBoxMenuItem on;
+    private JCheckBoxMenuItem off;
 
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -162,23 +164,7 @@ public class GuiComponents {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_CLIENT);
-                if (numberClients == 0) {
-                    Object[] options = {"Include Return Journey",
-                            "Don't Include Return Journey"};
-                    int choice = JOptionPane.showOptionDialog(mf,
-                            "Would you like to include a return journey in your simulation?",
-                            "Return Journey",
-                            JOptionPane.YES_NO_CANCEL_OPTION,
-                            2,
-                            null,
-                            options,
-                            options[1]);
-                    if (choice == JOptionPane.YES_OPTION) {
-                        returnJourney = true;
-                    } else if (choice == JOptionPane.NO_OPTION) {
-                        returnJourney = false;
-                    }
-                }
+             
                 // Disable add client button to ensure a new region is created in full
                 client.setEnabled(false);
                 // Disable start button to prevent starting with incomplete clients
@@ -610,11 +596,41 @@ public class GuiComponents {
         };
 
 
+
+
         simSettings.add(customSim);
         simSettings.add(setTravelModeSubMenu());
+        simSettings.add(setReturnJourney());
 
 
         return simSettings;
+    }
+
+    private JMenu setReturnJourney() {
+        JMenu setReturnJourney = new JMenu("Return Journey");
+        on = new JCheckBoxMenuItem("On");
+        off = new JCheckBoxMenuItem("Off");
+
+
+        on.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                off.setSelected(false);
+                returnJourney = true;
+
+            }
+        });
+
+        off.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                on.setSelected(false);
+                returnJourney = false;
+            }
+        });
+        setReturnJourney.add(on);
+        setReturnJourney.add(off);
+        return setReturnJourney;
     }
 
     private JMenu setTravelModeSubMenu() {
