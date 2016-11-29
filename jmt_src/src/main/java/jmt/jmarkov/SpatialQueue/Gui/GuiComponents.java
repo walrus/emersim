@@ -601,8 +601,6 @@ public class GuiComponents {
 
         JMenu simSettings = new JMenu("Simulation");
 
-
-
         Action customSim = new AbstractAction("Custom Simulation") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -610,38 +608,60 @@ public class GuiComponents {
 
             }
         };
+
+
         simSettings.add(customSim);
-
-        Action travelMode = new AbstractAction("Set Travel Mode") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JList list = new JList(new String[] {"Drive", "Walk", "Cycle", "Transport", "Fly"});
-                JOptionPane.showMessageDialog(
-                        mf, list, "Travel Mode", JOptionPane.INFORMATION_MESSAGE);
-
-                switch (list.getSelectedIndex()) {
-                    case 0:
-                        System.out.println("Drive");
-                        break;
-                    case 1:
-                        System.out.println("Walk");
-                        break;
-                    case 2:
-                        System.out.println("Cycle");
-                        break;
-                    case 3:
-                        System.out.println("Transport");
-                        break;
-                    case 4:
-                        System.out.println("Fly");
-                        break;
-                }
-            }
-        };
-        simSettings.add(travelMode);
+        simSettings.add(setTravelModeSubMenu());
 
 
         return simSettings;
+    }
+
+    private JMenu setTravelModeSubMenu() {
+        JMenu travelMode = new JMenu("Travel Mode");
+
+
+        Action drive = new AbstractAction("Drive") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action walk = new AbstractAction("Walk") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action cycle = new AbstractAction("Cycle") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action transport = new AbstractAction("Transport") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        Action fly = new AbstractAction("Fly") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        travelMode.add(drive);
+        travelMode.add(walk);
+        travelMode.add(cycle);
+        travelMode.add(transport);
+        travelMode.add(fly);
+
+        return travelMode;
     }
 
     // creates a help menu

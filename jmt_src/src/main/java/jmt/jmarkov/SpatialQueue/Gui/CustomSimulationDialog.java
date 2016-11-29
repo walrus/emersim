@@ -45,13 +45,14 @@ public class CustomSimulationDialog extends JDialog {
         this.add(p);
 
         int result = JOptionPane.showConfirmDialog(
-                aFrame, p, "Custom Simulation Setup", JOptionPane.OK_CANCEL_OPTION);
+                null, p, "Custom Simulation Setup", JOptionPane.OK_CANCEL_OPTION);
 
         clientName = client.getText().toString();
         serverName = server.getText().toString();
 
         if (result == 0) {
             aFrame.dispose();
+            aFrame = null;
             SpatialQueueFrame newSqf = new SpatialQueueFrame();
             newSqf.setCustomLabels(clientName, serverName);
             if (clientName.equals("") || serverName.equals("")) {
