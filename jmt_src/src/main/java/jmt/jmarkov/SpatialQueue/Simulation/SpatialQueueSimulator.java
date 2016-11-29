@@ -108,9 +108,9 @@ public class SpatialQueueSimulator implements Runnable {
         }
 
         // Start progress bar thread
-        ProgressBar progressBar = new ProgressBar(timeMultiplier);
-        Thread progressBarThread = new Thread(progressBar);
-        progressBarThread.start();
+//        ProgressBar progressBar = new ProgressBar(timeMultiplier);
+//        Thread progressBarThread = new Thread(progressBar);
+//        progressBarThread.start();
 
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {
@@ -121,11 +121,11 @@ public class SpatialQueueSimulator implements Runnable {
                 queueDrawer.servingJob(currentRequest.getRequestId());
                 mapConfig.displayRoute(currentRequest.getDirectionsResult());
                 // notify progress bar and update the job time and time multiplier
-                progressBar.setJobLength(currentRequest.getResponseTime());
-                progressBar.setTimeMultiplier(timeMultiplier);
-                synchronized (progressBar) {
-                    progressBar.notify();
-                }
+//                progressBar.setJobLength(currentRequest.getResponseTime());
+//                progressBar.setTimeMultiplier(timeMultiplier);
+//                synchronized (progressBar) {
+//                    progressBar.notify();
+//                }
                 currentTimeMultiplied += (currentRequest.getNextEventTime() - currentTime) / timeMultiplier;
                 //this is calculating how long system will sleep
                 realTimeCurrent = new Date().getTime() - realTimeStart;
