@@ -613,6 +613,7 @@ public class GuiComponents {
     private JMenu setReturnJourney() {
         JMenu setReturnJourney = new JMenu("Return Journey");
         on = new JCheckBoxMenuItem("On");
+        on.setSelected(true);
         off = new JCheckBoxMenuItem("Off");
 
 
@@ -642,6 +643,7 @@ public class GuiComponents {
 
 
         drive = new JCheckBoxMenuItem("Drive");
+        drive.setSelected(true);
         walk = new JCheckBoxMenuItem("Walk");
         cycle = new JCheckBoxMenuItem("Cycle");
         transport = new JCheckBoxMenuItem("Transport");
