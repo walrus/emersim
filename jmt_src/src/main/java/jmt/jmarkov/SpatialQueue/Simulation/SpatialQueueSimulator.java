@@ -8,6 +8,7 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
+import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
 import jmt.jmarkov.SpatialQueue.Gui.StatsUtils;
 import jmt.jmarkov.SpatialQueue.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
@@ -104,17 +105,27 @@ public class SpatialQueueSimulator implements Runnable {
         for(ClientRegion cr : regions){
             Thread generatorThread = new Thread(cr.getGenerator());
             generatorThread.start();
-
         }
+
+        // Start progress bar thread
+        ProgressBar progressBar = new ProgressBar(timeMultiplier);
+        Thread progressBarThread = new Thread(progressBar);
+        progressBarThread.start();
 
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {
             if (this.server.getQueue().size() > 0) {
                 // Serve the next request and grab a link to the request being served
                 Request currentRequest = this.server.serveRequest(currentTimeMultiplied);
-                //notify visualisation with which job is being served
+                // notify visualisation with which job is being served
                 queueDrawer.servingJob(currentRequest.getRequestId());
                 mapConfig.displayRoute(currentRequest.getDirectionsResult());
+                // notify progress bar and update the job time and time multiplier
+                progressBar.setJobLength(currentRequest.getResponseTime());
+                progressBar.setTimeMultiplier(timeMultiplier);
+                synchronized (progressBar) {
+                    progressBar.notify();
+                }
                 currentTimeMultiplied += (currentRequest.getNextEventTime() - currentTime) / timeMultiplier;
                 //this is calculating how long system will sleep
                 realTimeCurrent = new Date().getTime() - realTimeStart;
