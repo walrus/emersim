@@ -76,6 +76,11 @@ public class GuiComponents {
     private static JProgressBar progressBar;
     private JCheckBoxMenuItem on;
     private JCheckBoxMenuItem off;
+    private JCheckBoxMenuItem drive;
+    private JCheckBoxMenuItem walk;
+    private JCheckBoxMenuItem cycle;
+    private JCheckBoxMenuItem transport;
+    private JCheckBoxMenuItem fly;
 
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -164,7 +169,6 @@ public class GuiComponents {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_CLIENT);
-             
                 // Disable add client button to ensure a new region is created in full
                 client.setEnabled(false);
                 // Disable start button to prevent starting with incomplete clients
@@ -637,40 +641,63 @@ public class GuiComponents {
         JMenu travelMode = new JMenu("Travel Mode");
 
 
-        Action drive = new AbstractAction("Drive") {
+        drive = new JCheckBoxMenuItem("Drive");
+        walk = new JCheckBoxMenuItem("Walk");
+        cycle = new JCheckBoxMenuItem("Cycle");
+        transport = new JCheckBoxMenuItem("Transport");
+        fly = new JCheckBoxMenuItem("Fly");
+
+        drive.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                walk.setSelected(false);
+                cycle.setSelected(false);
+                transport.setSelected(false);
+                fly.setSelected(false);
             }
-        };
+        });
 
-        Action walk = new AbstractAction("Walk") {
+        walk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                drive.setSelected(false);
+                cycle.setSelected(false);
+                transport.setSelected(false);
+                fly.setSelected(false);
             }
-        };
+        });
 
-        Action cycle = new AbstractAction("Cycle") {
+        cycle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                walk.setSelected(false);
+                drive.setSelected(false);
+                transport.setSelected(false);
+                fly.setSelected(false);
             }
-        };
+        });
 
-        Action transport = new AbstractAction("Transport") {
+        transport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                walk.setSelected(false);
+                cycle.setSelected(false);
+                drive.setSelected(false);
+                fly.setSelected(false);
             }
-        };
+        });
 
-        Action fly = new AbstractAction("Fly") {
+        fly.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                walk.setSelected(false);
+                cycle.setSelected(false);
+                transport.setSelected(false);
+                drive.setSelected(false);
             }
-        };
+        });
+
+
         travelMode.add(drive);
         travelMode.add(walk);
         travelMode.add(cycle);
