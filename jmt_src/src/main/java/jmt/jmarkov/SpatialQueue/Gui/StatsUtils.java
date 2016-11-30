@@ -36,7 +36,6 @@ public class StatsUtils {
 
 
     protected static void updateFields(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim) {
-        try {
             Q = ql.mediaJobs();
             U = ql.utilization();
             utilizationL.setForeground(Color.BLACK);
@@ -50,18 +49,7 @@ public class StatsUtils {
             if (sim != null && ql.getLambda() > 0) {
                 sim.setLambdaZero(false);
             }
-        } catch (NonErgodicException e) {
-            Q = 0.0;
-            U = 0.0;
-            mediaJobsL.setText(nStrS + "Saturation");
 
-            utilizationL.setForeground(Color.RED);
-            utilizationL.setText(uStrS + "Saturation");
-
-            thrL.setText(thrStrS + "Saturation");
-            responseL.setText(respStrS + "Saturation");
-            nonErgodic = true;
-        }
         queueDrawer.setMediaJobs(Q - U);
 //        statiDrawer.repaint();
 
@@ -101,11 +89,11 @@ public class StatsUtils {
     }
 
     //setup queue visualisation and pointer
-    protected static void showQueue(JSlider lambdaS, JLabel utilizationL, JLabel mediaJobsL) {
+    protected static void showQueue(JLabel utilizationL, JLabel mediaJobsL) {
 
-        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), ql.getS() * sMultiplier);
+        ql = new SpatialStatsLogic(0, 0);
 
-        lambdaS.setValue(LAMBDA_I);
+
 //        statiDrawer.updateLogic(ql);
         queueDrawer.updateLogic(ql);
         queueDrawer.setMaxJobs(0);
@@ -115,9 +103,10 @@ public class StatsUtils {
     }
 
     public static void setSI(double sI) {
-        S_I = sI;
+        S_I = sI/1000;
         System.out.println("SERVICE TIME: " +S_I);
-        ql.setS(sI);
+        System.out.println("LAMBDA: " + ql.getLambda());
+        ql.setS(sI/1000);
         updateFields(utilizationL, mediaJobsL, sim);
 
     }

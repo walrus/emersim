@@ -26,9 +26,9 @@ public class ProgressBar implements Runnable {
                     e.printStackTrace();
                 }
                 progressPercentage += percentageStep;
-                GuiComponents.setProgressBarValue(progressPercentage);
+//                GuiComponents.setProgressBarValue(progressPercentage);
             }
-            GuiComponents.setProgressBarValue(0);
+//            GuiComponents.setProgressBarValue(0);
             try {
                 wait();
             } catch (InterruptedException e) {
