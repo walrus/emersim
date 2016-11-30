@@ -31,7 +31,6 @@ import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
  */
 public class GuiComponents {
 
-    private JPanel parametersP;
     private JButton start;
     private JButton pause;
     private JButton stop;
@@ -41,12 +40,9 @@ public class GuiComponents {
     static JLabel mediaJobsL;
     static JLabel utilizationL;
 
-    private JSlider lambdaS;
     private boolean paused = false;
-    static int lambdaMultiplierChange = 0; //for the lambda slide bar
-    static int LAMBDA_I = 50;
+
     static double sMultiplier = 1; //service time slide bar multiplier
-    static double lambdaMultiplier = 1; //lambda slide bar multiplier
     static SpatialQueueSimulator sim;
     static DrawConstrains dCst;
     static MM1Logic ql;
@@ -55,7 +51,7 @@ public class GuiComponents {
     private JSlider accelerationS;
     static JLabel thrL;
     static JLabel responseL;
-//    static TANotifier outputTA;
+
     private SpatialQueueFrame mf;
     private JMenu settingsMenu;
     private JMenu colorsMenu;
@@ -65,7 +61,7 @@ public class GuiComponents {
     private Color animC = Color.RED;
     private JMenu sizeMenu;
     private boolean gradientF = false;
-    private int numberClients;
+
 
 
     private boolean returnJourney;
@@ -85,7 +81,7 @@ public class GuiComponents {
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
-        StatsUtils.showQueue(lambdaS, utilizationL, mediaJobsL);
+        StatsUtils.showQueue(utilizationL, mediaJobsL);
         this.mf = mf;
     }
 
@@ -95,10 +91,9 @@ public class GuiComponents {
 //        simServer = "Receiver";
         sim = null;
         paused = false;
-        lambdaS = new JSlider();
         ql = new MM1Logic(0.0, 0.0);
         queueDrawer = new QueueDrawer(ql, true);
-        parametersP = new JPanel();
+        JPanel parametersP = new JPanel();
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
         start = new JButton("Start");
@@ -163,7 +158,6 @@ public class GuiComponents {
     // create an add client button
     private JButton clientButton() {
 
-        numberClients = 0;
 //        client.setMaximumSize(new Dimension(100,40));
         client.addActionListener(new ActionListener() {
             @Override
@@ -173,7 +167,6 @@ public class GuiComponents {
                 client.setEnabled(false);
                 // Disable start button to prevent starting with incomplete clients
                 start.setEnabled(false);
-                numberClients++;
             }
         });
         return client;
@@ -212,7 +205,6 @@ public class GuiComponents {
         }
 //        outputTA.reset();
         queueDrawer.reset();
-        numberClients = 0;
         updateFields(utilizationL, mediaJobsL, sim);
     }
 

@@ -58,7 +58,7 @@ public class StatsUtils {
             utilizationL.setForeground(Color.RED);
             utilizationL.setText(uStrS + "Saturation");
 
-            
+
 //            thrL.setText(thrStrS + "Saturation");
             responseL.setText(respStrS + "Saturation");
             nonErgodic = true;
@@ -102,11 +102,10 @@ public class StatsUtils {
     }
 
     //setup queue visualisation and pointer
-    protected static void showQueue(JSlider lambdaS, JLabel utilizationL, JLabel mediaJobsL) {
+    protected static void showQueue(JLabel utilizationL, JLabel mediaJobsL) {
 
-        ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), ql.getS() * sMultiplier);
+        ql = new MM1Logic(0, 0);
 
-        lambdaS.setValue(LAMBDA_I);
 //        statiDrawer.updateLogic(ql);
         queueDrawer.updateLogic(ql);
         queueDrawer.setMaxJobs(0);
