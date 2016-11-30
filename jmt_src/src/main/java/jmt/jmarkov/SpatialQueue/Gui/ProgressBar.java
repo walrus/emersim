@@ -20,6 +20,7 @@ public class ProgressBar implements Runnable {
         while (true) {
             int progressPercentage = 0;
             while (progressPercentage < 100 && jobLength > 0) {
+                // Amount of time to sleep until next increase
                 double increaseInterval = (jobLength / (100 / percentageStep)) / timeMultiplier;
                 try {
                     Thread.sleep((long) increaseInterval);
