@@ -3,6 +3,7 @@ package jmt.jmarkov.SpatialQueue.Map;
 import com.teamdev.jxmaps.*;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Simulation.Client;
 
 import java.util.LinkedList;
 
@@ -15,8 +16,6 @@ public class ClientEntity implements Entity {
     private LinkedList<LatLng> path = new LinkedList<>();
     private Polyline areaPeri;
     private GuiComponents guiComponents;
-
-    // Delete this after backend implementation only testing frontend
     private double lambda;
 
     ClientEntity(MouseEvent mouseEvent, GuiComponents guiComponents) {
@@ -90,6 +89,7 @@ public class ClientEntity implements Entity {
             }
         });
         final Entity entity = this;
+        final ClientEntity clientEntity = this;
         polygon.addEventListener("rightclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
@@ -99,7 +99,7 @@ public class ClientEntity implements Entity {
         polygon.addEventListener("dblclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                new LambdaSliderFrame(entity);
+                new LambdaSliderFrame(clientEntity);
             }
         });
         // Store area for use in simulation
@@ -158,6 +158,7 @@ public class ClientEntity implements Entity {
                 }
             });
             final Entity entity = this;
+            final ClientEntity clientEntity = this;
             polygon.addEventListener("rightclick", new MapMouseEvent() {
                 @Override
                 public void onEvent(MouseEvent mouseEvent) {
@@ -167,7 +168,7 @@ public class ClientEntity implements Entity {
             polygon.addEventListener("dblclick", new MapMouseEvent() {
                 @Override
                 public void onEvent(MouseEvent mouseEvent) {
-                    new LambdaSliderFrame(entity);
+                    new LambdaSliderFrame(clientEntity);
                 }
             });
 
@@ -236,5 +237,13 @@ public class ClientEntity implements Entity {
         // Set current perimeter
         line1.setPath(line1Path);
         line2.setPath(line2Path);
+    }
+
+    public double getLambda() {
+        return lambda;
+    }
+
+    public void setLambda(double lambda) {
+        this.lambda = lambda;
     }
 }

@@ -205,6 +205,7 @@ public class MapConfig extends MapView {
         ClientRegion[] regions = new ClientRegion[clientRegions.size()];
         for (int i=0; i<clientRegions.size(); i++) {
             regions[i] = new ClientRegion(clientRegions.get(i).getPolygon().getPath(), clientRegions.get(i));
+            regions[i].setLambda(clientRegions.get(i).getLambda());
         }
         return regions;
     }

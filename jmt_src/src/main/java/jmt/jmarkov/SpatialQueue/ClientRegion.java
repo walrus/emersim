@@ -2,7 +2,6 @@ package jmt.jmarkov.SpatialQueue;
 
 import com.teamdev.jxmaps.LatLng;
 import jmt.jmarkov.SpatialQueue.Map.ClientEntity;
-import jmt.jmarkov.SpatialQueue.Simulation.Request;
 import jmt.jmarkov.SpatialQueue.Simulation.RequestGenerator;
 
 import java.awt.*;
@@ -13,9 +12,10 @@ import java.awt.geom.Rectangle2D;
 
 public class ClientRegion implements Shape {
 
-    Point2D.Double[] vertices;
-    ClientEntity mapEntity;
+    private Point2D.Double[] vertices;
+    private ClientEntity mapEntity;
     private RequestGenerator requestGenerator;
+    private double lambda;
 
     public ClientRegion(LatLng[] areaVertices, ClientEntity clientEntity) {
         this.mapEntity = clientEntity;
@@ -147,5 +147,13 @@ public class ClientRegion implements Shape {
     @Override
     public PathIterator getPathIterator(AffineTransform at, double flatness) {
         return null;
+    }
+
+    public double getLambda() {
+        return lambda;
+    }
+
+    public void setLambda(double lambda) {
+        this.lambda = lambda;
     }
 }
