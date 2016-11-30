@@ -7,9 +7,7 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.ClientRegion;
-import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
-import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
-import jmt.jmarkov.SpatialQueue.Gui.StatsUtils;
+import jmt.jmarkov.SpatialQueue.Gui.Statistics;
 import jmt.jmarkov.SpatialQueue.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
@@ -57,8 +55,10 @@ public class SpatialQueueSimulator implements Runnable {
 
     private boolean returnJourney;
 
+    private Statistics stats;
+
     public SpatialQueueSimulator(double timeMultiplier,
-                                 QueueDrawer queueDrawer,
+                                 Statistics stats,
                                  Server server,
                                  MapConfig mapConfig,
                                  int maxRequests,
@@ -77,6 +77,8 @@ public class SpatialQueueSimulator implements Runnable {
         // lambda is #(number of requests per second)
         this.lambda = 0.1;
         this.maxInterval = 3;
+        this.stats = stats;
+        this.queueDrawer = stats.getQueueDrawer();
 
         //Create a new request generator for each client region
         for(ClientRegion cr : regions) {
@@ -140,8 +142,8 @@ public class SpatialQueueSimulator implements Runnable {
                     realTimeCurrent = new Date().getTime() - realTimeStart;
                 }
 
-                StatsUtils.setSI(server.getAverageServiceTime());
-                StatsUtils.setLambda(lambda);
+                stats.setSI(server.getAverageServiceTime());
+                stats.setLambda(lambda);
 
 
                 //Having waited till the request has been served, deal with it
@@ -227,7 +229,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     public void setLambda(float lambda) {
         this.lambda = lambda;
-        StatsUtils.setLambda(lambda);
+        stats.setLambda(lambda);
     }
 
     public float getMaxInterval() { return this.maxInterval;}
