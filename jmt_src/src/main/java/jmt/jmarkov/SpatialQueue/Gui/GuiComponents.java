@@ -33,15 +33,13 @@ public class GuiComponents {
     private JButton client;
 
     private JButton server;
-    static JLabel mediaJobsL;
-    static JLabel utilizationL;
+
 
     private boolean paused = false;
 
     static double sMultiplier = 1; //service time slide bar multiplier
     static SpatialQueueSimulator sim;
     static DrawConstrains dCst;
-    private MM1Logic ql;
     static QueueDrawer queueDrawer;
     private MapConfig mapView;
     private JSlider accelerationS;
@@ -77,7 +75,7 @@ public class GuiComponents {
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
-        stats.showQueue(utilizationL, mediaJobsL);
+        stats.showQueue();
         this.mf = mf;
     }
 
@@ -89,9 +87,6 @@ public class GuiComponents {
         paused = false;
         stats = new Statistics();
         queueDrawer = stats.getQueueDrawer();
-        JPanel parametersP = new JPanel();
-        mediaJobsL = new JLabel();
-        utilizationL = new JLabel();
         start = new JButton("Start");
         start.setEnabled(false);
         pause = new JButton("Pause");
@@ -198,9 +193,10 @@ public class GuiComponents {
             Thread.sleep(100);
         } catch (InterruptedException e) {
         }
+        new SummaryPage(sim);
 //        outputTA.reset();
         queueDrawer.reset();
-        stats.updateFields(utilizationL, mediaJobsL, sim);
+        stats.updateFields(sim);
     }
 
     // create a stop button
@@ -370,84 +366,7 @@ public class GuiComponents {
         progressBar.setValue(percentage);
     }
 
-    //create a lambda slider
-//    protected void createLambdaSlider(GridBagConstraints c) {
-//        final boolean[] lambdaSChange = {true};
-//        JPanel lambdaPanel = new JPanel();
-//        setupServiceTime();
-//
-//        lambdaPanel.setLayout(new GridLayout(2, 1));
-//        c.weightx = 0.5;
-//
-//        parametersP.add(lambdaPanel, c);
-//
-//        c.gridx = 1;
-//        c.weightx = 0;
-//        parametersP.add(getSplitter(10, 1), c);
-//        c.weightx = 0.5;
-//
-//        final JLabel lambdaL = new JLabel();
-//        lambdaL.setAlignmentX(SwingConstants.CENTER);
-//        lambdaPanel.add(lambdaL);
-//        lambdaMultiplier = 0.01;
-//        lambdaMultiplierChange = 0;
-//
-//        lambdaS.setMaximum(100);
-//        lambdaS.setMinimum(0);
-//        lambdaS.setMajorTickSpacing(25);
-//        lambdaS.setMinorTickSpacing(1);
-//        lambdaS.setPaintLabels(true);
-//        lambdaS.setSnapToTicks(true);
-//        lambdaPanel.add(lambdaS);
-//        lambdaL.setFont(dCst.getNormalGUIFont());
-//        lambdaS.setValue(LAMBDA_I);
-//        StatsUtils.setLambdaSlider(lambdaS, lambdaL);
-//
-//        lambdaS.addChangeListener(new ChangeListener() {
-//            public void stateChanged(ChangeEvent evt) {
-//                StatsUtils.lambdaSStateChanged(utilizationL, mediaJobsL, sim, lambdaS, lambdaL);
-//
-//                if (lambdaSChange[0]) {
-//                    StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
-//                }
-//
-//            }
-//        });
-//        lambdaS.addMouseListener(new MouseListener() {
-//
-//            public void mouseClicked(MouseEvent e) {
-//            }
-//
-//            public void mouseEntered(MouseEvent e) {
-//            }
-//
-//            public void mouseExited(MouseEvent e) {
-//            }
-//
-//            public void mousePressed(MouseEvent e) {
-//                lambdaSChange[0] = false;
-//            }
-//
-//            public void mouseReleased(MouseEvent e) {
-//                StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
-//                lambdaSChange[0] = true;
-//            }
-//
-//        });
-//        lambdaS.repaint();
-//        StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
-//    }
 
-    // create the panel that contains the parameter sliders
-//    protected void createSimulationParametersPanel(GridBagConstraints c, JPanel simulationP) {
-//        parametersP.setLayout(new GridBagLayout());
-//        parametersP.setBorder(addTitle("Simulation Parameters", dCst.getSmallGUIFont()));
-//        c.weightx = 1;
-//        c.weighty = 0;
-//        c.gridx = 0;
-//        c.gridy = 0;
-//        simulationP.add(parametersP, c);
-//    }
 
     // create the panel that contains the simulation stats
     protected void createSimulationResultsPanel(GridBagConstraints c, JPanel simulationP) {
@@ -457,7 +376,7 @@ public class GuiComponents {
         c.gridx = 0;
         c.gridy = 1;
         simulationP.add(resultsP, c);
-        stats.generateSimulationStats(resultsP, mediaJobsL, utilizationL);
+        stats.generateSimulationStats(resultsP);
     }
 
 

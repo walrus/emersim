@@ -33,16 +33,24 @@ public class Statistics {
     private MM1Logic ql;
     private QueueDrawer queueDrawer;
     private DrawNormal dCst;
+    private JLabel mediaJobsL;
+    private JLabel utilizationL;
 
     public Statistics() {
         ql = new MM1Logic(0,0);
         queueDrawer = new QueueDrawer(ql, true);
+        init();
+    }
+
+    public void init() {
+        mediaJobsL = new JLabel();
+        utilizationL = new JLabel();
     }
 
 
 
 
-    protected void updateFields(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim) {
+    protected void updateFields(SpatialQueueSimulator sim) {
         try {
             Q = ql.mediaJobs();
             U = ql.utilization();
@@ -78,7 +86,7 @@ public class Statistics {
 
 
 
-    protected  void generateSimulationStats(JPanel resultsP, JLabel mediaJobsL, JLabel utilizationL) {
+    protected  void generateSimulationStats(JPanel resultsP) {
         // media
         dCst = new DrawNormal();
         mediaJobsL.setText(nStrS + "0" + nStrE);
@@ -102,7 +110,7 @@ public class Statistics {
     }
 
     //setup queue visualisation and pointer
-    protected  void showQueue(JLabel utilizationL, JLabel mediaJobsL) {
+    protected  void showQueue() {
 
         ql = new MM1Logic(0, 0);
 
@@ -111,20 +119,20 @@ public class Statistics {
         queueDrawer.setMaxJobs(0);
 //        statiDrawer.setMaxJobs(0);
         queueDrawer.setCpuNumber(1);
-        updateFields(utilizationL, mediaJobsL, sim);
+        updateFields(sim);
     }
 
     public  void setSI(double sI) {
         S_I = sI;
         System.out.println("SERVICE TIME: " +S_I);
         ql.setS(sI/1000);
-        updateFields(utilizationL, mediaJobsL, sim);
+        updateFields(sim);
 
     }
 
     public  void setLambda(double lambda) {
         ql.setLambda(lambda);
-        updateFields(utilizationL,mediaJobsL,sim);
+        updateFields(sim);
     }
 
     public QueueDrawer getQueueDrawer() {

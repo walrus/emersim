@@ -7,6 +7,7 @@ public class RequestGenerator implements Runnable {
     private SpatialQueueSimulator sim;
     private double lambda;
     private double averageServiceTime;
+
     private Statistics stats;
 
     public RequestGenerator(SpatialQueueSimulator sim, double lambda) {
@@ -31,6 +32,10 @@ public class RequestGenerator implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Statistics getStats() {
+        return stats;
     }
 }
 
