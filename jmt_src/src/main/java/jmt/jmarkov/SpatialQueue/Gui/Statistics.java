@@ -1,5 +1,6 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
+import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.Queues.MM1Logic;
@@ -8,34 +9,48 @@ import jmt.jmarkov.utils.Formatter;
 import javax.swing.*;
 import java.awt.*;
 
+
 import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.*;
 
 /**
  * Created by joshuazeltser on 02/11/2016.
  */
-public class StatsUtils {
-
-
+public class Statistics {
 
     //To change service time change this variable
-    static double S_I;
+    double S_I;
+    double U; // Utilization [%]
+    double Q; // Average customer in station
+    private String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
+    private String nStrE = " cust.";
+    private String uStrS = "Avg. Utilization (Sum of All Servers) U = ";
+    private String uStrE = "";
+    private String thrStrS = "Avg. Throughput X =";
+    private String thrStrE = " cust./s";
+    private String respStrS = "Avg. Response Time R = ";
+    private String respStrE = " s";
+    private boolean nonErgodic = false;//if the utilization is less than 1
+    private MM1Logic ql;
+    private QueueDrawer queueDrawer;
+    private DrawNormal dCst;
+    private JLabel mediaJobsL;
+    private JLabel utilizationL;
 
-    static double U; // Utilization [%]
-    static double Q; // Average customer in station
-    private static String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
-    private static String nStrE = " cust.";
-    private static String uStrS = "Avg. Utilization (Sum of All Servers) U = ";
-    private static String uStrE = "";
-    private static String thrStrS = "Avg. Throughput X =";
-    private static String thrStrE = " cust./s";
-    private static String respStrS = "Avg. Response Time R = ";
-    private static String respStrE = " s";
-    private static boolean nonErgodic = false;//if the utilization is less than 1
+    public Statistics() {
+        ql = new MM1Logic(0,0);
+        queueDrawer = new QueueDrawer(ql, true);
+        init();
+    }
+
+    public void init() {
+        mediaJobsL = new JLabel();
+        utilizationL = new JLabel();
+    }
 
 
 
 
-    protected static void updateFields(JLabel utilizationL, JLabel mediaJobsL, SpatialQueueSimulator sim) {
+    protected void updateFields(SpatialQueueSimulator sim) {
         try {
             Q = ql.mediaJobs();
             U = ql.utilization();
@@ -71,7 +86,7 @@ public class StatsUtils {
 
 
 
-    protected static void generateSimulationStats(JPanel resultsP, JLabel mediaJobsL, JLabel utilizationL) {
+    protected  void generateSimulationStats(JPanel resultsP) {
         // media
         dCst = new DrawNormal();
         mediaJobsL.setText(nStrS + "0" + nStrE);
@@ -94,15 +109,8 @@ public class StatsUtils {
         resultsP.add(responseL);
     }
 
-    // create a service time slider
-    protected static void setupServiceTime() {
-        sMultiplier = 0.02;
-
-        ql.setS(S_I * sMultiplier);
-    }
-
     //setup queue visualisation and pointer
-    protected static void showQueue(JLabel utilizationL, JLabel mediaJobsL) {
+    protected  void showQueue() {
 
         ql = new MM1Logic(0, 0);
 
@@ -111,22 +119,29 @@ public class StatsUtils {
         queueDrawer.setMaxJobs(0);
 //        statiDrawer.setMaxJobs(0);
         queueDrawer.setCpuNumber(1);
-        updateFields(utilizationL, mediaJobsL, sim);
+        updateFields(sim);
     }
 
-    public static void setSI(double sI) {
+    public  void setSI(double sI) {
         S_I = sI;
         System.out.println("SERVICE TIME: " +S_I);
         ql.setS(sI/1000);
-        updateFields(utilizationL, mediaJobsL, sim);
+        updateFields(sim);
 
     }
 
-    public static void setLambda(double lambda) {
+    public  void setLambda(double lambda) {
         ql.setLambda(lambda);
-        updateFields(utilizationL,mediaJobsL,sim);
+        updateFields(sim);
     }
 
+    public QueueDrawer getQueueDrawer() {
+        return queueDrawer;
+    }
+
+    public void setQueueDrawer(QueueDrawer queueDrawer) {
+        this.queueDrawer = queueDrawer;
+    }
 
 
 

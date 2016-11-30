@@ -20,11 +20,7 @@ import javax.swing.event.ChangeListener;;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Arrays;
 import java.util.Dictionary;
-import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
 
 /**
  * Created by joshuazeltser on 02/11/2016.
@@ -37,15 +33,13 @@ public class GuiComponents {
     private JButton client;
 
     private JButton server;
-    static JLabel mediaJobsL;
-    static JLabel utilizationL;
+
 
     private boolean paused = false;
 
     static double sMultiplier = 1; //service time slide bar multiplier
     static SpatialQueueSimulator sim;
     static DrawConstrains dCst;
-    static MM1Logic ql;
     static QueueDrawer queueDrawer;
     private MapConfig mapView;
     private JSlider accelerationS;
@@ -62,8 +56,6 @@ public class GuiComponents {
     private JMenu sizeMenu;
     private boolean gradientF = false;
 
-
-
     private boolean returnJourney;
 
     private String simServer;
@@ -78,10 +70,12 @@ public class GuiComponents {
     private JCheckBoxMenuItem transport;
     private JCheckBoxMenuItem fly;
 
+    private Statistics stats;
+
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
-        StatsUtils.showQueue(utilizationL, mediaJobsL);
+        stats.showQueue();
         this.mf = mf;
     }
 
@@ -91,11 +85,8 @@ public class GuiComponents {
 //        simServer = "Receiver";
         sim = null;
         paused = false;
-        ql = new MM1Logic(0.0, 0.0);
-        queueDrawer = new QueueDrawer(ql, true);
-        JPanel parametersP = new JPanel();
-        mediaJobsL = new JLabel();
-        utilizationL = new JLabel();
+        stats = new Statistics();
+        queueDrawer = stats.getQueueDrawer();
         start = new JButton("Start");
         start.setEnabled(false);
         pause = new JButton("Pause");
@@ -111,7 +102,6 @@ public class GuiComponents {
         responseL = new JLabel();
 //        outputTA = new TANotifier();
         returnJourney = false;
-        S_I = 70;
     }
 
     //Create queueDrawer for queue visualisation
@@ -203,9 +193,10 @@ public class GuiComponents {
             Thread.sleep(100);
         } catch (InterruptedException e) {
         }
+        new SummaryPage(sim);
 //        outputTA.reset();
         queueDrawer.reset();
-        updateFields(utilizationL, mediaJobsL, sim);
+        stats.updateFields(sim);
     }
 
     // create a stop button
@@ -238,13 +229,13 @@ public class GuiComponents {
                 jobsDialog.setLocationRelativeTo(mf);
                 jobsDialog.setVisible(true);
 
-                queueDrawer.setMediaJobs(Q - U);
+                queueDrawer.setMediaJobs(stats.Q - stats.U);
 
                 Server client = new Server(mapView, mapView.getReceiverLocation());
 
 
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),
-                                                queueDrawer,
+                                                stats,
                                                 client,
                                                 mapView,
                                                 jobsDialog.getTypedValue(),
@@ -375,84 +366,7 @@ public class GuiComponents {
         progressBar.setValue(percentage);
     }
 
-    //create a lambda slider
-//    protected void createLambdaSlider(GridBagConstraints c) {
-//        final boolean[] lambdaSChange = {true};
-//        JPanel lambdaPanel = new JPanel();
-//        setupServiceTime();
-//
-//        lambdaPanel.setLayout(new GridLayout(2, 1));
-//        c.weightx = 0.5;
-//
-//        parametersP.add(lambdaPanel, c);
-//
-//        c.gridx = 1;
-//        c.weightx = 0;
-//        parametersP.add(getSplitter(10, 1), c);
-//        c.weightx = 0.5;
-//
-//        final JLabel lambdaL = new JLabel();
-//        lambdaL.setAlignmentX(SwingConstants.CENTER);
-//        lambdaPanel.add(lambdaL);
-//        lambdaMultiplier = 0.01;
-//        lambdaMultiplierChange = 0;
-//
-//        lambdaS.setMaximum(100);
-//        lambdaS.setMinimum(0);
-//        lambdaS.setMajorTickSpacing(25);
-//        lambdaS.setMinorTickSpacing(1);
-//        lambdaS.setPaintLabels(true);
-//        lambdaS.setSnapToTicks(true);
-//        lambdaPanel.add(lambdaS);
-//        lambdaL.setFont(dCst.getNormalGUIFont());
-//        lambdaS.setValue(LAMBDA_I);
-//        StatsUtils.setLambdaSlider(lambdaS, lambdaL);
-//
-//        lambdaS.addChangeListener(new ChangeListener() {
-//            public void stateChanged(ChangeEvent evt) {
-//                StatsUtils.lambdaSStateChanged(utilizationL, mediaJobsL, sim, lambdaS, lambdaL);
-//
-//                if (lambdaSChange[0]) {
-//                    StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
-//                }
-//
-//            }
-//        });
-//        lambdaS.addMouseListener(new MouseListener() {
-//
-//            public void mouseClicked(MouseEvent e) {
-//            }
-//
-//            public void mouseEntered(MouseEvent e) {
-//            }
-//
-//            public void mouseExited(MouseEvent e) {
-//            }
-//
-//            public void mousePressed(MouseEvent e) {
-//                lambdaSChange[0] = false;
-//            }
-//
-//            public void mouseReleased(MouseEvent e) {
-//                StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
-//                lambdaSChange[0] = true;
-//            }
-//
-//        });
-//        lambdaS.repaint();
-//        StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
-//    }
 
-    // create the panel that contains the parameter sliders
-//    protected void createSimulationParametersPanel(GridBagConstraints c, JPanel simulationP) {
-//        parametersP.setLayout(new GridBagLayout());
-//        parametersP.setBorder(addTitle("Simulation Parameters", dCst.getSmallGUIFont()));
-//        c.weightx = 1;
-//        c.weighty = 0;
-//        c.gridx = 0;
-//        c.gridy = 0;
-//        simulationP.add(parametersP, c);
-//    }
 
     // create the panel that contains the simulation stats
     protected void createSimulationResultsPanel(GridBagConstraints c, JPanel simulationP) {
@@ -462,7 +376,7 @@ public class GuiComponents {
         c.gridx = 0;
         c.gridy = 1;
         simulationP.add(resultsP, c);
-        StatsUtils.generateSimulationStats(resultsP, mediaJobsL, utilizationL);
+        stats.generateSimulationStats(resultsP);
     }
 
 
