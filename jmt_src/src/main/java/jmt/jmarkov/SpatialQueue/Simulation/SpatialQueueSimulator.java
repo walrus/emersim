@@ -7,6 +7,7 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.ClientRegion;
+import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
 import jmt.jmarkov.SpatialQueue.Gui.Statistics;
 import jmt.jmarkov.SpatialQueue.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;

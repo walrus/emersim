@@ -1,7 +1,6 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
-import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Location;
 
@@ -16,7 +15,9 @@ public class ClientEntity implements Entity {
     private LinkedList<LatLng> path = new LinkedList<>();
     private Polyline areaPeri;
     private GuiComponents guiComponents;
-    private MM1Logic ql = new MM1Logic(0.0,0.0);
+
+    // Delete this after backend implementation only testing frontend
+    private double lambda;
 
     ClientEntity(MouseEvent mouseEvent, GuiComponents guiComponents) {
         this.guiComponents = guiComponents;
@@ -102,7 +103,13 @@ public class ClientEntity implements Entity {
             polygon.addEventListener("rightclick", new MapMouseEvent() {
                 @Override
                 public void onEvent(MouseEvent mouseEvent) {
-                    new MapEntityOptionsDialog(entity, ql);
+                    new RenameEntityFrame(entity);
+                }
+            });
+            polygon.addEventListener("dblclick", new MapMouseEvent() {
+                @Override
+                public void onEvent(MouseEvent mouseEvent) {
+                    new LambdaSliderFrame(entity);
                 }
             });
 

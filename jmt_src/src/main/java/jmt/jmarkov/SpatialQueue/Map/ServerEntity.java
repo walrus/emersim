@@ -37,7 +37,7 @@ class ServerEntity implements Entity {
         marker.addEventListener("rightclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                new MapEntityOptionsDialog(entity, ql);
+                new RenameEntityFrame(entity);
             }
         });
         receiverMarkers.add(marker);

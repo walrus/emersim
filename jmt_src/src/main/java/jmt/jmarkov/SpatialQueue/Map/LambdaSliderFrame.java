@@ -2,8 +2,6 @@ package jmt.jmarkov.SpatialQueue.Map;
 
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
-import jmt.jmarkov.Queues.MM1Logic;
-import jmt.jmarkov.SpatialQueue.Gui.StatsUtils;
 import jmt.jmarkov.utils.Formatter;
 
 import javax.swing.*;
@@ -13,7 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Dictionary;
 
-public class MapEntityOptionsDialog extends JFrame {
+public class LambdaSliderFrame extends JFrame {
 
     private Entity entity;
     private boolean isClient;
@@ -23,81 +21,21 @@ public class MapEntityOptionsDialog extends JFrame {
     private JLabel lambdaL;
     private String lambdaStrS = "Avg. Arrival Rate (lambda) = ";
     private String lambdaStrE = " cust./s";
-    private MM1Logic ql;
     private boolean lambdaSChange = true;
     private int lambdaMultiplierChange = 0; //for the lambda slide bar
     private JSlider sS;
+    private double lambda;
 
 
-
-
-    public MapEntityOptionsDialog(Entity entity, MM1Logic ql) {
-        this.ql = ql;
+    public LambdaSliderFrame(Entity entity){
         this.entity = entity;
         if (entity instanceof ClientEntity) {
-            initClient();
-        } else {
-            initServer();
+            init();
+            show();
         }
-        show();
     }
 
-    private void initServer() {
-        JPanel mainPanel = new JPanel(new GridLayout(1,0));
-
-        JPanel deletePanel = new JPanel();
-        mainPanel.add(deletePanel);
-        deletePanel.setLayout(new BoxLayout(deletePanel, BoxLayout.Y_AXIS));
-        JButton delete = new JButton("Delete");
-        delete.setPreferredSize(new Dimension(90, 30));
-        delete.setAlignmentX(Component.CENTER_ALIGNMENT);
-        deletePanel.add(Box.createVerticalGlue());
-        deletePanel.add(delete);
-        deletePanel.add(Box.createVerticalGlue());
-        delete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                entity.remove();
-                dispose();
-            }
-        });
-
-        JPanel renamePanel = new JPanel();
-        renamePanel.setLayout(new BoxLayout(renamePanel, BoxLayout.Y_AXIS));
-        mainPanel.add(renamePanel);
-        JButton rename = new JButton("Rename");
-        rename.setAlignmentX(Component.CENTER_ALIGNMENT);
-        rename.setPreferredSize(new Dimension(90, 30));
-        final JTextField newName = new JTextField("Enter new name...");
-        newName.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                newName.setText("");
-            }
-            public void focusLost(FocusEvent e) {}
-        });
-        renamePanel.add(newName);
-        renamePanel.add(rename);
-        renamePanel.add(Box.createVerticalGlue());
-        rename.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                entity.rename(newName.getText());
-                dispose();
-            }
-        });
-
-        add(mainPanel);
-        setTitle("Options");
-
-        Dimension d = new Dimension(400, 100);
-        setPreferredSize(d);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
-
-    private void initClient() {
+    private void init() {
         JPanel mainPanel = new JPanel(new GridLayout(1,0));
 
         //JPanel renamePanel = createRenamePanel();
@@ -156,7 +94,10 @@ public class MapEntityOptionsDialog extends JFrame {
         lambdaPanel.add(lambdaS);
         lambdaL.setFont(dCst.getNormalGUIFont());
         System.out.println("set");
-        lambdaS.setValue((int) ql.getLambda());
+
+        // CHANGE THIS
+        lambdaS.setValue((int) (lambda / lambdaMultiplier));
+
         setLambdaSlider();
         lambdaS.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent evt) {
@@ -213,7 +154,7 @@ public class MapEntityOptionsDialog extends JFrame {
 //        	ld.put(new Integer(i * 25), new JLabel("" + Formatter.formatNumber(i * 0.25, 2)));
 //        }
         lambdaS.setLabelTable(ld);
-        ql.setLambda(lambdaMultiplier * lambdaS.getValue());
+        lambda = lambdaMultiplier * lambdaS.getValue();
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
     }
 
@@ -224,9 +165,7 @@ public class MapEntityOptionsDialog extends JFrame {
             lambdaMultiplierChange = 0;
             lambdaS.setValue(1);
         }
-        System.out.println("hereo");
-        //ql.setLambda(lambdaMultiplier * lambdaS.getValue()); Don't know why this originally
-        ql.setLambda(lambdaS.getValue());
+        lambda = lambdaMultiplier * lambdaS.getValue();
         System.out.println(lambdaMultiplier * lambdaS.getValue());
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
     }
