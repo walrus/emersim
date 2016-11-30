@@ -58,7 +58,8 @@ public class StatsUtils {
             utilizationL.setForeground(Color.RED);
             utilizationL.setText(uStrS + "Saturation");
 
-            thrL.setText(thrStrS + "Saturation");
+            
+//            thrL.setText(thrStrS + "Saturation");
             responseL.setText(respStrS + "Saturation");
             nonErgodic = true;
         }
@@ -117,7 +118,7 @@ public class StatsUtils {
     public static void setSI(double sI) {
         S_I = sI;
         System.out.println("SERVICE TIME: " +S_I);
-        ql.setS(sI);
+        ql.setS(sI/1000);
         updateFields(utilizationL, mediaJobsL, sim);
 
     }
