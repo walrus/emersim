@@ -265,4 +265,8 @@ public class SpatialQueueSimulator implements Runnable {
     public void setCurrentTime(double currentTime) {
         this.currentTime = currentTime;
     }
+
+    public double getAverageServiceTime() {
+        return server.getAverageServiceTime();
+    }
 }
