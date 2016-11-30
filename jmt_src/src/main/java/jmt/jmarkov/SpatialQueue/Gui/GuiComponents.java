@@ -20,11 +20,7 @@ import javax.swing.event.ChangeListener;;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Arrays;
 import java.util.Dictionary;
-import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
 
 /**
  * Created by joshuazeltser on 02/11/2016.
@@ -45,7 +41,7 @@ public class GuiComponents {
     static double sMultiplier = 1; //service time slide bar multiplier
     static SpatialQueueSimulator sim;
     static DrawConstrains dCst;
-    static MM1Logic ql;
+    private MM1Logic ql;
     static QueueDrawer queueDrawer;
     private MapConfig mapView;
     private JSlider accelerationS;
@@ -62,8 +58,6 @@ public class GuiComponents {
     private JMenu sizeMenu;
     private boolean gradientF = false;
 
-
-
     private boolean returnJourney;
 
     private String simServer;
@@ -78,10 +72,12 @@ public class GuiComponents {
     private JCheckBoxMenuItem transport;
     private JCheckBoxMenuItem fly;
 
+    private Statistics stats;
+
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
-        StatsUtils.showQueue(utilizationL, mediaJobsL);
+        stats.showQueue(utilizationL, mediaJobsL);
         this.mf = mf;
     }
 
@@ -91,8 +87,8 @@ public class GuiComponents {
 //        simServer = "Receiver";
         sim = null;
         paused = false;
-        ql = new MM1Logic(0.0, 0.0);
-        queueDrawer = new QueueDrawer(ql, true);
+        stats = new Statistics();
+        queueDrawer = stats.getQueueDrawer();
         JPanel parametersP = new JPanel();
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
@@ -111,7 +107,6 @@ public class GuiComponents {
         responseL = new JLabel();
 //        outputTA = new TANotifier();
         returnJourney = false;
-        S_I = 70;
     }
 
     //Create queueDrawer for queue visualisation
@@ -205,7 +200,7 @@ public class GuiComponents {
         }
 //        outputTA.reset();
         queueDrawer.reset();
-        updateFields(utilizationL, mediaJobsL, sim);
+        stats.updateFields(utilizationL, mediaJobsL, sim);
     }
 
     // create a stop button
@@ -238,13 +233,13 @@ public class GuiComponents {
                 jobsDialog.setLocationRelativeTo(mf);
                 jobsDialog.setVisible(true);
 
-                queueDrawer.setMediaJobs(Q - U);
+                queueDrawer.setMediaJobs(stats.Q - stats.U);
 
                 Server client = new Server(mapView, mapView.getReceiverLocation());
 
 
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),
-                                                queueDrawer,
+                                                stats,
                                                 client,
                                                 mapView,
                                                 jobsDialog.getTypedValue(),
@@ -462,7 +457,7 @@ public class GuiComponents {
         c.gridx = 0;
         c.gridy = 1;
         simulationP.add(resultsP, c);
-        StatsUtils.generateSimulationStats(resultsP, mediaJobsL, utilizationL);
+        stats.generateSimulationStats(resultsP, mediaJobsL, utilizationL);
     }
 
 
