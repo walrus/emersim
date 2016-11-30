@@ -9,8 +9,9 @@ public class ProgressBar implements Runnable {
         this.timeMultiplier = timeMultiplier;
     }
 
-    public void setJobLength(double jobLength) {
+    public synchronized void setJobLength(double jobLength) {
         this.jobLength = jobLength;
+        this.notify();
     }
 
     @Override
@@ -19,7 +20,7 @@ public class ProgressBar implements Runnable {
         while (true) {
             int progressPercentage = 0;
             while (progressPercentage < 100 && jobLength > 0) {
-                double increaseInterval = (jobLength / percentageStep) / timeMultiplier;
+                double increaseInterval = (jobLength / (100 / percentageStep)) / timeMultiplier;
                 try {
                     Thread.sleep((long) increaseInterval);
                 } catch (InterruptedException e) {
