@@ -4,6 +4,7 @@ import com.teamdev.jxmaps.InfoWindow;
 import com.teamdev.jxmaps.MapMouseEvent;
 import com.teamdev.jxmaps.Marker;
 import com.teamdev.jxmaps.MouseEvent;
+import jmt.jmarkov.Queues.MM1Logic;
 
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.map;
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.receiverMarkers;
@@ -11,6 +12,7 @@ import static jmt.jmarkov.SpatialQueue.Map.MapConfig.receiverMarkers;
 class ServerEntity implements Entity {
     private Marker marker;
     private InfoWindow infoWindow;
+    private MM1Logic ql = new MM1Logic(0.0, 0.0);
 
     ServerEntity(MouseEvent mouseEvent) {
         // Creating a new marker
@@ -35,7 +37,7 @@ class ServerEntity implements Entity {
         marker.addEventListener("rightclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                new MapEntityOptionsDialog(entity);
+                new MapEntityOptionsDialog(entity, ql);
             }
         });
         receiverMarkers.add(marker);
@@ -51,5 +53,18 @@ class ServerEntity implements Entity {
     @Override
     public void rename(String newName) {
         infoWindow.setContent("<b>" + newName + "</b>");
+    }
+
+    @Override
+    public String getName() {
+        String html = infoWindow.getContent();
+
+        // Splits the html String to get the inner text without formatting
+        String[] t = html.split("<b>");
+        String[] s = t[1].split("</b>");
+        String name = s[0];
+
+        return name;
+
     }
 }

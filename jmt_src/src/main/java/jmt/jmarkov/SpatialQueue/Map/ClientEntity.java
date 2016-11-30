@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
+import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Location;
 
@@ -15,6 +16,7 @@ public class ClientEntity implements Entity {
     private LinkedList<LatLng> path = new LinkedList<>();
     private Polyline areaPeri;
     private GuiComponents guiComponents;
+    private MM1Logic ql = new MM1Logic(0.0,0.0);
 
     ClientEntity(MouseEvent mouseEvent, GuiComponents guiComponents) {
         this.guiComponents = guiComponents;
@@ -100,7 +102,7 @@ public class ClientEntity implements Entity {
             polygon.addEventListener("rightclick", new MapMouseEvent() {
                 @Override
                 public void onEvent(MouseEvent mouseEvent) {
-                    new MapEntityOptionsDialog(entity);
+                    new MapEntityOptionsDialog(entity, ql);
                 }
             });
 
@@ -124,6 +126,18 @@ public class ClientEntity implements Entity {
     @Override
     public void rename(String newName) {
         infoWindow.setContent("<b>" + newName + "</b>");
+    }
+
+    @Override
+    public String getName() {
+        String html = infoWindow.getContent();
+
+        // Splits the html String to get the inner text without formatting
+        String[] t = html.split("<b>");
+        String[] s = t[1].split("</b>");
+        String name = s[0];
+
+        return name;
     }
 
     public Polygon getPolygon() {
