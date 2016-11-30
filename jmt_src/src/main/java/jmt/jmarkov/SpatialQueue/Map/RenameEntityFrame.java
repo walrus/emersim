@@ -1,17 +1,22 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import jmt.jmarkov.Graphics.constants.DrawConstrains;
+import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.SpatialQueue.Gui.Statistics;
+import jmt.jmarkov.utils.Formatter;
 
-public class MapEntityOptionsDialog extends JFrame {
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.Dictionary;
+
+public class RenameEntityFrame extends JFrame {
 
     private Entity entity;
 
-    public MapEntityOptionsDialog(Entity entity) {
+    public RenameEntityFrame(Entity entity){
         this.entity = entity;
         init();
         show();
@@ -71,4 +76,5 @@ public class MapEntityOptionsDialog extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+
 }

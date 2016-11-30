@@ -16,6 +16,9 @@ public class ClientEntity implements Entity {
     private Polyline areaPeri;
     private GuiComponents guiComponents;
 
+    // Delete this after backend implementation only testing frontend
+    private double lambda;
+
     ClientEntity(MouseEvent mouseEvent, GuiComponents guiComponents) {
         this.guiComponents = guiComponents;
         // Add first point to path
@@ -100,7 +103,13 @@ public class ClientEntity implements Entity {
             polygon.addEventListener("rightclick", new MapMouseEvent() {
                 @Override
                 public void onEvent(MouseEvent mouseEvent) {
-                    new MapEntityOptionsDialog(entity);
+                    new RenameEntityFrame(entity);
+                }
+            });
+            polygon.addEventListener("dblclick", new MapMouseEvent() {
+                @Override
+                public void onEvent(MouseEvent mouseEvent) {
+                    new LambdaSliderFrame(entity);
                 }
             });
 
@@ -124,6 +133,18 @@ public class ClientEntity implements Entity {
     @Override
     public void rename(String newName) {
         infoWindow.setContent("<b>" + newName + "</b>");
+    }
+
+    @Override
+    public String getName() {
+        String html = infoWindow.getContent();
+
+        // Splits the html String to get the inner text without formatting
+        String[] t = html.split("<b>");
+        String[] s = t[1].split("</b>");
+        String name = s[0];
+
+        return name;
     }
 
     public Polygon getPolygon() {
