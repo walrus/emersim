@@ -1,5 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.MouseEvent;
 import com.teamdev.jxmaps.swing.MapView;
@@ -12,6 +14,7 @@ import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicTextFieldUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class MapConfig extends MapView {
@@ -21,12 +24,15 @@ public class MapConfig extends MapView {
     static ClientEntity areaBeingDrawn;
     static Map map;
     static LinkedList<ClientEntity> clientRegions = new LinkedList<>();
-    static LinkedList<Marker> receiverMarkers = new LinkedList<>();
+    static LinkedList<Marker> serverMarkers = new LinkedList<>();
+    final private GuiComponents guiComponents;
+
     public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE};
     static BUTTON_STATE buttonState;
 
     public MapConfig(MapViewOptions options, final GuiComponents guiComponents) {
         super(options);
+        this.guiComponents = guiComponents;
         setOnMapReadyHandler(new MapReadyHandler() {
             @Override
             public void onMapReady(MapStatus status) {
@@ -204,12 +210,65 @@ public class MapConfig extends MapView {
     }
 
     public Location getReceiverLocation() {
-        Marker marker = receiverMarkers.get(0);
+        Marker marker = serverMarkers.get(0);
         return new Location(marker.getPosition().getLng(), marker.getPosition().getLat());
     }
 
-    private Location translateCoordinate(LatLng location) {
-        Location loc = new Location(location.getLng(), location.getLat());
-        return loc;
+    public String saveServers() {
+        LinkedList<LatLng> serverLocations = new LinkedList<>();
+        for (Marker serverMarker : serverMarkers) {
+            serverLocations.add(serverMarker.getPosition());
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        //Object to JSON in String
+        String jsonInString = "";
+        try {
+            jsonInString = mapper.writeValueAsString(serverLocations);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonInString;
+    }
+
+    public void loadServers(String jsonString) {
+        ObjectMapper mapper = new ObjectMapper();
+        LinkedList<LatLng> serverLocations = null;
+        try {
+            serverLocations = mapper.readValue(jsonString, LinkedList.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (LatLng latLng : serverLocations) {
+            new ServerEntity(latLng);
+        }
+    }
+
+    public String saveClients() {
+        LinkedList<LinkedList> clientPaths = new LinkedList<>();
+        for (ClientEntity clientEntity : clientRegions) {
+            clientPaths.add(clientEntity.getPath());
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        //Object to JSON in String
+        String jsonInString = "";
+        try {
+            jsonInString = mapper.writeValueAsString(clientPaths);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonInString;
+    }
+
+    public void loadClients(String jsonString) {
+        ObjectMapper mapper = new ObjectMapper();
+        LinkedList<LinkedList> clientPaths = null;
+        try {
+            clientPaths = mapper.readValue(jsonString, LinkedList.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (LinkedList<LatLng> path : clientPaths) {
+            new ClientEntity(path, guiComponents);
+        }
     }
 }
