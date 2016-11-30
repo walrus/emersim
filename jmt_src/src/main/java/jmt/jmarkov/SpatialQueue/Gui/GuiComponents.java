@@ -7,6 +7,7 @@ import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Graphics.constants.DrawSmall;
 import jmt.jmarkov.Queues.MM1Logic;
+import jmt.jmarkov.SpatialQueue.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
@@ -193,10 +194,12 @@ public class GuiComponents {
             Thread.sleep(100);
         } catch (InterruptedException e) {
         }
+
         new SummaryPage(sim);
 //        outputTA.reset();
-        queueDrawer.reset();
-        stats.updateFields(sim);
+
+//        queueDrawer.reset();
+//        stats.updateFields(sim);
     }
 
     // create a stop button
