@@ -60,6 +60,13 @@ public class SpatialQueueSimulator implements Runnable {
 
     private GuiComponents gui;
 
+    // Store these with the simulator instead of locally in run()
+    // to allow for pausing and resuming
+    private double currentTimeMultiplied;
+    private long realTimeStart;
+    private long realTimeCurrent;
+
+    private ProgressBar progressBar;
 
     public SpatialQueueSimulator(GuiComponents gui, double timeMultiplier, Server server, int maxRequests ) {
 
@@ -98,27 +105,8 @@ public class SpatialQueueSimulator implements Runnable {
     }
 
     public void run() {
-        running = true;
-        started = true;
-        // this is the simulation time till run command is called (?)
-        double currentTimeMultiplied;
-        //when calling run getting the current real time (?)
-        long realTimeStart;
-        //this is the time after return the thread.sleep (?)
-        long realTimeCurrent;
-        currentTimeMultiplied = 0;
-        realTimeStart = new Date().getTime();
 
-        // For each client region, Start new thread and run the generator from it
-        for (ClientRegion cr : clientRegions) {
-            Thread generatorThread = new Thread(cr.getGenerator());
-            generatorThread.start();
-        }
-
-        // Start progress bar thread
-        ProgressBar progressBar = new ProgressBar(timeMultiplier);
-        Thread progressBarThread = new Thread(progressBar);
-        progressBarThread.start();
+        setUpSimulation();
 
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {
@@ -129,8 +117,8 @@ public class SpatialQueueSimulator implements Runnable {
                 queueDrawer.servingJob(currentRequest.getRequestId());
                 mapConfig.displayRoute(currentRequest.getDirectionsResult());
                 // notify progress bar and update the job time and time multiplier
-                progressBar.setJobLength(currentRequest.getResponseTime());
-                progressBar.setTimeMultiplier(timeMultiplier);
+                this.progressBar.setJobLength(currentRequest.getResponseTime());
+                this.progressBar.setTimeMultiplier(timeMultiplier);
                 currentTimeMultiplied += (currentRequest.getNextEventTime() - currentTime) / timeMultiplier;
                 //this is calculating how long system will sleep
                 realTimeCurrent = new Date().getTime() - realTimeStart;
@@ -161,6 +149,26 @@ public class SpatialQueueSimulator implements Runnable {
         running = false;
         gui.stopProcessing();
         System.out.println("Stopping, total requests served: " + this.server.getNumberOfRequestsServed());
+
+    }
+
+    private void setUpSimulation() {
+        this.running = true;
+        this.started = true;
+        this.currentTimeMultiplied = 0;
+        // this is the simulation time till run command is called (?)
+        this.realTimeStart = new Date().getTime();
+
+        // For each client region, Start new thread and run the generator from it
+        for (ClientRegion cr : this.clientRegions) {
+            Thread generatorThread = new Thread(cr.getGenerator());
+            generatorThread.start();
+        }
+
+        // Start progress bar thread
+        this.progressBar = new ProgressBar(timeMultiplier);
+        Thread progressBarThread = new Thread(progressBar);
+        progressBarThread.start();
 
     }
 
@@ -209,21 +217,32 @@ public class SpatialQueueSimulator implements Runnable {
         this.lambdaZero = lambdaZero;
     }
 
+    // Pause the simulation, preserving the current state
+    // and allowing for resumption
     public void pause() {
         if (paused) {
             paused = false;
+            //TODO: switch to resume() when ready
             start();
         } else {
             paused = true;
         }
     }
 
+    // Resume the simulation from the paused state
+    public void resume() {
+        //TODO: implement
+    }
+
+    // Start the simulator for the first time:
+    // Run in new thread and do simulator setup
     public void start() {
         Thread simt = new Thread(this);
         simt.setDaemon(true);
         simt.start();
     }
 
+    // Stop the simulation and calculate the summary statistics. Cannot be resumed.
     public void stop() {
         this.paused = true;
         this.started = false;
