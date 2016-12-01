@@ -144,6 +144,7 @@ public class SpatialQueueSimulator implements Runnable {
                 }
 
                 stats.setSI(server.getAverageServiceTime());
+                System.out.println("Service time " + stats.getQueueLogic().getS());
 
                 //Having waited till the request has been served, deal with it
                 currentTime = currentRequest.getNextEventTime();

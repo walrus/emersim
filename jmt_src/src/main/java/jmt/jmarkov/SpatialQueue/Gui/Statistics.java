@@ -128,7 +128,6 @@ public class Statistics {
 
     public void setSI(double sI) {
         S_I = sI;
-        System.out.println("SERVICE TIME: " + S_I);
         ql.setS(sI / 1000);
         updateFields(sim);
 
@@ -136,7 +135,6 @@ public class Statistics {
 
     public void setLambda(double lambda) {
         ql.setLambda(lambda);
-        System.out.println("LAMBDA " + lambda);
         updateFields(sim);
     }
 

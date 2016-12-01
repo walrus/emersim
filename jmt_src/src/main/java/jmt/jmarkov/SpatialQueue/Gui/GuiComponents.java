@@ -46,7 +46,6 @@ public class GuiComponents {
     private MapConfig mapConfig;
     private JSlider accelerationS;
 
-
     private SpatialQueueFrame mf;
     private JMenu settingsMenu;
     private JMenu colorsMenu;
