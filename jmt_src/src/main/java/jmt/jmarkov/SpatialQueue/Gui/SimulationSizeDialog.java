@@ -153,7 +153,7 @@ public class SimulationSizeDialog extends JDialog implements ActionListener, Pro
         setContentPane(optionPane);
 
         //Handle window closing correctly.
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
