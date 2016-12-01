@@ -30,10 +30,11 @@ public class MapConfig extends MapView {
     static LinkedList<ClientGraphic> clientGraphics = new LinkedList<>();
     static LinkedList<ServerGraphic> serverGraphics = new LinkedList<>();
     private GuiComponents guiComponents;
+    private TRAVEL_METHOD travelMethod;
 
     public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE}
+    public enum TRAVEL_METHOD {DRIVING, BICYCLING, WALKING, PUBLIC_TRANSPORT, AS_CROW_FLIES}
 
-    ;
     static BUTTON_STATE buttonState;
 
     public MapConfig(MapViewOptions options, final GuiComponents guiComponents) {
@@ -91,8 +92,8 @@ public class MapConfig extends MapView {
 
     private static final ScheduledExecutorService handler = Executors.newScheduledThreadPool(1);
 
-    public DirectionsResult handleDirectionCall(double x1, double y1, double x2, double y2) {
-        Future<DirectionsResult> directions = handler.schedule(new DirectionsJob(this, x1, y1, x2, y2), RATE_LIMIT, TimeUnit.MILLISECONDS);
+    public DirectionsResult handleDirectionCall(TravelMode travelMode, double x1, double y1, double x2, double y2) {
+        Future<DirectionsResult> directions = handler.schedule(new DirectionsJob(this, travelMode, x1, y1, x2, y2), RATE_LIMIT, TimeUnit.MILLISECONDS);
         DirectionsResult directionsResult = null;
         try {
             directionsResult = directions.get();
@@ -101,7 +102,7 @@ public class MapConfig extends MapView {
         }
         if (directionsResult == null) {
             // If API fails for any reason, retry
-            return handleDirectionCall(x1, y1, x2, y2);
+            return handleDirectionCall(travelMode, x1, y1, x2, y2);
         }
         return directionsResult;
     }
@@ -157,6 +158,14 @@ public class MapConfig extends MapView {
         for (ServerGraphic s : serverGraphics)
             servers.add(s.getServer());
         return servers;
+    }
+
+    public void setTravelMethod(TRAVEL_METHOD travelMethod) {
+        this.travelMethod = travelMethod;
+    }
+
+    public TRAVEL_METHOD getTravelMethod() {
+        return travelMethod;
     }
 
     public String saveServers() {

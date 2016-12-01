@@ -41,6 +41,10 @@ public class Location {
         this.z = 0;
     }
 
+    public LatLng getLocationAsLatLng() {
+        return new LatLng(y, x);
+    }
+
     public double getX() {
         return x;
     }

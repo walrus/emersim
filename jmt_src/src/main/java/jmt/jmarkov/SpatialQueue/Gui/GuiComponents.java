@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
 import com.teamdev.jxmaps.MapViewOptions;
+import com.teamdev.jxmaps.TravelMode;
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.constants.DrawBig;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
@@ -68,13 +69,12 @@ public class GuiComponents{
     private JCheckBoxMenuItem drive;
     private JCheckBoxMenuItem walk;
     private JCheckBoxMenuItem cycle;
-    private JCheckBoxMenuItem transport;
+    private JCheckBoxMenuItem publicTransport;
     private JCheckBoxMenuItem fly;
 
 
 
     private Statistics stats;
-
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
@@ -540,21 +540,21 @@ public class GuiComponents{
     private JMenu setTravelModeSubMenu() {
         JMenu travelMode = new JMenu("Travel Mode");
 
-
         drive = new JCheckBoxMenuItem("Drive");
         drive.setSelected(true);
         walk = new JCheckBoxMenuItem("Walk");
         cycle = new JCheckBoxMenuItem("Cycle");
-        transport = new JCheckBoxMenuItem("Transport");
-        fly = new JCheckBoxMenuItem("Fly");
+        publicTransport = new JCheckBoxMenuItem("Public Transport");
+        fly = new JCheckBoxMenuItem("As-crow-flies");
 
         drive.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.DRIVING);
                 drive.setSelected(true);
                 walk.setSelected(false);
                 cycle.setSelected(false);
-                transport.setSelected(false);
+                publicTransport.setSelected(false);
                 fly.setSelected(false);
             }
         });
@@ -562,10 +562,11 @@ public class GuiComponents{
         walk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.WALKING);
                 walk.setSelected(true);
                 drive.setSelected(false);
                 cycle.setSelected(false);
-                transport.setSelected(false);
+                publicTransport.setSelected(false);
                 fly.setSelected(false);
             }
         });
@@ -573,18 +574,20 @@ public class GuiComponents{
         cycle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.BICYCLING);
                 cycle.setSelected(true);
                 walk.setSelected(false);
                 drive.setSelected(false);
-                transport.setSelected(false);
+                publicTransport.setSelected(false);
                 fly.setSelected(false);
             }
         });
 
-        transport.addActionListener(new ActionListener() {
+        publicTransport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                transport.setSelected(true);
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.PUBLIC_TRANSPORT);
+                publicTransport.setSelected(true);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 drive.setSelected(false);
@@ -595,10 +598,11 @@ public class GuiComponents{
         fly.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.AS_CROW_FLIES);
                 fly.setSelected(true);
                 walk.setSelected(false);
                 cycle.setSelected(false);
-                transport.setSelected(false);
+                publicTransport.setSelected(false);
                 drive.setSelected(false);
             }
         });
@@ -607,7 +611,7 @@ public class GuiComponents{
         travelMode.add(drive);
         travelMode.add(walk);
         travelMode.add(cycle);
-        travelMode.add(transport);
+        travelMode.add(publicTransport);
         travelMode.add(fly);
 
         return travelMode;
