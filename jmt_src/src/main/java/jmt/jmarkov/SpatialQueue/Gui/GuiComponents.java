@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
 import com.teamdev.jxmaps.MapViewOptions;
+import com.teamdev.jxmaps.TravelMode;
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.constants.DrawBig;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
@@ -69,7 +70,7 @@ public class GuiComponents {
     private JCheckBoxMenuItem drive;
     private JCheckBoxMenuItem walk;
     private JCheckBoxMenuItem cycle;
-    private JCheckBoxMenuItem transport;
+    private JCheckBoxMenuItem publicTransport;
     private JCheckBoxMenuItem fly;
 
     private Statistics stats;
@@ -543,20 +544,20 @@ public class GuiComponents {
     private JMenu setTravelModeSubMenu() {
         JMenu travelMode = new JMenu("Travel Mode");
 
-
         drive = new JCheckBoxMenuItem("Drive");
         drive.setSelected(true);
         walk = new JCheckBoxMenuItem("Walk");
         cycle = new JCheckBoxMenuItem("Cycle");
-        transport = new JCheckBoxMenuItem("Transport");
+        publicTransport = new JCheckBoxMenuItem("Public Transport");
         fly = new JCheckBoxMenuItem("Fly");
 
         drive.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapConfig.setTravelMode(TravelMode.DRIVING);
                 walk.setSelected(false);
                 cycle.setSelected(false);
-                transport.setSelected(false);
+                publicTransport.setSelected(false);
                 fly.setSelected(false);
             }
         });
@@ -564,9 +565,10 @@ public class GuiComponents {
         walk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapConfig.setTravelMode(TravelMode.WALKING);
                 drive.setSelected(false);
                 cycle.setSelected(false);
-                transport.setSelected(false);
+                publicTransport.setSelected(false);
                 fly.setSelected(false);
             }
         });
@@ -574,16 +576,18 @@ public class GuiComponents {
         cycle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapConfig.setTravelMode(TravelMode.BICYCLING);
                 walk.setSelected(false);
                 drive.setSelected(false);
-                transport.setSelected(false);
+                publicTransport.setSelected(false);
                 fly.setSelected(false);
             }
         });
 
-        transport.addActionListener(new ActionListener() {
+        publicTransport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapConfig.setTravelMode(TravelMode.TRANSIT);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 drive.setSelected(false);
@@ -596,7 +600,7 @@ public class GuiComponents {
             public void actionPerformed(ActionEvent e) {
                 walk.setSelected(false);
                 cycle.setSelected(false);
-                transport.setSelected(false);
+                publicTransport.setSelected(false);
                 drive.setSelected(false);
             }
         });
@@ -605,7 +609,7 @@ public class GuiComponents {
         travelMode.add(drive);
         travelMode.add(walk);
         travelMode.add(cycle);
-        travelMode.add(transport);
+        travelMode.add(publicTransport);
         travelMode.add(fly);
 
         return travelMode;
