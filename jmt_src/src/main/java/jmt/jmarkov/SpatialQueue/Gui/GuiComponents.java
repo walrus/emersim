@@ -75,7 +75,6 @@ public class GuiComponents {
 
     private Statistics stats;
 
-
     public GuiComponents(SpatialQueueFrame mf) {
         init();
         stats.showQueue();
@@ -549,12 +548,12 @@ public class GuiComponents {
         walk = new JCheckBoxMenuItem("Walk");
         cycle = new JCheckBoxMenuItem("Cycle");
         publicTransport = new JCheckBoxMenuItem("Public Transport");
-        fly = new JCheckBoxMenuItem("Fly");
+        fly = new JCheckBoxMenuItem("As-crow-flies");
 
         drive.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapConfig.setTravelMode(TravelMode.DRIVING);
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.DRIVING);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 publicTransport.setSelected(false);
@@ -565,7 +564,7 @@ public class GuiComponents {
         walk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapConfig.setTravelMode(TravelMode.WALKING);
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.WALKING);
                 drive.setSelected(false);
                 cycle.setSelected(false);
                 publicTransport.setSelected(false);
@@ -576,7 +575,7 @@ public class GuiComponents {
         cycle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapConfig.setTravelMode(TravelMode.BICYCLING);
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.BICYCLING);
                 walk.setSelected(false);
                 drive.setSelected(false);
                 publicTransport.setSelected(false);
@@ -587,7 +586,7 @@ public class GuiComponents {
         publicTransport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapConfig.setTravelMode(TravelMode.TRANSIT);
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.PUBLIC_TRANSPORT);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 drive.setSelected(false);
@@ -598,6 +597,7 @@ public class GuiComponents {
         fly.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.AS_CROW_FLIES);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 publicTransport.setSelected(false);
