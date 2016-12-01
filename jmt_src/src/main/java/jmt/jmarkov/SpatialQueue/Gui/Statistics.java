@@ -31,14 +31,13 @@ public class Statistics {
     private String respStrS = "Avg. Response Time R = ";
     private String respStrE = " s";
     private boolean nonErgodic = false;//if the utilization is less than 1
-
-
-
     private MM1Logic ql;
     private QueueDrawer queueDrawer;
     private DrawNormal dCst;
     private JLabel mediaJobsL;
     private JLabel utilizationL;
+    private JLabel thrL;
+    private JLabel responseL;
     private double R;
 
     public Statistics() {
@@ -51,6 +50,8 @@ public class Statistics {
     public void init() {
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
+        thrL = new JLabel();
+        responseL = new JLabel();
     }
 
 
@@ -127,7 +128,6 @@ public class Statistics {
 
     public void setSI(double sI) {
         S_I = sI;
-        System.out.println("SERVICE TIME: " + S_I);
         ql.setS(sI / 1000);
         updateFields(sim);
 
@@ -135,7 +135,6 @@ public class Statistics {
 
     public void setLambda(double lambda) {
         ql.setLambda(lambda);
-        System.out.println("LAMBDA " + lambda);
         updateFields(sim);
     }
 

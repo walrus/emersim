@@ -45,8 +45,6 @@ public class GuiComponents {
     static QueueDrawer queueDrawer;
     private MapConfig mapConfig;
     private JSlider accelerationS;
-    static JLabel thrL;
-    static JLabel responseL;
 
     private SpatialQueueFrame mf;
     private JMenu settingsMenu;
@@ -95,14 +93,10 @@ public class GuiComponents {
         stop = new JButton("Stop");
         client = new JButton("Add Client");
         client.setEnabled(false);
-
         server = new JButton("Add Server");
         simServer = "Server";
         simClient = "Client";
         dCst = new DrawNormal();
-        thrL = new JLabel();
-        responseL = new JLabel();
-//        outputTA = new TANotifier();
         returnJourney = false;
     }
 
@@ -524,6 +518,7 @@ public class GuiComponents {
         on.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                on.setSelected(true);
                 off.setSelected(false);
                 returnJourney = true;
 
@@ -533,6 +528,7 @@ public class GuiComponents {
         off.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                off.setSelected(true);
                 on.setSelected(false);
                 returnJourney = false;
             }
@@ -556,6 +552,7 @@ public class GuiComponents {
         drive.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                drive.setSelected(true);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 transport.setSelected(false);
@@ -566,6 +563,7 @@ public class GuiComponents {
         walk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                walk.setSelected(true);
                 drive.setSelected(false);
                 cycle.setSelected(false);
                 transport.setSelected(false);
@@ -576,6 +574,7 @@ public class GuiComponents {
         cycle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                cycle.setSelected(true);
                 walk.setSelected(false);
                 drive.setSelected(false);
                 transport.setSelected(false);
@@ -586,6 +585,7 @@ public class GuiComponents {
         transport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                transport.setSelected(true);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 drive.setSelected(false);
@@ -596,6 +596,7 @@ public class GuiComponents {
         fly.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                fly.setSelected(true);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 transport.setSelected(false);

@@ -48,23 +48,23 @@ public class SummaryPage extends JFrame {
 
            try {
                double media = cr.getGenerator().getStats().getQueueLogic().mediaJobs();
-               rowData[count][1] = String.format("%.6f", media);
+               rowData[count][1] = String.format("%.6f", media) + nStrE;
             } catch (NonErgodicException e) {
                rowData[count][1] = "Saturation";
             }
            double throughput = cr.getGenerator().getStats().getQueueLogic().getLambda();
-           rowData[count][2] = String.format("%.3f", throughput);
+           rowData[count][2] = String.format("%.3f", throughput) + thrStrE;
 
            try {
                double utilisation = cr.getGenerator().getStats().getQueueLogic().utilization();
-               rowData[count][3] = String.format("%.6f", utilisation);
+               rowData[count][3] = String.format("%.6f", utilisation) + uStrE;
             } catch(NonErgodicException e) {
                rowData[count][3] = "Saturation";
             }
 
            try {
                double responseTime = cr.getGenerator().getStats().getQueueLogic().responseTime();
-               rowData[count][4] = String.format("%.6f", responseTime);
+               rowData[count][4] = String.format("%.6f", responseTime) + respStrE;
             } catch (NonErgodicException e) {
                rowData[count][4] = "Saturation";
             }
@@ -72,14 +72,13 @@ public class SummaryPage extends JFrame {
        }
 
 
-        JTable table = new JTable(rowData, columnNames);
+        JTable table = new JTable(rowData, columnNames) {
 
-//        table.setFont(new Font("Serif", Font.BOLD, 15));
-
-//
-//        DefaultTableCellRenderer stringRenderer = (DefaultTableCellRenderer)
-//                table.getDefaultRenderer(String.class);
-//        stringRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+           @Override
+           public boolean isCellEditable(int row, int column) {
+               return false;
+           }
+        };
 
         JScrollPane scrollPane = new JScrollPane(table);
         this.add(scrollPane, BorderLayout.CENTER);
@@ -87,7 +86,7 @@ public class SummaryPage extends JFrame {
 
         this.setLayout(new GridLayout(1,1));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-
+        table.removeEditor();
 //        this.add(statistics);
         pack();
         setLocationRelativeTo(null);
