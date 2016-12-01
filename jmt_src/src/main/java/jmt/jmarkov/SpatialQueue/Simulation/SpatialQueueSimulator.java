@@ -119,8 +119,6 @@ public class SpatialQueueSimulator implements Runnable {
                 queueDrawer.servingJob(currentRequest.getRequestId());
                 if (mapConfig.getTravelMethod() != MapConfig.TRAVEL_METHOD.AS_CROW_FLIES) {
                     mapConfig.displayRoute(currentRequest.getDirectionsResult());
-                } else {
-                    mapConfig.displayDirectRoute(currentRequest.)
                 }
                 // notify progress bar and update the job time and time multiplier
                 progressBar.setJobLength(currentRequest.getResponseTime());
