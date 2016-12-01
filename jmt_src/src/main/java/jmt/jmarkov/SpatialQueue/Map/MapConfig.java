@@ -30,7 +30,7 @@ public class MapConfig extends MapView {
     static LinkedList<ClientGraphic> clientGraphics = new LinkedList<>();
     static LinkedList<ServerGraphic> serverGraphics = new LinkedList<>();
     private GuiComponents guiComponents;
-    private TRAVEL_METHOD travelMethod;
+    private TRAVEL_METHOD travelMethod = TRAVEL_METHOD.DRIVING;
 
     public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE}
     public enum TRAVEL_METHOD {DRIVING, BICYCLING, WALKING, PUBLIC_TRANSPORT, AS_CROW_FLIES}
