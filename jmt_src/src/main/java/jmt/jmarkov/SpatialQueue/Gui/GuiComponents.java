@@ -600,6 +600,27 @@ public class GuiComponents{
         fly.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                final JFrame speedFrame = new JFrame("Speed Settings");
+                speedFrame.setLayout(new GridLayout(2,0));
+                final JTextField speedValue = new JTextField();
+                speedValue.setText("Type your speed (m/s)");
+                JButton speedSet = new JButton("Save");
+                speedSet.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        int speed = Integer.parseInt(speedValue.getText());
+                        speedFrame.dispose();
+                    }
+                });
+
+                speedFrame.add(speedValue);
+                speedFrame.add(speedSet);
+
+                speedFrame.pack();
+                speedFrame.setLocationRelativeTo(null);
+                speedFrame.setVisible(true);
+
+
                 mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.AS_CROW_FLIES);
                 fly.setSelected(true);
                 walk.setSelected(false);
