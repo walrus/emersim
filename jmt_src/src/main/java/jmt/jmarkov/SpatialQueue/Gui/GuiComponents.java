@@ -406,6 +406,7 @@ public class GuiComponents{
                 String[] clientServer = SavedSimulation.fromFile();
                 mapConfig.loadClients(clientServer[0]);
                 mapConfig.loadServers(clientServer[1]);
+                mf.setTitle("Spatial Queue Simulator - " + clientServer[2]);
                 start.setEnabled(true);
                 client.setEnabled(true);
             }

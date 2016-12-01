@@ -76,7 +76,7 @@ public class SavedSimulation {
         ) {
             client = br.readLine();
             server = br.readLine();
-            clientServer = new String[]{client, server};
+            clientServer = new String[]{client, server, fileName};
             return  clientServer;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
