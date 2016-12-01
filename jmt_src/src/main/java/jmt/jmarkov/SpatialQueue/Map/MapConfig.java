@@ -196,32 +196,6 @@ public class MapConfig extends MapView {
         }
     }
 
-    public static void main(String[] args) {
-        LatLng latLng = new LatLng(23, 3423);
-        Gson gson = new Gson();
-        String jsonInString = gson.toJson(latLng);
-
-        System.out.println(jsonInString);
-        LatLng latLng1 = gson.fromJson(jsonInString, LatLng.class);
-        System.out.println(latLng1);
-    }
-
-//    private static Object decodeObjectFromJSON(String jsonString, String className) {
-//        ObjectMapper mapper = new ObjectMapper();
-//        Class classTemp = null;
-//        try {
-//            classTemp = Class.forName(className);
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            return mapper.readValue(jsonString, classTemp);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
     // Below this is code provided for location search
 
     @Override
