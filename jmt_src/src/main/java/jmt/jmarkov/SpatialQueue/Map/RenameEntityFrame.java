@@ -1,5 +1,8 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
+import jmt.jmarkov.SpatialQueue.Simulation.Client;
+import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,24 +14,23 @@ public class RenameEntityFrame extends JFrame {
 
     private Entity entity;
 
-    public RenameEntityFrame(Entity entity) {
+    private ClientRegion cr;
+
+    public RenameEntityFrame(Entity entity, ClientRegion cr) {
         this.entity = entity;
+        this.cr = cr;
         init();
         show();
     }
 
     private void init() {
-        JPanel mainPanel = new JPanel(new GridLayout(1, 0));
+        this.setLayout(new GridLayout(0,2));
+        JPanel mainPanel = new JPanel(new GridLayout(3, 0));
+        JPanel labelPanel = new JPanel(new GridLayout(3,1));
 
-        JPanel deletePanel = new JPanel();
-        mainPanel.add(deletePanel);
-        deletePanel.setLayout(new BoxLayout(deletePanel, BoxLayout.Y_AXIS));
-        JButton delete = new JButton("Delete");
-        delete.setPreferredSize(new Dimension(90, 30));
-        delete.setAlignmentX(Component.CENTER_ALIGNMENT);
-        deletePanel.add(Box.createVerticalGlue());
-        deletePanel.add(delete);
-        deletePanel.add(Box.createVerticalGlue());
+        JLabel lambdaLabel = new JLabel("Lambda");
+        JLabel nameLabel = new JLabel("Name");
+        JButton delete = new JButton("Delete Region");
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -36,37 +38,45 @@ public class RenameEntityFrame extends JFrame {
                 dispose();
             }
         });
+        labelPanel.add(nameLabel);
+        labelPanel.add(lambdaLabel);
+        labelPanel.add(delete);
 
-        JPanel renamePanel = new JPanel();
-        renamePanel.setLayout(new BoxLayout(renamePanel, BoxLayout.Y_AXIS));
-        mainPanel.add(renamePanel);
-        JButton rename = new JButton("Rename");
-        rename.setAlignmentX(Component.CENTER_ALIGNMENT);
-        rename.setPreferredSize(new Dimension(90, 30));
-        final JTextField newName = new JTextField("Enter new name...");
-        newName.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                newName.setText("");
-            }
 
-            public void focusLost(FocusEvent e) {
-            }
-        });
-        renamePanel.add(newName);
-        renamePanel.add(rename);
-        renamePanel.add(Box.createVerticalGlue());
-        rename.addActionListener(new ActionListener() {
+        final JTextField lambda = new JTextField();
+        lambda.setText(String.valueOf(cr.getLambda()));
+
+        final JTextField newName = new JTextField(entity.getName());
+
+        JButton save = new JButton("Save");
+        save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 entity.rename(newName.getText());
+                cr.setLambda(Double.parseDouble(lambda.getText()));
                 dispose();
             }
         });
 
-        add(mainPanel);
-        setTitle("Options");
+//        rename.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                entity.rename(newName.getText());
+//                dispose();
+//            }
+//        });
 
-        Dimension d = new Dimension(400, 100);
+        setTitle("Region Settings");
+
+        mainPanel.add(newName);
+        mainPanel.add(lambda);
+        mainPanel.add(save);
+
+
+        add(labelPanel);
+        add(mainPanel);
+
+        Dimension d = new Dimension(300, 100);
         setPreferredSize(d);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();

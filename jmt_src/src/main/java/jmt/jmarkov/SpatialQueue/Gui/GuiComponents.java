@@ -197,6 +197,7 @@ public class GuiComponents{
         }
 
         new SummaryPage(sim);
+
 //        outputTA.reset();
 
 //        queueDrawer.reset();

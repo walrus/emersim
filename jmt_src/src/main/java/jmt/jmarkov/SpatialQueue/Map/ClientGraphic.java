@@ -1,9 +1,12 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
+import com.teamdev.jxmaps.Polygon;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.LinkedList;
 
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.*;
@@ -111,15 +114,10 @@ class ClientGraphic implements Entity {
         polygon.addEventListener("rightclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                new RenameEntityFrame(entity);
+                new RenameEntityFrame(entity, client);
             }
         });
-        polygon.addEventListener("dblclick", new MapMouseEvent() {
-            @Override
-            public void onEvent(MouseEvent mouseEvent) {
-                new LambdaSliderFrame(clientGraphic);
-            }
-        });
+
     }
 
     private void generateInfoWindow() {
