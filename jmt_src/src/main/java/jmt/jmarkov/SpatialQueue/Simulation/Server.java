@@ -2,15 +2,11 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 
 import com.teamdev.jxmaps.DirectionsLeg;
 import com.teamdev.jxmaps.DirectionsResult;
-import jmt.jmarkov.Queues.JobQueue;
-import jmt.jmarkov.Queues.QueueLogic;
-import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Utils.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-
-import static jmt.jmarkov.SpatialQueue.Map.JxMapsAPICaller.handleDirectionCall;
 
 /**
  * Receivers handle requests from Senders
@@ -23,10 +19,6 @@ public class Server {
     private PriorityQueue<Request> requestQueue;
 
     private LinkedList<Request> servedRequests;
-
-    private JobQueue q;
-
-    private QueueLogic ql;
 
     private double averageServiceTime;
 
@@ -52,7 +44,7 @@ public class Server {
 
     // Get the first request from the queue and serve it.
     // Performs a similar function to process in Processor from JMCH
-    public Request serveRequest(double currentTime) {
+    Request serveRequest(double currentTime) {
         try {
             if (!this.isServing()) {
                 if (!requestQueue.isEmpty()) {
@@ -71,7 +63,7 @@ public class Server {
         return null;
     }
 
-    public void stopServing(double currentTime) {
+    void stopServing(double currentTime) {
         this.setServing(false);
         this.currentRequest.finishServing(currentTime);
         this.servedRequests.add(this.currentRequest);
@@ -90,22 +82,17 @@ public class Server {
     // Given a (newly arrived) Request, add it to the queue.
     // This implementation adds requests in strict order of response time
     // Can be overridden to implement different behaviours
-    public void handleRequest(Request request, boolean returnJourney) {
+    void handleRequest(Request request, boolean returnJourney) {
         calculateResponseTime(request, returnJourney);
         this.requestQueue.offer(request);
     }
 
     // Given a Request object, calculate the response time in seconds and store it in the request
-    public void calculateResponseTime(Request request, boolean returnJourney) {
+    void calculateResponseTime(Request request, boolean returnJourney) {
         Location senderLocation = request.getClient().getLocation();
         Location receiverLocation = this.getLocation();
 
-//        double xDistance = senderLocation.getX() - receiverLocation.getX();
-//        double yDistance = senderLocation.getY() - receiverLocation.getY();
-//
-//        //Straight line distance in degrees
-//        double time = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
-        DirectionsResult directionsResult = handleDirectionCall(mapConfig, senderLocation.getX(), senderLocation.getY(), receiverLocation.getX(), receiverLocation.getY());
+        DirectionsResult directionsResult = mapConfig.handleDirectionCall(senderLocation.getX(), senderLocation.getY(), receiverLocation.getX(), receiverLocation.getY());
         DirectionsLeg[] legs = directionsResult.getRoutes()[0].getLegs();
         // Journey duration converted into milliseconds
         double time = legs[0].getDuration().getValue() * 1000;
@@ -127,11 +114,11 @@ public class Server {
         }
     }
 
-    public Request getNextRequest() {
+    Request getNextRequest() {
         return this.requestQueue.poll();
     }
 
-    public double getAverageServiceTime() {
+    double getAverageServiceTime() {
         return this.averageServiceTime;
     }
 
@@ -139,7 +126,7 @@ public class Server {
         return this.requestQueue;
     }
 
-    public int getNumberOfRequestsServed() {
+    int getNumberOfRequestsServed() {
         return this.servedRequests.size();
     }
 }

@@ -1,4 +1,4 @@
-package jmt.jmarkov.SpatialQueue.Map;
+package jmt.jmarkov.SpatialQueue.Utils;
 
 import com.teamdev.jxmaps.LatLng;
 

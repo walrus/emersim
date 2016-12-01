@@ -6,7 +6,6 @@ import jmt.jmarkov.Graphics.constants.DrawBig;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Graphics.constants.DrawSmall;
-import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
@@ -41,7 +40,7 @@ public class GuiComponents {
     static SpatialQueueSimulator sim;
     static DrawConstrains dCst;
     static QueueDrawer queueDrawer;
-    private MapConfig mapView;
+    private MapConfig mapConfig;
     private JSlider accelerationS;
     static JLabel thrL;
     static JLabel responseL;
@@ -114,9 +113,9 @@ public class GuiComponents {
     protected void generateMapPanel(JPanel interfacePanel) {
         MapViewOptions mapOptions = new MapViewOptions();
         mapOptions.importPlaces();
-        mapView = new MapConfig(mapOptions, this);
-        mapView.setPreferredSize(new Dimension(300, 375));
-        interfacePanel.add(mapView);
+        mapConfig = new MapConfig(mapOptions, this);
+        mapConfig.setPreferredSize(new Dimension(300, 375));
+        interfacePanel.add(mapConfig);
     }
 
     // create side panel for functionality buttons
@@ -152,7 +151,7 @@ public class GuiComponents {
         client.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_CLIENT);
+                mapConfig.setButtonState(MapConfig.BUTTON_STATE.ADD_CLIENT);
                 // Disable add client button to ensure a new region is created in full
                 client.setEnabled(false);
                 // Disable start button to prevent starting with incomplete clients
@@ -170,7 +169,7 @@ public class GuiComponents {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_RECEIVER);
+                mapConfig.setButtonState(MapConfig.BUTTON_STATE.ADD_RECEIVER);
                 // Disable add server button (restricts to only using 1 server)
                 server.setEnabled(false);
                 client.setEnabled(true);
@@ -231,17 +230,15 @@ public class GuiComponents {
 
                 queueDrawer.setMediaJobs(stats.Q - stats.U);
 
-                Server client = new Server(mapView, mapView.getReceiverLocation());
-
+                // Get one server TODO: support for multiple servers
+                Server server = mapConfig.getServers().get(0);
 
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),
                                                 stats,
-                                                client,
-                                                mapView,
+                                                server,
+                        mapConfig,
                                                 jobsDialog.getTypedValue(),
                                                 returnJourney);
-
-
 
                 sim.start();
                 start.setEnabled(false);

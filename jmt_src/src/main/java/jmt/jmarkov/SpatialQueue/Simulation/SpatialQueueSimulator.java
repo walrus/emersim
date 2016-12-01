@@ -6,13 +6,13 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 
 
 import jmt.jmarkov.Graphics.QueueDrawer;
-import jmt.jmarkov.SpatialQueue.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
 import jmt.jmarkov.SpatialQueue.Gui.Statistics;
-import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Utils.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class SpatialQueueSimulator implements Runnable {
@@ -21,13 +21,10 @@ public class SpatialQueueSimulator implements Runnable {
     // All logic related to dealing with requests is delegated to it
     private Server server;
 
-    private ClientRegion[] regions;
+    private LinkedList<ClientRegion> clientRegions;
 
     //current simulation time
     private double currentTime;// in milliseconds
-
-    // Number of arrivals per second
-    private double lambda;
 
     //if lambda is zero this value is set to true
     //(if lambda set to zero new requests will not be created
@@ -65,24 +62,21 @@ public class SpatialQueueSimulator implements Runnable {
                                  int maxRequests,
                                  boolean returnJourney) {
         super();
-
         currentTime = 0;
         setTimeMultiplier(timeMultiplier);
         this.server = server;
-        this.regions = mapConfig.getClientRegions();
+        this.clientRegions = mapConfig.getClientRegions();
         this.currentRequestID = 0;
         this.maxRequests = maxRequests;
-        this.queueDrawer = queueDrawer;
         this.mapConfig = mapConfig;
         this.returnJourney = returnJourney;
         // lambda is #(number of requests per second)
-        this.lambda = 0.1;
         this.maxInterval = 3;
         this.stats = stats;
         this.queueDrawer = stats.getQueueDrawer();
 
         //Create a new request generator for each client region
-        for(ClientRegion cr : regions) {
+        for(ClientRegion cr : clientRegions) {
             RequestGenerator rg = new RequestGenerator(this, cr.getLambda());
             cr.setRequestGenerator(rg);
         }
@@ -105,7 +99,7 @@ public class SpatialQueueSimulator implements Runnable {
         realTimeStart = new Date().getTime();
 
         // For each client region, Start new thread and run the generator from it
-        for(ClientRegion cr : regions){
+        for(ClientRegion cr : clientRegions){
             Thread generatorThread = new Thread(cr.getGenerator());
             generatorThread.start();
         }
@@ -141,8 +135,6 @@ public class SpatialQueueSimulator implements Runnable {
                 }
 
                 stats.setSI(server.getAverageServiceTime());
-                stats.setLambda(lambda);
-
 
                 //Having waited till the request has been served, deal with it
                 currentTime = currentRequest.getNextEventTime();
@@ -172,9 +164,9 @@ public class SpatialQueueSimulator implements Runnable {
     public synchronized Request createRequest() {
         //Current implementation: create a new client then generate a request from them
         //Future implementation could take existing client (generate before running sim)
-        int randomInt = new Random().nextInt(this.regions.length);
+        int randomInt = new Random().nextInt(this.clientRegions.size());
 
-        Client client = this.generateNewSenderWithinArea(this.regions[randomInt]);
+        Client client = this.generateNewSenderWithinArea(this.clientRegions.get(randomInt));
 
         Request r = client.makeRequest(getNextRequestID(), this.currentTime);
         return r;
@@ -223,13 +215,6 @@ public class SpatialQueueSimulator implements Runnable {
         this.started = false;
     }
 
-    public double getLambda() { return this.lambda;}
-
-    public void setLambda(float lambda) {
-        this.lambda = lambda;
-        stats.setLambda(lambda);
-    }
-
     public float getMaxInterval() { return this.maxInterval;}
 
     public double getTimeMultiplier() {
@@ -248,8 +233,8 @@ public class SpatialQueueSimulator implements Runnable {
         return this.started;
     }
 
-    public ClientRegion[] getRegions() {
-        return regions;
+    public LinkedList<ClientRegion> getRegions() {
+        return clientRegions;
     }
 
     public QueueDrawer getQueueDrawer() {

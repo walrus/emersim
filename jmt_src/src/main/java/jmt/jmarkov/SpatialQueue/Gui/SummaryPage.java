@@ -1,12 +1,11 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
-import jmt.jmarkov.SpatialQueue.ClientRegion;
+import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.util.LinkedList;
 
 import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.dCst;
 

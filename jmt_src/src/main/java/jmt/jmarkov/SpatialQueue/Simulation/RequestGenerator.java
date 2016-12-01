@@ -34,6 +34,10 @@ public class RequestGenerator implements Runnable {
     public Statistics getStats() {
         return stats;
     }
+
+    public void setLambda(double lambda) {
+        this.lambda = lambda;
+    }
 }
 
 

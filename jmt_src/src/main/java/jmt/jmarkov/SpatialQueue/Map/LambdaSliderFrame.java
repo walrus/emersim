@@ -13,7 +13,7 @@ import java.util.Dictionary;
 
 public class LambdaSliderFrame extends JFrame {
 
-    private ClientEntity entity;
+    private ClientGraphic entity;
     private GridBagConstraints c = new GridBagConstraints();
     private JSlider lambdaS;
     private double lambdaMultiplier = 1; //lambda slide bar multiplier
@@ -24,7 +24,7 @@ public class LambdaSliderFrame extends JFrame {
     private int lambdaMultiplierChange = 0; //for the lambda slide bar
     private final double initialLambda = 0.1;
 
-    public LambdaSliderFrame(ClientEntity entity){
+    public LambdaSliderFrame(ClientGraphic entity){
         this.entity = entity;
         init();
         show();
@@ -148,7 +148,6 @@ public class LambdaSliderFrame extends JFrame {
             lambdaS.setValue(1);
         }
         entity.setLambda(lambdaMultiplier * lambdaS.getValue());
-        System.out.println(lambdaMultiplier * lambdaS.getValue());
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
     }
 
