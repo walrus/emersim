@@ -1,5 +1,6 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
+import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 
@@ -15,7 +16,15 @@ import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.dCst;
 public class SummaryPage extends JFrame {
 
     private SpatialQueueSimulator sim;
-    private GridBagConstraints c;
+    private GridBagConstraints c ;
+    private String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
+    private String nStrE = " cust.";
+    private String uStrS = "Avg. Utilization (Sum of All Servers) U = ";
+    private String uStrE = "";
+    private String thrStrS = "Avg. Throughput X =";
+    private String thrStrE = " cust./s";
+    private String respStrS = "Avg. Response Time R = ";
+    private String respStrE = " s";
 
     public SummaryPage(SpatialQueueSimulator sim) {
         this.sim = sim;
@@ -34,19 +43,66 @@ public class SummaryPage extends JFrame {
         int count = 0;
 
         JPanel statistics = new JPanel();
-        statistics.setLayout(new GridLayout(3, 1));
-        for (ClientRegion cr : sim.getRegions()) {
+        statistics.setLayout(new GridLayout( sim.getRegions().size(),1));
+
+        double mediaJobs;
+        double lambda;
+        double utilisation;
+        double responseTime;
+
+        String statsString = "";
+
+        for(ClientRegion cr : sim.getRegions()) {
+
             count++;
-            JPanel resultsP = new JPanel();
+            JTextField resultsP = new JTextField();
+            resultsP.setEditable(false);
+            Font font = new Font("Courier", Font.BOLD,12);
+            resultsP.setFont(font);
             resultsP.setLayout(new GridLayout(2, 2));
             resultsP.setBorder(addTitle("Client Region " + count, dCst.getSmallGUIFont()));
-            c.gridx = 0;
-            c.gridy = 1;
+//            cr.getGenerator().getStats().getQueueLogic();
 
-            cr.getGenerator().getStats().generateSimulationStats(resultsP);
+
+//            cr.getGenerator().getStats().generateSimulationStats(resultsP);
+//            cr.getGenerator().getStats().updateFields(sim);
+            try {
+                mediaJobs = cr.getGenerator().getStats().getQueueLogic().mediaJobs();
+                statsString += nStrS + mediaJobs + nStrE;
+            } catch (NonErgodicException e) {
+                statsString += nStrS + "Saturation" + nStrE;
+            }
+
+            statsString += "\n";
+
+            lambda = cr.getGenerator().getStats().getQueueLogic().getLambda();
+            statsString += thrStrS + lambda + thrStrE;
+
+            statsString += "\n";
+
+            try {
+               utilisation = cr.getGenerator().getStats().getQueueLogic().utilization();
+                statsString += uStrS + utilisation + uStrE;
+            } catch(NonErgodicException e) {
+                statsString += uStrS + "Saturation" + uStrE;
+            }
+
+            statsString += "\n";
+
+            try {
+                responseTime = cr.getGenerator().getStats().getQueueLogic().responseTime();
+                statsString += respStrS + responseTime + respStrE;
+            } catch (NonErgodicException e) {
+                statsString += respStrS + "Saturation" + respStrE;
+            }
+
+            resultsP.setText(statsString);
             statistics.add(resultsP);
 
         }
+
+
+
         this.add(statistics);
         pack();
         setLocationRelativeTo(null);
