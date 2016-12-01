@@ -72,6 +72,7 @@ public class GuiComponents{
     private JCheckBoxMenuItem publicTransport;
     private JCheckBoxMenuItem fly;
 
+    private boolean stopped;
 
 
     private Statistics stats;
@@ -196,11 +197,11 @@ public class GuiComponents{
         } catch (InterruptedException e) {
         }
 
-        new SummaryPage(sim);
-//        outputTA.reset();
+        if (!stopped) {
+            new SummaryPage(sim);
+            stopped = true;
+        }
 
-//        queueDrawer.reset();
-//        stats.updateFields(sim);
     }
 
     // create a stop button
@@ -221,6 +222,7 @@ public class GuiComponents{
         start.setEnabled(false);
         final GuiComponents gui = this;
 
+        stopped = false;
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
