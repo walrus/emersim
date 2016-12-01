@@ -1,4 +1,6 @@
-package jmt.jmarkov.SpatialQueue;
+package jmt.jmarkov.SpatialQueue.Utils;
+
+import com.teamdev.jxmaps.LatLng;
 
 /**
  * Class that represents the location of a Client or Server.
@@ -29,6 +31,13 @@ public class Location {
     public Location(double x, double y) {
         this.x = x;
         this.y = y;
+        this.z = 0;
+    }
+
+    // Create new Location from LatLng
+    public Location(LatLng latLng) {
+        this.x = latLng.getLng();
+        this.y = latLng.getLat();
         this.z = 0;
     }
 

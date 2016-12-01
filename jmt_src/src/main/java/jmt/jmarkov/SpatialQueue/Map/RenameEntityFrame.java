@@ -1,29 +1,24 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
-import jmt.jmarkov.Graphics.constants.DrawConstrains;
-import jmt.jmarkov.Graphics.constants.DrawNormal;
-import jmt.jmarkov.SpatialQueue.Gui.Statistics;
-import jmt.jmarkov.utils.Formatter;
-
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Dictionary;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class RenameEntityFrame extends JFrame {
 
     private Entity entity;
 
-    public RenameEntityFrame(Entity entity){
+    public RenameEntityFrame(Entity entity) {
         this.entity = entity;
         init();
         show();
     }
 
     private void init() {
-        JPanel mainPanel = new JPanel(new GridLayout(1,0));
+        JPanel mainPanel = new JPanel(new GridLayout(1, 0));
 
         JPanel deletePanel = new JPanel();
         mainPanel.add(deletePanel);
@@ -53,7 +48,9 @@ public class RenameEntityFrame extends JFrame {
             public void focusGained(FocusEvent e) {
                 newName.setText("");
             }
-            public void focusLost(FocusEvent e) {}
+
+            public void focusLost(FocusEvent e) {
+            }
         });
         renamePanel.add(newName);
         renamePanel.add(rename);

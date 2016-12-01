@@ -1,6 +1,6 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
-import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Utils.Location;
 
 /**
  * Senders send requests to Receivers.

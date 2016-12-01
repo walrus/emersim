@@ -6,16 +6,18 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 
+import static jmt.jmarkov.SpatialQueue.Map.MapConfig.map;
+
 class DirectionsJob implements Callable<DirectionsResult> {
 
-    private MapConfig map;
+    private MapConfig mapConfig;
     private double lat1;
     private double lng1;
     private double lat2;
     private double lng2;
 
-    DirectionsJob(MapConfig map, double lng1, double lat1, double lng2, double lat2) {
-        this.map = map;
+    DirectionsJob(MapConfig mapConfig, double lng1, double lat1, double lng2, double lat2) {
+        this.mapConfig = mapConfig;
         this.lat1 = lat1;
         this.lng1 = lng1;
         this.lat2 = lat2;
@@ -36,7 +38,7 @@ class DirectionsJob implements Callable<DirectionsResult> {
         final BlockingQueue<DirectionsResult> directions = new ArrayBlockingQueue<>(1);
         // API call encased in try/catch to prevent errors from crashing simulator
         try {
-            map.getServices().getDirectionService().route(request, new DirectionsRouteCallback(map.getMap()) {
+            mapConfig.getServices().getDirectionService().route(request, new DirectionsRouteCallback(map) {
                 @Override
                 public void onRoute(DirectionsResult result, DirectionsStatus status) {
                     // Checking of the operation status

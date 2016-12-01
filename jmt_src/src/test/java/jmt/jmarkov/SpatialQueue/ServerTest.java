@@ -3,6 +3,8 @@ package jmt.jmarkov.SpatialQueue;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 
 import static org.junit.Assert.*;
+
+import jmt.jmarkov.SpatialQueue.Utils.Location;
 import org.junit.Test;
 
 public class ServerTest {

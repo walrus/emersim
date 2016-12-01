@@ -2,9 +2,6 @@ package jmt.jmarkov.SpatialQueue.Gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * Created by joshuazeltser on 22/11/2016.
@@ -16,7 +13,9 @@ public class CustomSimulationDialog extends JDialog {
 
     private SpatialQueueFrame aFrame;
 
-    /** Creates the reusable dialog. */
+    /**
+     * Creates the reusable dialog.
+     */
     public CustomSimulationDialog(SpatialQueueFrame aFrame) {
         super(aFrame, true);
         this.aFrame = aFrame;
@@ -25,14 +24,14 @@ public class CustomSimulationDialog extends JDialog {
         serverName = "";
         clientName = "";
 
-        JPanel p = new JPanel(new BorderLayout(5,10));
+        JPanel p = new JPanel(new BorderLayout(5, 10));
 
-        JPanel labels = new JPanel(new GridLayout(0,1,2,5));
+        JPanel labels = new JPanel(new GridLayout(0, 1, 2, 5));
         labels.add(new JLabel("Server", SwingConstants.RIGHT));
         labels.add(new JLabel("Client", SwingConstants.RIGHT));
         p.add(labels, BorderLayout.WEST);
 
-        JPanel params = new JPanel(new GridLayout(0,1,2,5));
+        JPanel params = new JPanel(new GridLayout(0, 1, 2, 5));
         final JTextField server = new JTextField();
         params.add(server);
 

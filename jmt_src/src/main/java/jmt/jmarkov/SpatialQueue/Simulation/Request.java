@@ -2,14 +2,12 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 
 import com.teamdev.jxmaps.DirectionsResult;
 
-import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.BEING_SERVED;
-import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.FINISHED;
-import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.IN_QUEUE;
+import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.*;
 
 /**
  * Requests are sent by Senders to Receivers. They fulfil the same function as Jobs in JMCH.
  */
-public class Request implements Comparable<Request>{
+public class Request implements Comparable<Request> {
     private Client client;
 
     private int requestId;
@@ -30,7 +28,7 @@ public class Request implements Comparable<Request>{
 
     enum RequestState {IN_QUEUE, BEING_SERVED, FINISHED}
 
-    public Request(int requestId, double time, Client client){
+    public Request(int requestId, double time, Client client) {
         this.requestId = requestId;
         this.creationTime = time;
         this.currentState = IN_QUEUE;
@@ -53,18 +51,18 @@ public class Request implements Comparable<Request>{
         }
     }
 
-    public void serve(double currentTime, double finishTime){
+    public void serve(double currentTime, double finishTime) {
         this.currentState = BEING_SERVED;
         this.startServiceTime = currentTime;
         this.finishServiceTime = finishTime;
         this.setNextEventTime(finishTime);
     }
 
-    public void setFinishServiceTime(double time){
+    public void setFinishServiceTime(double time) {
         this.finishServiceTime = time;
     }
 
-    public void finishServing(double time){
+    public void finishServing(double time) {
         this.currentState = FINISHED;
         this.finishServiceTime = time;
     }

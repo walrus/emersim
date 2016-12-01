@@ -20,7 +20,7 @@ public class ClientErrorDialog extends JFrame {
         errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(errorLabel);
         mainPanel.add(Box.createVerticalGlue());
-        
+
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(new ActionListener() {
             @Override

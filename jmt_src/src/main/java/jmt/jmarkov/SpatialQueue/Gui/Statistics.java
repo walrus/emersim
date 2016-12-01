@@ -6,9 +6,9 @@ import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
+
 import javax.swing.*;
 import java.awt.*;
-
 
 import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.*;
 
@@ -37,7 +37,7 @@ public class Statistics {
     private JLabel utilizationL;
 
     public Statistics() {
-        ql = new MM1Logic(0,0);
+        ql = new MM1Logic(0, 0);
         queueDrawer = new QueueDrawer(ql, true);
         init();
     }
@@ -46,8 +46,6 @@ public class Statistics {
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
     }
-
-
 
 
     protected void updateFields(SpatialQueueSimulator sim) {
@@ -84,9 +82,7 @@ public class Statistics {
     }
 
 
-
-
-    protected  void generateSimulationStats(JPanel resultsP) {
+    protected void generateSimulationStats(JPanel resultsP) {
         // media
         dCst = new DrawNormal();
         mediaJobsL.setText(nStrS + "0" + nStrE);
@@ -110,7 +106,7 @@ public class Statistics {
     }
 
     //setup queue visualisation and pointer
-    protected  void showQueue() {
+    protected void showQueue() {
 
         ql = new MM1Logic(0, 0);
 
@@ -122,15 +118,15 @@ public class Statistics {
         updateFields(sim);
     }
 
-    public  void setSI(double sI) {
+    public void setSI(double sI) {
         S_I = sI;
-        System.out.println("SERVICE TIME: " +S_I);
-        ql.setS(sI/1000);
+        System.out.println("SERVICE TIME: " + S_I);
+        ql.setS(sI / 1000);
         updateFields(sim);
 
     }
 
-    public  void setLambda(double lambda) {
+    public void setLambda(double lambda) {
         ql.setLambda(lambda);
         updateFields(sim);
     }
@@ -142,7 +138,6 @@ public class Statistics {
     public void setQueueDrawer(QueueDrawer queueDrawer) {
         this.queueDrawer = queueDrawer;
     }
-
 
 
 }

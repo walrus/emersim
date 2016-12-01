@@ -5,7 +5,7 @@ public class ProgressBar implements Runnable {
     private double jobLength = 0;
     private double timeMultiplier;
 
-    public ProgressBar(double timeMultiplier){
+    public ProgressBar(double timeMultiplier) {
         this.timeMultiplier = timeMultiplier;
     }
 
