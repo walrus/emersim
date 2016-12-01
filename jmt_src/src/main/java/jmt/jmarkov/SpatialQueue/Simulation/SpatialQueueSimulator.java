@@ -9,6 +9,7 @@ import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
 import jmt.jmarkov.SpatialQueue.Gui.Statistics;
+import jmt.jmarkov.SpatialQueue.Gui.SummaryPage;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Utils.Location;
 
@@ -229,6 +230,7 @@ public class SpatialQueueSimulator implements Runnable {
     public void stop() {
         this.paused = true;
         this.started = false;
+
     }
 
     public float getMaxInterval() {

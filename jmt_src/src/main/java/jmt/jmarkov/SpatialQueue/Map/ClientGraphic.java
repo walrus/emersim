@@ -5,8 +5,6 @@ import com.teamdev.jxmaps.Polygon;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.LinkedList;
 
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.*;
@@ -114,7 +112,7 @@ class ClientGraphic implements Entity {
         polygon.addEventListener("rightclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                new RenameEntityFrame(entity, client);
+                new RegionSettingsFrame(entity, client);
             }
         });
 

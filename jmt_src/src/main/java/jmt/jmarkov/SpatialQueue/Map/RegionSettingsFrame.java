@@ -10,13 +10,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class RenameEntityFrame extends JFrame {
+public class RegionSettingsFrame extends JFrame {
 
     private Entity entity;
 
     private ClientRegion cr;
 
-    public RenameEntityFrame(Entity entity, ClientRegion cr) {
+    public RegionSettingsFrame(Entity entity, ClientRegion cr) {
         this.entity = entity;
         this.cr = cr;
         init();
@@ -57,14 +57,6 @@ public class RenameEntityFrame extends JFrame {
                 dispose();
             }
         });
-
-//        rename.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                entity.rename(newName.getText());
-//                dispose();
-//            }
-//        });
 
         setTitle("Region Settings");
 

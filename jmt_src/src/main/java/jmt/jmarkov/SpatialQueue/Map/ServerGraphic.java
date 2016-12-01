@@ -35,7 +35,7 @@ class ServerGraphic implements Entity {
 //        marker.addEventListener("rightclick", new MapMouseEvent() {
 //            @Override
 //            public void onEvent(MouseEvent mouseEvent) {
-//                new RenameEntityFrame(entity, );
+//                new RegionSettingsFrame(entity, );
 //            }
 //        });
         this.server = new Server(mapConfig, new Location(latLng));
