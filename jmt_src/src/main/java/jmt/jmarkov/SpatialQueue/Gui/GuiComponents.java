@@ -9,6 +9,7 @@ import jmt.jmarkov.Graphics.constants.DrawSmall;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
+import jmt.jmarkov.SpatialQueue.Utils.SavedSimulation;
 import jmt.jmarkov.utils.Formatter;
 
 import javax.swing.*;
@@ -414,21 +415,22 @@ public class GuiComponents {
         Action Open = new AbstractAction("Open...") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String[] clientServer = SavedSimulation.fromFile("1.sqs");
+                mapConfig.loadClients(clientServer[0]);
+                mapConfig.loadServers(clientServer[1]);
             }
         };
 
         Action Save = new AbstractAction("Save") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                SavedSimulation.toFile(mapConfig.saveClients(), mapConfig.saveServers());
             }
         };
 
         Action SaveAs = new AbstractAction("Save As...") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
             }
         };
 
