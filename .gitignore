@@ -1,0 +1,6 @@
+#LaTeX cruft & PDFs
+
+*.pdf
+*.aux
+*.out
+*.log

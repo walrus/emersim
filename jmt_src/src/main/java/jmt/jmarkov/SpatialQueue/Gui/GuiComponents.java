@@ -1,61 +1,52 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
 import com.teamdev.jxmaps.MapViewOptions;
-import jmt.jmarkov.Graphics.*;
+import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.constants.DrawBig;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
 import jmt.jmarkov.Graphics.constants.DrawSmall;
-import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Dictionary;
-import static jmt.jmarkov.SpatialQueue.Gui.StatsUtils.*;
+
+;
 
 /**
  * Created by joshuazeltser on 02/11/2016.
  */
-public class GuiComponents {
+public class GuiComponents{
 
-
-
-    private JPanel parametersP;
     private JButton start;
     private JButton pause;
     private JButton stop;
     private JButton client;
 
     private JButton server;
-    static JLabel mediaJobsL;
-    static JLabel utilizationL;
 
-    private JSlider lambdaS;
+
     private boolean paused = false;
-    static int lambdaMultiplierChange = 0; //for the lambda slide bar
-    static int LAMBDA_I = 50;
+
     static double sMultiplier = 1; //service time slide bar multiplier
-    static double lambdaMultiplier = 1; //lambda slide bar multiplier
     static SpatialQueueSimulator sim;
     static DrawConstrains dCst;
-    static MM1Logic ql;
     static QueueDrawer queueDrawer;
-    private MapConfig mapView;
+
+    private MapConfig mapConfig;
     private JSlider accelerationS;
-    static JLabel thrL;
-    static JLabel responseL;
-//    static TANotifier outputTA;
+
     private SpatialQueueFrame mf;
     private JMenu settingsMenu;
     private JMenu colorsMenu;
@@ -65,26 +56,40 @@ public class GuiComponents {
     private Color animC = Color.RED;
     private JMenu sizeMenu;
     private boolean gradientF = false;
-    private int numberClients;
+
     private boolean returnJourney;
+
+    private String simServer;
+
+    private String simClient;
+    private static JProgressBar progressBar;
+    private JCheckBoxMenuItem on;
+    private JCheckBoxMenuItem off;
+    private JCheckBoxMenuItem drive;
+    private JCheckBoxMenuItem walk;
+    private JCheckBoxMenuItem cycle;
+    private JCheckBoxMenuItem transport;
+    private JCheckBoxMenuItem fly;
+
+
+
+    private Statistics stats;
 
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
-        StatsUtils.showQueue(lambdaS, utilizationL, mediaJobsL);
+        stats.showQueue();
         this.mf = mf;
     }
 
     //Initialise objects
     private void init() {
+//        simClient = "Client";
+//        simServer = "Receiver";
         sim = null;
         paused = false;
-        lambdaS = new JSlider();
-        ql = new MM1Logic(0.0, 0.0);
-        queueDrawer = new QueueDrawer(ql, true);
-        parametersP = new JPanel();
-        mediaJobsL = new JLabel();
-        utilizationL = new JLabel();
+        stats = new Statistics();
+        queueDrawer = stats.getQueueDrawer();
         start = new JButton("Start");
         start.setEnabled(false);
         pause = new JButton("Pause");
@@ -92,12 +97,10 @@ public class GuiComponents {
         client = new JButton("Add Client");
         client.setEnabled(false);
         server = new JButton("Add Server");
+        simServer = "Server";
+        simClient = "Client";
         dCst = new DrawNormal();
-        thrL = new JLabel();
-        responseL = new JLabel();
-//        outputTA = new TANotifier();
         returnJourney = false;
-        S_I = 70;
     }
 
     //Create queueDrawer for queue visualisation
@@ -110,13 +113,15 @@ public class GuiComponents {
     protected void generateMapPanel(JPanel interfacePanel) {
         MapViewOptions mapOptions = new MapViewOptions();
         mapOptions.importPlaces();
-        mapView = new MapConfig(mapOptions, this);
-        mapView.setPreferredSize(new Dimension(300, 375));
-        interfacePanel.add(mapView);
+        mapConfig = new MapConfig(mapOptions, this);
+        mapConfig.setPreferredSize(new Dimension(300, 375));
+        interfacePanel.add(mapConfig);
     }
 
     // create side panel for functionality buttons
     protected void generateSideButtons(JPanel panel) {
+
+
         serverButton();
         clientButton();
         pauseButton();
@@ -142,35 +147,15 @@ public class GuiComponents {
     // create an add client button
     private JButton clientButton() {
 
-        numberClients = 0;
 //        client.setMaximumSize(new Dimension(100,40));
         client.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_CLIENT);
-                if (numberClients == 0) {
-                    Object[] options = {"Include Return Journey",
-                            "Don't Include Return Journey"};
-                    int choice = JOptionPane.showOptionDialog(mf,
-                            "Would you like to include a return journey in your simulation?",
-                            "Return Journey",
-                            JOptionPane.YES_NO_CANCEL_OPTION,
-                            2,
-                            null,
-                            options,
-                            options[1]);
-                    if (choice == JOptionPane.YES_OPTION) {
-                        returnJourney = true;
-                    } else if (choice == JOptionPane.NO_OPTION) {
-                        returnJourney = false;
-                    }
-                }
-
+                mapConfig.setButtonState(MapConfig.BUTTON_STATE.ADD_CLIENT);
                 // Disable add client button to ensure a new region is created in full
                 client.setEnabled(false);
                 // Disable start button to prevent starting with incomplete clients
                 start.setEnabled(false);
-                numberClients++;
             }
         });
         return client;
@@ -181,9 +166,10 @@ public class GuiComponents {
 
 //        server.setMaximumSize(new Dimension(100,40));
         server.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapView.setButtonState(MapConfig.BUTTON_STATE.ADD_RECEIVER);
+                mapConfig.setButtonState(MapConfig.BUTTON_STATE.ADD_RECEIVER);
                 // Disable add server button (restricts to only using 1 server)
                 server.setEnabled(false);
                 client.setEnabled(true);
@@ -195,6 +181,9 @@ public class GuiComponents {
 
     public void stopProcessing() {
         sim.stop();
+        start.setEnabled(true);
+        stop.setEnabled(false);
+        pause.setEnabled(false);
         while (sim.isRunning()) {
             //waiting to stop
             try {
@@ -206,10 +195,12 @@ public class GuiComponents {
             Thread.sleep(100);
         } catch (InterruptedException e) {
         }
+
+        new SummaryPage(sim);
 //        outputTA.reset();
-        queueDrawer.reset();
-        numberClients = 0;
-        updateFields(utilizationL, mediaJobsL, sim);
+
+//        queueDrawer.reset();
+//        stats.updateFields(sim);
     }
 
     // create a stop button
@@ -219,9 +210,6 @@ public class GuiComponents {
         stop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                start.setEnabled(true);
-                stop.setEnabled(false);
-                pause.setEnabled(false);
                 stopProcessing();
             }
         });
@@ -231,6 +219,7 @@ public class GuiComponents {
     // create a start button
     private void startButton() {
         start.setEnabled(false);
+        final GuiComponents gui = this;
 
         start.addActionListener(new ActionListener() {
             @Override
@@ -242,17 +231,12 @@ public class GuiComponents {
                 jobsDialog.setLocationRelativeTo(mf);
                 jobsDialog.setVisible(true);
 
-                queueDrawer.setMediaJobs(Q - U);
+                queueDrawer.setMediaJobs(stats.Q - stats.U);
 
-                Server client = new Server(mapView.getReceiverLocation());
+                // Get one server TODO: support for multiple servers
+                Server server = mapConfig.getServers().get(0);
 
-
-                sim = new SpatialQueueSimulator(accelerationS.getValue(),
-                                                queueDrawer,
-                                                client,
-                                                mapView,
-                                                jobsDialog.getTypedValue(),
-                                                returnJourney);
+                sim = new SpatialQueueSimulator(gui, accelerationS.getValue(), server, jobsDialog.getTypedValue());
 
                 sim.start();
                 start.setEnabled(false);
@@ -353,86 +337,30 @@ public class GuiComponents {
         return splitPane;
     }
 
+    protected void addProgressBar(JPanel simulationP, GridBagConstraints c) {
+        progressBar = new JProgressBar();
+        progressBar.setVisible(true);
 
+//        progressBar.setValue(25);
+        int count = 0;
 
-    //create a lambda slider
-    protected void createLambdaSlider(GridBagConstraints c) {
-        final boolean[] lambdaSChange = {true};
-        JPanel lambdaPanel = new JPanel();
-        setupServiceTime();
+        progressBar.setStringPainted(true);
+        Border border = BorderFactory.createTitledBorder("Executing...");
+        progressBar.setBorder(border);
 
-        lambdaPanel.setLayout(new GridLayout(2, 1));
-        c.weightx = 0.5;
-
-        parametersP.add(lambdaPanel, c);
-
-        c.gridx = 1;
-        c.weightx = 0;
-        parametersP.add(getSplitter(10, 1), c);
-        c.weightx = 0.5;
-
-        final JLabel lambdaL = new JLabel();
-        lambdaL.setAlignmentX(SwingConstants.CENTER);
-        lambdaPanel.add(lambdaL);
-        lambdaMultiplier = 0.01;
-        lambdaMultiplierChange = 0;
-
-        lambdaS.setMaximum(100);
-        lambdaS.setMinimum(0);
-        lambdaS.setMajorTickSpacing(25);
-        lambdaS.setMinorTickSpacing(1);
-        lambdaS.setPaintLabels(true);
-        lambdaS.setSnapToTicks(true);
-        lambdaPanel.add(lambdaS);
-        lambdaL.setFont(dCst.getNormalGUIFont());
-        lambdaS.setValue(LAMBDA_I);
-        StatsUtils.setLambdaSlider(lambdaS, lambdaL);
-
-        lambdaS.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent evt) {
-                StatsUtils.lambdaSStateChanged(utilizationL, mediaJobsL, sim, lambdaS, lambdaL);
-
-                if (lambdaSChange[0]) {
-                    StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
-                }
-
-            }
-        });
-        lambdaS.addMouseListener(new MouseListener() {
-
-            public void mouseClicked(MouseEvent e) {
-            }
-
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            public void mouseExited(MouseEvent e) {
-            }
-
-            public void mousePressed(MouseEvent e) {
-                lambdaSChange[0] = false;
-            }
-
-            public void mouseReleased(MouseEvent e) {
-                StatsUtils.setLambdaMultiplier(lambdaS, lambdaL);
-                lambdaSChange[0] = true;
-            }
-
-        });
-        lambdaS.repaint();
-        StatsUtils.updateFields(utilizationL, mediaJobsL, sim);
-    }
-
-    // create the panel that contains the parameter sliders
-    protected void createSimulationParametersPanel(GridBagConstraints c, JPanel simulationP) {
-        parametersP.setLayout(new GridBagLayout());
-        parametersP.setBorder(addTitle("Simulation Parameters", dCst.getSmallGUIFont()));
+        progressBar.setLayout(new GridBagLayout());
         c.weightx = 1;
         c.weighty = 0;
         c.gridx = 0;
         c.gridy = 0;
-        simulationP.add(parametersP, c);
+        simulationP.add(progressBar, c);
+
     }
+
+    public static void setProgressBarValue(int percentage) {
+        progressBar.setValue(percentage);
+    }
+
 
     // create the panel that contains the simulation stats
     protected void createSimulationResultsPanel(GridBagConstraints c, JPanel simulationP) {
@@ -442,14 +370,14 @@ public class GuiComponents {
         c.gridx = 0;
         c.gridy = 1;
         simulationP.add(resultsP, c);
-        StatsUtils.generateSimulationStats(resultsP, mediaJobsL, utilizationL);
+        stats.generateSimulationStats(resultsP);
     }
-
 
 
     // creates a menu bar
     public void createMenuBar(JMenuBar menuBar) {
         menuBar.add(fileMenu());
+        menuBar.add(simulationSettingsMenu());
         menuBar.add(settingsMenu());
         menuBar.add(helpMenu());
     }
@@ -457,10 +385,31 @@ public class GuiComponents {
     // creates a file menu
     private JMenu fileMenu() {
 
-        JMenu fileMenu  = new JMenu("File");
+        JMenu fileMenu = new JMenu("File");
 
-
-
+        Action newMenu = new AbstractAction("New") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Custom button text
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
+                }
+            }
+        };
         Action Open = new AbstractAction("Open...") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -482,32 +431,6 @@ public class GuiComponents {
             }
         };
 
-        // generates all of the menu buttons
-        Action New = new AbstractAction("New") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Custom button text
-                Object[] options = {"Save",
-                        "Don't Save",
-                        "Cancel"};
-                int choice = JOptionPane.showOptionDialog(mf,
-                        "Would you like to save your work?",
-                        "Create New Simulation",
-                        JOptionPane.YES_NO_CANCEL_OPTION,
-                        2,
-                        null,
-                        options,
-                        options[2]);
-                if (choice == JOptionPane.YES_OPTION) {
-                    //Save the simulation
-                } else if (choice == JOptionPane.NO_OPTION) {
-                    mf.dispose();
-                    mf = new SpatialQueueFrame();
-                }
-
-            }
-        };
-
         Action Compare = new AbstractAction("Compare Simulations...") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -516,7 +439,7 @@ public class GuiComponents {
         };
 
 
-        fileMenu.add(New);
+        fileMenu.add(newMenu);
         fileMenu.add(Open);
         fileMenu.add(openRecentSubMenu());
         fileMenu.addSeparator();
@@ -561,6 +484,133 @@ public class GuiComponents {
         openRecentMenu.add(NullSimulation3);
 
         return openRecentMenu;
+    }
+
+    private JMenu simulationSettingsMenu() {
+
+        JMenu simSettings = new JMenu("Simulation");
+
+        Action customSim = new AbstractAction("Custom Simulation") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CustomSimulationDialog(mf);
+
+            }
+        };
+
+
+        simSettings.add(customSim);
+        simSettings.add(setTravelModeSubMenu());
+        simSettings.add(setReturnJourney());
+
+
+        return simSettings;
+    }
+
+    private JMenu setReturnJourney() {
+        JMenu setReturnJourney = new JMenu("Return Journey");
+        on = new JCheckBoxMenuItem("On");
+        on.setSelected(true);
+        off = new JCheckBoxMenuItem("Off");
+
+
+        on.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                on.setSelected(true);
+                off.setSelected(false);
+                returnJourney = true;
+
+            }
+        });
+
+        off.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                off.setSelected(true);
+                on.setSelected(false);
+                returnJourney = false;
+            }
+        });
+        setReturnJourney.add(on);
+        setReturnJourney.add(off);
+        return setReturnJourney;
+    }
+
+    private JMenu setTravelModeSubMenu() {
+        JMenu travelMode = new JMenu("Travel Mode");
+
+
+        drive = new JCheckBoxMenuItem("Drive");
+        drive.setSelected(true);
+        walk = new JCheckBoxMenuItem("Walk");
+        cycle = new JCheckBoxMenuItem("Cycle");
+        transport = new JCheckBoxMenuItem("Transport");
+        fly = new JCheckBoxMenuItem("Fly");
+
+        drive.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                drive.setSelected(true);
+                walk.setSelected(false);
+                cycle.setSelected(false);
+                transport.setSelected(false);
+                fly.setSelected(false);
+            }
+        });
+
+        walk.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                walk.setSelected(true);
+                drive.setSelected(false);
+                cycle.setSelected(false);
+                transport.setSelected(false);
+                fly.setSelected(false);
+            }
+        });
+
+        cycle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cycle.setSelected(true);
+                walk.setSelected(false);
+                drive.setSelected(false);
+                transport.setSelected(false);
+                fly.setSelected(false);
+            }
+        });
+
+        transport.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                transport.setSelected(true);
+                walk.setSelected(false);
+                cycle.setSelected(false);
+                drive.setSelected(false);
+                fly.setSelected(false);
+            }
+        });
+
+        fly.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fly.setSelected(true);
+                walk.setSelected(false);
+                cycle.setSelected(false);
+                transport.setSelected(false);
+                drive.setSelected(false);
+            }
+        });
+
+
+        travelMode.add(drive);
+        travelMode.add(walk);
+        travelMode.add(cycle);
+        travelMode.add(transport);
+        travelMode.add(fly);
+
+        return travelMode;
     }
 
     // creates a help menu
@@ -703,5 +753,38 @@ public class GuiComponents {
         queueDrawer.setColors(emptyC, queueC, animC, gradientF);
         queueDrawer.repaint();
 
+    }
+
+    public void setSimClient(String simClient) {
+
+        client.setText("Add " + simClient);
+
+    }
+
+    public void setSimServer(String simServer) {
+        server.setText("Add " + simServer);
+    }
+
+    public String getSimClient() {
+        return simClient;
+    }
+
+    public String getSimServer() {
+        return simServer;
+    }
+
+    public void setJobParam(String job) {
+        queueDrawer.setJobName(job);
+    }
+
+    public Statistics getStats() {
+        return stats;
+    }
+    public MapConfig getMapConfig() {
+        return mapConfig;
+    }
+
+    public boolean isReturnJourney() {
+        return returnJourney;
     }
 }

@@ -1,32 +1,45 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamdev.jxmaps.*;
-import com.teamdev.jxmaps.MouseEvent;
 import com.teamdev.jxmaps.swing.MapView;
-import jmt.jmarkov.SpatialQueue.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
-import jmt.jmarkov.SpatialQueue.Location;
+import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
+import jmt.jmarkov.SpatialQueue.Simulation.Server;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicTextFieldUI;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MapConfig extends MapView {
 
     private static final String INITIAL_LOCATION = "Imperial College London, SW7 2AZ";
     private OptionsWindow optionsWindow;
-    static ClientEntity areaBeingDrawn;
+    static ClientGraphic areaBeingDrawn;
     static Map map;
-    static LinkedList<ClientEntity> clientRegions = new LinkedList<>();
-    static LinkedList<Marker> receiverMarkers = new LinkedList<>();
-    public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE};
+    static LinkedList<ClientGraphic> clientGraphics = new LinkedList<>();
+    static LinkedList<ServerGraphic> serverGraphics = new LinkedList<>();
+    private GuiComponents guiComponents;
+
+    public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE}
+
+    ;
     static BUTTON_STATE buttonState;
 
     public MapConfig(MapViewOptions options, final GuiComponents guiComponents) {
         super(options);
+        this.guiComponents = guiComponents;
+        final MapConfig mapConfig = this;
         setOnMapReadyHandler(new MapReadyHandler() {
             @Override
             public void onMapReady(MapStatus status) {
@@ -52,7 +65,7 @@ public class MapConfig extends MapView {
                     public void onEvent(MouseEvent mouseEvent) {
                         if (buttonState == BUTTON_STATE.ADD_RECEIVER) {
                             buttonState = BUTTON_STATE.NONE;
-                            new ServerEntity(mouseEvent);
+                            new ServerGraphic(mapConfig, mouseEvent.latLng());
                         }
                     }
                 });
@@ -63,10 +76,9 @@ public class MapConfig extends MapView {
                     public void onEvent(MouseEvent mouseEvent) {
                         if (buttonState == BUTTON_STATE.ADD_CLIENT) {
                             buttonState = BUTTON_STATE.DRAWING_CLIENT;
-                            areaBeingDrawn = new ClientEntity(mouseEvent, guiComponents);
-                        }
-                        else if (buttonState == BUTTON_STATE.DRAWING_CLIENT) {
-                            areaBeingDrawn.addPointToArea(mouseEvent);
+                            areaBeingDrawn = new ClientGraphic(mouseEvent.latLng(), guiComponents);
+                        } else if (buttonState == BUTTON_STATE.DRAWING_CLIENT) {
+                            areaBeingDrawn.addVertexToArea(mouseEvent.latLng());
                         }
                     }
                 });
@@ -74,10 +86,142 @@ public class MapConfig extends MapView {
         });
     }
 
+    // API call handler
+    private static final int RATE_LIMIT = 1000;
+
+    private static final ScheduledExecutorService handler = Executors.newScheduledThreadPool(1);
+
+    public DirectionsResult handleDirectionCall(double x1, double y1, double x2, double y2) {
+        Future<DirectionsResult> directions = handler.schedule(new DirectionsJob(this, x1, y1, x2, y2), RATE_LIMIT, TimeUnit.MILLISECONDS);
+        DirectionsResult directionsResult = null;
+        try {
+            directionsResult = directions.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (directionsResult == null) {
+            // If API fails for any reason, retry
+            return handleDirectionCall(x1, y1, x2, y2);
+        }
+        return directionsResult;
+    }
+
+    public void displayRoute(DirectionsResult directionsResult) {
+        map.getDirectionsRenderer().setDirections(directionsResult);
+    }
+
+    public static void displayRequestLocationOnMap(LatLng latLng) {
+        double strokeWeight = 5;
+        LatLng[] line1Path = new LatLng[2];
+        LatLng[] line2Path = new LatLng[2];
+        Double x = latLng.getLng();
+        Double y = latLng.getLat();
+        line1Path[0] = new LatLng(y, x - 0.00005);
+        line1Path[1] = new LatLng(y, x + 0.00005);
+        line2Path[0] = new LatLng(y + 0.00003, x);
+        line2Path[1] = new LatLng(y - 0.00003, x);
+        Polyline line1 = new Polyline(map);
+        Polyline line2 = new Polyline(map);
+        // Creating a polyline options object
+        PolylineOptions options = new PolylineOptions();
+        // Setting geodesic property value
+        options.setGeodesic(true);
+        // Setting stroke color value
+        options.setStrokeColor("#0000FF");
+        // Setting stroke opacity value
+        options.setStrokeOpacity(1.0);
+        // Setting stroke weight value
+        options.setStrokeWeight(strokeWeight);
+        // Applying options to the polyline
+        line1.setOptions(options);
+        line2.setOptions(options);
+        // Set current perimeter
+        line1.setPath(line1Path);
+        line2.setPath(line2Path);
+    }
+
+    public void setButtonState(BUTTON_STATE buttonState) {
+        this.buttonState = buttonState;
+    }
+
+    public LinkedList<ClientRegion> getClientRegions() {
+        LinkedList<ClientRegion> clientRegions = new LinkedList<>();
+        for (ClientGraphic c : clientGraphics) {
+            clientRegions.add(c.getClientRegion());
+        }
+        return clientRegions;
+    }
+
+    public LinkedList<Server> getServers() {
+        LinkedList<Server> servers = new LinkedList<>();
+        for (ServerGraphic s : serverGraphics)
+            servers.add(s.getServer());
+        return servers;
+    }
+
+    public String saveServers() {
+        LinkedList<LatLng> serverLocations = new LinkedList<>();
+        for (ServerGraphic serverGraphic : serverGraphics) {
+            serverLocations.add(serverGraphic.getPosition());
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        //Object to JSON in String
+        String jsonInString = "";
+        try {
+            jsonInString = mapper.writeValueAsString(serverLocations);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonInString;
+    }
+
+    public void loadServers(String jsonString) {
+        ObjectMapper mapper = new ObjectMapper();
+        LinkedList<LatLng> serverLocations = null;
+        try {
+            serverLocations = mapper.readValue(jsonString, LinkedList.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (LatLng latLng : serverLocations) {
+            new ServerGraphic(this, latLng);
+        }
+    }
+
+    public String saveClients() {
+        LinkedList<LinkedList> clientPaths = new LinkedList<>();
+        for (ClientGraphic clientGraphic : clientGraphics) {
+            clientPaths.add(clientGraphic.getPath());
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        //Object to JSON in String
+        String jsonInString = "";
+        try {
+            jsonInString = mapper.writeValueAsString(clientPaths);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonInString;
+    }
+
+    public void loadClients(String jsonString) {
+        ObjectMapper mapper = new ObjectMapper();
+        LinkedList<LinkedList> clientPaths = null;
+        try {
+            clientPaths = mapper.readValue(jsonString, LinkedList.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (LinkedList<LatLng> path : clientPaths) {
+            new ClientGraphic(path, guiComponents);
+        }
+    }
+
+    // Below this is code provided for location search
+
     @Override
     public void addNotify() {
         super.addNotify();
-
         optionsWindow = new OptionsWindow(this, new Dimension(350, 40)) {
             @Override
             public void initContent(JWindow contentWindow) {
@@ -185,27 +329,5 @@ public class MapConfig extends MapView {
                 }
             }
         });
-    }
-
-    public void setButtonState(BUTTON_STATE buttonState) {
-        this.buttonState = buttonState;
-    }
-
-    public ClientRegion[] getClientRegions() {
-        ClientRegion[] regions = new ClientRegion[clientRegions.size()];
-        for (int i=0; i<clientRegions.size(); i++) {
-            regions[i] = new ClientRegion(clientRegions.get(i).getPolygon().getPath(), clientRegions.get(i));
-        }
-        return regions;
-    }
-
-    public Location getReceiverLocation() {
-        Marker marker = receiverMarkers.get(0);
-        return new Location(marker.getPosition().getLng(), marker.getPosition().getLat());
-    }
-
-    private Location translateCoordinate(LatLng location) {
-        Location loc = new Location(location.getLng(), location.getLat());
-        return loc;
     }
 }

@@ -1,60 +1,46 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
-import java.util.Date;
+import jmt.jmarkov.SpatialQueue.Gui.Statistics;
 
-/**
- * Created by risingpo on 16/11/2016.
- */
 public class RequestGenerator implements Runnable {
 
     private SpatialQueueSimulator sim;
-    private double currentTime;
+    private double lambda;
+    private Statistics stats;
 
-    public RequestGenerator(SpatialQueueSimulator sim) {
+    RequestGenerator(SpatialQueueSimulator sim, double lambda) {
         this.sim = sim;
-        this.currentTime = 0;
+        // set lambda to be #(arrivals per millisecond)
+        this.lambda = lambda;
+        stats = new Statistics();
+        stats.setLambda(lambda);
+        stats.setSI(sim.getAverageServiceTime());
     }
 
     public void run() {
-        double currentTimeMultiplied;
-        //Time when run() was called
-        long realTimeStart;
-        //Time after sleeping the thread
-        long realTimeCurrent;
-        currentTimeMultiplied = 0;
-        realTimeStart = new Date().getTime();
-        double nextInterArrivalTime;
-
         while (this.sim.isRunning() && this.sim.moreRequests()) {
+            stats.setSI(sim.getAverageServiceTime());
+            stats.setLambda(lambda);
             Request newRequest = this.sim.createRequest();
             this.sim.enqueueRequest(newRequest);
             this.sim.getQueueDrawer().enterQueue();
 
-            nextInterArrivalTime = generateNextTime(this.sim.getLambda(), this.sim.getMaxInterval());
-
-            currentTimeMultiplied += (nextInterArrivalTime) / this.sim.getTimeMultiplier();
-            //this is calculating how long system will sleep
-            realTimeCurrent = new Date().getTime() - realTimeStart;
-
-            // If necessary, sleep
-            if ((long) currentTimeMultiplied > realTimeCurrent) {
-                try {
-                    Thread.sleep((long) currentTimeMultiplied - realTimeCurrent);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                realTimeCurrent = new Date().getTime() - realTimeStart;
+            double timeToWait = (1 / lambda) / sim.getTimeMultiplier();
+            try {
+                Thread.sleep((long) timeToWait);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
-            currentTime += nextInterArrivalTime;
         }
     }
 
-
-    public double generateNextTime(float rateParameter, float random_max) {
-        return -Math.log(1.0 - Math.random() / (random_max + 1) / rateParameter);
+    public Statistics getStats() {
+        return stats;
     }
 
+    public void setLambda(double lambda) {
+        this.lambda = lambda;
+    }
 }
 
 

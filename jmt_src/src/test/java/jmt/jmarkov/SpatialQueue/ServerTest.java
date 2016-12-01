@@ -3,11 +3,13 @@ package jmt.jmarkov.SpatialQueue;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 
 import static org.junit.Assert.*;
+
+import jmt.jmarkov.SpatialQueue.Utils.Location;
 import org.junit.Test;
 
 public class ServerTest {
 
-    Server server = new Server(createRandomLocation());
+    Server server = new Server(null, createRandomLocation());
 
     private static Location createRandomLocation() {
         double x = Math.random() * 90;

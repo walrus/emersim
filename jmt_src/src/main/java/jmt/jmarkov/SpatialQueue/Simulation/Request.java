@@ -1,16 +1,18 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
-import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.BEING_SERVED;
-import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.FINISHED;
-import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.IN_QUEUE;
+import com.teamdev.jxmaps.DirectionsResult;
+
+import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.*;
 
 /**
  * Requests are sent by Senders to Receivers. They fulfil the same function as Jobs in JMCH.
  */
-public class Request implements Comparable<Request>{
+public class Request implements Comparable<Request> {
     private Client client;
 
     private int requestId;
+
+    private DirectionsResult directionsResult;
 
     private double creationTime;
 
@@ -27,6 +29,7 @@ public class Request implements Comparable<Request>{
     private double priority;
 
     enum RequestState {IN_QUEUE, BEING_SERVED, FINISHED}
+
 
     public Request(int requestId, double time, Client client, double priority){
         this.requestId = requestId;
@@ -52,18 +55,28 @@ public class Request implements Comparable<Request>{
         }
     }
 
-    public void serve(double currentTime, double finishTime){
+    public int comparePriority(Request request) {
+        if (this.priority < request.priority) {
+            return -1;
+        }
+        if (this.priority == request.priority) {
+            return 0;
+        }
+        return 1;
+    }
+
+    public void serve(double currentTime, double finishTime) {
         this.currentState = BEING_SERVED;
         this.startServiceTime = currentTime;
         this.finishServiceTime = finishTime;
         this.setNextEventTime(finishTime);
     }
 
-    public void setFinishServiceTime(double time){
+    public void setFinishServiceTime(double time) {
         this.finishServiceTime = time;
     }
 
-    public void finishServing(double time){
+    public void finishServing(double time) {
         this.currentState = FINISHED;
         this.finishServiceTime = time;
     }
@@ -94,5 +107,13 @@ public class Request implements Comparable<Request>{
 
     public int getRequestId() {
         return this.requestId;
+    }
+
+    public DirectionsResult getDirectionsResult() {
+        return directionsResult;
+    }
+
+    public void setDirectionsResult(DirectionsResult directionsResult) {
+        this.directionsResult = directionsResult;
     }
 }

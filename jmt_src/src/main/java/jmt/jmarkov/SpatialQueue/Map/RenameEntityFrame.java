@@ -7,18 +7,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class MapEntityOptionsDialog extends JFrame {
+public class RenameEntityFrame extends JFrame {
 
     private Entity entity;
 
-    public MapEntityOptionsDialog(Entity entity) {
+    public RenameEntityFrame(Entity entity) {
         this.entity = entity;
         init();
         show();
     }
 
     private void init() {
-        JPanel mainPanel = new JPanel(new GridLayout(1,0));
+        JPanel mainPanel = new JPanel(new GridLayout(1, 0));
 
         JPanel deletePanel = new JPanel();
         mainPanel.add(deletePanel);
@@ -48,7 +48,9 @@ public class MapEntityOptionsDialog extends JFrame {
             public void focusGained(FocusEvent e) {
                 newName.setText("");
             }
-            public void focusLost(FocusEvent e) {}
+
+            public void focusLost(FocusEvent e) {
+            }
         });
         renamePanel.add(newName);
         renamePanel.add(rename);
@@ -71,4 +73,5 @@ public class MapEntityOptionsDialog extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+
 }
