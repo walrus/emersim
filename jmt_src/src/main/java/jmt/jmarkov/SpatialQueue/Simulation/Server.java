@@ -122,7 +122,7 @@ public class Server {
             double yDistance = clientLocation.getY() - serverLocation.getY();
             // Straight line distance in degrees
             time = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
-            request.setDirectionsResult(generateCrowFliesDirections(clientLocation.getLocationAsLatLng(), serverLocation.getLocationAsLatLng()));
+            time *= 1000;
         }
 
         if (returnJourney) {
@@ -130,24 +130,6 @@ public class Server {
         } else {
             request.setResponseTime(time);
         }
-    }
-
-    private DirectionsResult generateCrowFliesDirections(LatLng clientLocation, LatLng serverLocation) {
-        DirectionsResult directionsResult = new DirectionsResult(mapConfig.getMap());
-        LatLng[] waypoints = {serverLocation, clientLocation};
-
-        DirectionsRoute directionsRoute = new DirectionsRoute();
-        directionsRoute.setOverviewPath(waypoints);
-        directionsRoute.setOverviewPolyline(PolyLineEncoder.encode(waypoints));
-
-        LatLng sWBound = (clientLocation.getLng() > serverLocation.getLng()) ? serverLocation : clientLocation;
-        LatLng nEBound = (clientLocation.getLng() > serverLocation.getLng()) ? clientLocation : serverLocation;
-        LatLngBounds latLngBounds = new LatLngBounds(sWBound, nEBound);
-        directionsRoute.setBounds(latLngBounds);
-
-        DirectionsRoute[] directionsRoutes = {directionsRoute};
-        directionsResult.setRoutes(directionsRoutes);
-        return directionsResult;
     }
 
     private void updateAverageServiceTime(double currentTime) {
