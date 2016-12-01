@@ -54,6 +54,13 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
         buttonPanel.setLayout(new GridLayout(0, 1));
         guiComponents.generateSideButtons(buttonPanel);
 
+        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+
+        // create menu bar
+        JMenuBar menuB = new JMenuBar();
+        setJMenuBar(menuB);
+        guiComponents.createMenuBar(menuB);
+
         //Create panel for map and queue drawer
         JPanel interfacePanel = new JPanel();
         interfacePanel.setLayout(new BoxLayout(interfacePanel, BoxLayout.Y_AXIS));
@@ -78,10 +85,7 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
         // create lamda slider
         guiComponents.addProgressBar(simulationP, c);
 
-        // create menu bar
-        JMenuBar menuB = new JMenuBar();
-        setJMenuBar(menuB);
-        guiComponents.createMenuBar(menuB);
+
 
 
         // window settings

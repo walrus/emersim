@@ -17,6 +17,7 @@ import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.*;
  */
 public class Statistics {
 
+    private static double  T;
     //To change service time change this variable
     double S_I;
     double U; // Utilization [%]
@@ -35,16 +36,22 @@ public class Statistics {
     private DrawNormal dCst;
     private JLabel mediaJobsL;
     private JLabel utilizationL;
+    private JLabel thrL;
+    private JLabel responseL;
+    private double R;
 
     public Statistics() {
         ql = new MM1Logic(0, 0);
         queueDrawer = new QueueDrawer(ql, true);
         init();
+        dCst = new DrawNormal();
     }
 
     public void init() {
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
+        thrL = new JLabel();
+        responseL = new JLabel();
     }
 
 
@@ -56,8 +63,11 @@ public class Statistics {
             utilizationL.setText(uStrS + Formatter.formatNumber(U, 3) + uStrE);
             mediaJobsL.setText(nStrS + Formatter.formatNumber(Q, 3) + nStrE);
 
-            thrL.setText(thrStrS + Formatter.formatNumber(ql.throughput(), 3) + thrStrE);
-            responseL.setText(respStrS + Formatter.formatNumber(ql.responseTime(), 3) + respStrE);
+            T = ql.throughput();
+            R = ql.responseTime();
+
+            thrL.setText(thrStrS + Formatter.formatNumber(T, 3) + thrStrE);
+            responseL.setText(respStrS + Formatter.formatNumber(R, 3) + respStrE);
             nonErgodic = false;
 
             if (sim != null && ql.getLambda() > 0) {
@@ -81,10 +91,8 @@ public class Statistics {
 
     }
 
-
     protected void generateSimulationStats(JPanel resultsP) {
         // media
-        dCst = new DrawNormal();
         mediaJobsL.setText(nStrS + "0" + nStrE);
         mediaJobsL.setFont(dCst.getNormalGUIFont());
         resultsP.add(mediaJobsL);
@@ -120,7 +128,6 @@ public class Statistics {
 
     public void setSI(double sI) {
         S_I = sI;
-        System.out.println("SERVICE TIME: " + S_I);
         ql.setS(sI / 1000);
         updateFields(sim);
 
@@ -137,6 +144,10 @@ public class Statistics {
 
     public void setQueueDrawer(QueueDrawer queueDrawer) {
         this.queueDrawer = queueDrawer;
+    }
+
+    public MM1Logic getQueueLogic() {
+        return ql;
     }
 
 

@@ -50,7 +50,8 @@ public class Server {
                 if (!requestQueue.isEmpty()) {
                     Request request = getNextRequest();
                     request.serve(currentTime, currentTime + request.getResponseTime());
-                    System.out.println("Serving: " + request.getRequestId() + ", distance: " + request.getResponseTime());
+                    System.out.println("Serving: " + request.getRequestId() + ", distance: " + request.getResponseTime()
+                    + ", current time: " + currentTime);
                     setServing(true);
                     this.currentRequest = request;
                     return request;

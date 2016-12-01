@@ -28,7 +28,7 @@ import java.util.Dictionary;
 /**
  * Created by joshuazeltser on 02/11/2016.
  */
-public class GuiComponents {
+public class GuiComponents{
 
     private JButton start;
     private JButton pause;
@@ -44,10 +44,9 @@ public class GuiComponents {
     static SpatialQueueSimulator sim;
     static DrawConstrains dCst;
     static QueueDrawer queueDrawer;
+
     private MapConfig mapConfig;
     private JSlider accelerationS;
-    static JLabel thrL;
-    static JLabel responseL;
 
     private SpatialQueueFrame mf;
     private JMenu settingsMenu;
@@ -73,6 +72,8 @@ public class GuiComponents {
     private JCheckBoxMenuItem publicTransport;
     private JCheckBoxMenuItem fly;
 
+
+
     private Statistics stats;
 
     public GuiComponents(SpatialQueueFrame mf) {
@@ -95,14 +96,10 @@ public class GuiComponents {
         stop = new JButton("Stop");
         client = new JButton("Add Client");
         client.setEnabled(false);
-
         server = new JButton("Add Server");
         simServer = "Server";
         simClient = "Client";
         dCst = new DrawNormal();
-        thrL = new JLabel();
-        responseL = new JLabel();
-//        outputTA = new TANotifier();
         returnJourney = false;
     }
 
@@ -184,6 +181,9 @@ public class GuiComponents {
 
     public void stopProcessing() {
         sim.stop();
+        start.setEnabled(true);
+        stop.setEnabled(false);
+        pause.setEnabled(false);
         while (sim.isRunning()) {
             //waiting to stop
             try {
@@ -195,10 +195,12 @@ public class GuiComponents {
             Thread.sleep(100);
         } catch (InterruptedException e) {
         }
+
         new SummaryPage(sim);
 //        outputTA.reset();
-        queueDrawer.reset();
-        stats.updateFields(sim);
+
+//        queueDrawer.reset();
+//        stats.updateFields(sim);
     }
 
     // create a stop button
@@ -208,9 +210,6 @@ public class GuiComponents {
         stop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                start.setEnabled(true);
-                stop.setEnabled(false);
-                pause.setEnabled(false);
                 stopProcessing();
             }
         });
@@ -220,6 +219,7 @@ public class GuiComponents {
     // create a start button
     private void startButton() {
         start.setEnabled(false);
+        final GuiComponents gui = this;
 
         start.addActionListener(new ActionListener() {
             @Override
@@ -236,12 +236,7 @@ public class GuiComponents {
                 // Get one server TODO: support for multiple servers
                 Server server = mapConfig.getServers().get(0);
 
-                sim = new SpatialQueueSimulator(accelerationS.getValue(),
-                        stats,
-                        server,
-                        mapConfig,
-                        jobsDialog.getTypedValue(),
-                        returnJourney);
+                sim = new SpatialQueueSimulator(gui, accelerationS.getValue(), server, jobsDialog.getTypedValue());
 
                 sim.start();
                 start.setEnabled(false);
@@ -522,6 +517,7 @@ public class GuiComponents {
         on.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                on.setSelected(true);
                 off.setSelected(false);
                 returnJourney = true;
 
@@ -531,6 +527,7 @@ public class GuiComponents {
         off.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                off.setSelected(true);
                 on.setSelected(false);
                 returnJourney = false;
             }
@@ -554,6 +551,7 @@ public class GuiComponents {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.DRIVING);
+                drive.setSelected(true);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 publicTransport.setSelected(false);
@@ -565,6 +563,7 @@ public class GuiComponents {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.WALKING);
+                walk.setSelected(true);
                 drive.setSelected(false);
                 cycle.setSelected(false);
                 publicTransport.setSelected(false);
@@ -576,6 +575,7 @@ public class GuiComponents {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.BICYCLING);
+                cycle.setSelected(true);
                 walk.setSelected(false);
                 drive.setSelected(false);
                 publicTransport.setSelected(false);
@@ -587,6 +587,7 @@ public class GuiComponents {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.PUBLIC_TRANSPORT);
+                publicTransport.setSelected(true);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 drive.setSelected(false);
@@ -598,6 +599,7 @@ public class GuiComponents {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mapConfig.setTravelMethod(MapConfig.TRAVEL_METHOD.AS_CROW_FLIES);
+                fly.setSelected(true);
                 walk.setSelected(false);
                 cycle.setSelected(false);
                 publicTransport.setSelected(false);
@@ -779,5 +781,14 @@ public class GuiComponents {
         queueDrawer.setJobName(job);
     }
 
+    public Statistics getStats() {
+        return stats;
+    }
+    public MapConfig getMapConfig() {
+        return mapConfig;
+    }
 
+    public boolean isReturnJourney() {
+        return returnJourney;
+    }
 }
