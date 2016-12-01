@@ -13,14 +13,15 @@ public class RequestGenerator implements Runnable {
         // set lambda to be #(arrivals per millisecond)
         this.lambda = lambda / 1000;
         stats = new Statistics();
-        stats.setLambda(lambda);
+        stats.setLambda(this.lambda);
         stats.setSI(sim.getAverageServiceTime());
     }
 
     public void run() {
         while (this.sim.isRunning() && this.sim.moreRequests()) {
             stats.setSI(sim.getAverageServiceTime());
-            stats.setLambda(lambda);
+            stats.setLambda(lambda * 1000);
+            System.out.println("LAMBDA in run " + lambda);
             Request newRequest = this.sim.createRequest();
             this.sim.enqueueRequest(newRequest);
             this.sim.getQueueDrawer().enterQueue();
