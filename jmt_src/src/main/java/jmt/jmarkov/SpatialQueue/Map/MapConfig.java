@@ -1,7 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.swing.MapView;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
@@ -14,7 +14,7 @@ import javax.swing.plaf.basic.BasicTextFieldUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -164,58 +164,63 @@ public class MapConfig extends MapView {
         for (ServerGraphic serverGraphic : serverGraphics) {
             serverLocations.add(serverGraphic.getPosition());
         }
-        ObjectMapper mapper = new ObjectMapper();
-        //Object to JSON in String
-        String jsonInString = "";
-        try {
-            jsonInString = mapper.writeValueAsString(serverLocations);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return jsonInString;
+        Gson gson = new Gson();
+        return gson.toJson(serverLocations);
     }
 
     public void loadServers(String jsonString) {
-        ObjectMapper mapper = new ObjectMapper();
-        LinkedList<LatLng> serverLocations = null;
-        try {
-            serverLocations = mapper.readValue(jsonString, LinkedList.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (LatLng latLng : serverLocations) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<LinkedList<LatLng>>(){}.getType();
+        LinkedList<LatLng> locations = gson.fromJson(jsonString, type);
+        for (LatLng latLng : locations) {
             new ServerGraphic(this, latLng);
         }
     }
 
     public String saveClients() {
-        LinkedList<LinkedList> clientPaths = new LinkedList<>();
+        LinkedList<LinkedList<LatLng>> clientPaths = new LinkedList<>();
         for (ClientGraphic clientGraphic : clientGraphics) {
             clientPaths.add(clientGraphic.getPath());
         }
-        ObjectMapper mapper = new ObjectMapper();
-        //Object to JSON in String
-        String jsonInString = "";
-        try {
-            jsonInString = mapper.writeValueAsString(clientPaths);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return jsonInString;
+        Gson gson = new Gson();
+        return gson.toJson(clientPaths);
     }
 
     public void loadClients(String jsonString) {
-        ObjectMapper mapper = new ObjectMapper();
-        LinkedList<LinkedList> clientPaths = null;
-        try {
-            clientPaths = mapper.readValue(jsonString, LinkedList.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (LinkedList<LatLng> path : clientPaths) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<LinkedList<LinkedList<LatLng>>>(){}.getType();
+        LinkedList<LinkedList<LatLng>> paths = gson.fromJson(jsonString, type);
+
+        for (LinkedList<LatLng> path : paths) {
             new ClientGraphic(path, guiComponents);
         }
     }
+
+    public static void main(String[] args) {
+        LatLng latLng = new LatLng(23, 3423);
+        Gson gson = new Gson();
+        String jsonInString = gson.toJson(latLng);
+
+        System.out.println(jsonInString);
+        LatLng latLng1 = gson.fromJson(jsonInString, LatLng.class);
+        System.out.println(latLng1);
+    }
+
+//    private static Object decodeObjectFromJSON(String jsonString, String className) {
+//        ObjectMapper mapper = new ObjectMapper();
+//        Class classTemp = null;
+//        try {
+//            classTemp = Class.forName(className);
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            return mapper.readValue(jsonString, classTemp);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     // Below this is code provided for location search
 

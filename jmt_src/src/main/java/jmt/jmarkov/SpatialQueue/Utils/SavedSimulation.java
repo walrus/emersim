@@ -1,21 +1,17 @@
 package jmt.jmarkov.SpatialQueue.Utils;
 
-import jmt.jmarkov.SpatialQueue.Map.MapConfig;
-
 import java.io.*;
 import java.nio.charset.Charset;
 
-/**
- * Created by Dyl on 01/12/2016.
- */
 public class SavedSimulation {
 
     private static Integer i = 0;
 
 
     public static void toFile(String client, String server) {
+        System.out.println(System.getProperty("user.home"));
         try{
-            PrintWriter writer = new PrintWriter(i.toString() + ".sqs", "UTF-8");
+            PrintWriter writer = new PrintWriter(System.getProperty("user.home") + "/" + i.toString() + ".sqs", "UTF-8");
             writer.println(client);
             writer.println(server);
             writer.close();
@@ -23,7 +19,6 @@ public class SavedSimulation {
         } catch (IOException e) {
             // do something
         }
-
     }
 
     public static String[] fromFile(String fileName) {
@@ -31,7 +26,7 @@ public class SavedSimulation {
         String client;
         String server;
         try (
-                InputStream fis = new FileInputStream("0.sqs");
+                InputStream fis = new FileInputStream(System.getProperty("user.home") + "/" + "0.sqs");
                 InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
                 BufferedReader br = new BufferedReader(isr);
         ) {
