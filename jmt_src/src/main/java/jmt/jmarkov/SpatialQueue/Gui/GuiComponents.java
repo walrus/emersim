@@ -35,6 +35,9 @@ public class GuiComponents{
     private JButton client;
     private JButton server;
 
+    private Action Save;
+    private Action SaveAs;
+
     static SpatialQueueSimulator sim;
     static DrawConstrains dCst;
     static QueueDrawer queueDrawer;
@@ -403,17 +406,19 @@ public class GuiComponents{
                 String[] clientServer = SavedSimulation.fromFile();
                 mapConfig.loadClients(clientServer[0]);
                 mapConfig.loadServers(clientServer[1]);
+                start.setEnabled(true);
+                client.setEnabled(true);
             }
         };
         // creates a save simulation option in the file menu
-        Action Save = new AbstractAction("Save") {
+        Save = new AbstractAction("Save") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SavedSimulation.toExistingFile(mf.getTitle(), mapConfig.saveClients(), mapConfig.saveServers());
             }
         };
         // creates a save as simulation option in the file menu
-        Action SaveAs = new AbstractAction("Save As...") {
+        SaveAs = new AbstractAction("Save As...") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String fileName = SavedSimulation.toNewFile(mapConfig.saveClients(), mapConfig.saveServers());
@@ -430,6 +435,8 @@ public class GuiComponents{
         fileMenu.add(Save);
         fileMenu.add(SaveAs);
         fileMenu.addSeparator();
+        Save.setEnabled(false);
+        SaveAs.setEnabled(false);
 
         return fileMenu;
     }
