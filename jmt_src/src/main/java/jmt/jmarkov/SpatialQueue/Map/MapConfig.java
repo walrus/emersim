@@ -111,36 +111,6 @@ public class MapConfig extends MapView {
         map.getDirectionsRenderer().setDirections(directionsResult);
     }
 
-    public static void displayRequestLocationOnMap(LatLng latLng) {
-        double strokeWeight = 5;
-        LatLng[] line1Path = new LatLng[2];
-        LatLng[] line2Path = new LatLng[2];
-        Double x = latLng.getLng();
-        Double y = latLng.getLat();
-        line1Path[0] = new LatLng(y, x - 0.00005);
-        line1Path[1] = new LatLng(y, x + 0.00005);
-        line2Path[0] = new LatLng(y + 0.00003, x);
-        line2Path[1] = new LatLng(y - 0.00003, x);
-        Polyline line1 = new Polyline(map);
-        Polyline line2 = new Polyline(map);
-        // Creating a polyline options object
-        PolylineOptions options = new PolylineOptions();
-        // Setting geodesic property value
-        options.setGeodesic(true);
-        // Setting stroke color value
-        options.setStrokeColor("#0000FF");
-        // Setting stroke opacity value
-        options.setStrokeOpacity(1.0);
-        // Setting stroke weight value
-        options.setStrokeWeight(strokeWeight);
-        // Applying options to the polyline
-        line1.setOptions(options);
-        line2.setOptions(options);
-        // Set current perimeter
-        line1.setPath(line1Path);
-        line2.setPath(line2Path);
-    }
-
     public void setButtonState(BUTTON_STATE buttonState) {
         this.buttonState = buttonState;
     }
