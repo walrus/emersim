@@ -195,10 +195,12 @@ public class GuiComponents {
             Thread.sleep(100);
         } catch (InterruptedException e) {
         }
+
         new SummaryPage(sim);
 //        outputTA.reset();
-        queueDrawer.reset();
-        stats.updateFields(sim);
+
+//        queueDrawer.reset();
+//        stats.updateFields(sim);
     }
 
     // create a stop button

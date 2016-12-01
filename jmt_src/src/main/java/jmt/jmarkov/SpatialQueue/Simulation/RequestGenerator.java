@@ -11,13 +11,16 @@ public class RequestGenerator implements Runnable {
     RequestGenerator(SpatialQueueSimulator sim, double lambda) {
         this.sim = sim;
         // set lambda to be #(arrivals per millisecond)
-        this.lambda = lambda / 1000;
+        this.lambda = lambda;
         stats = new Statistics();
         stats.setLambda(lambda);
+        stats.setSI(sim.getAverageServiceTime());
     }
 
     public void run() {
         while (this.sim.isRunning() && this.sim.moreRequests()) {
+            stats.setSI(sim.getAverageServiceTime());
+            stats.setLambda(lambda);
             Request newRequest = this.sim.createRequest();
             this.sim.enqueueRequest(newRequest);
             this.sim.getQueueDrawer().enterQueue();

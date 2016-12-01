@@ -71,6 +71,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.mapConfig = mapConfig;
         this.returnJourney = returnJourney;
         // lambda is #(number of requests per second)
+
         this.maxInterval = 3;
         this.stats = stats;
         this.queueDrawer = stats.getQueueDrawer();
