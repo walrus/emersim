@@ -435,8 +435,6 @@ public class GuiComponents{
         fileMenu.add(Save);
         fileMenu.add(SaveAs);
         fileMenu.addSeparator();
-        Save.setEnabled(false);
-        SaveAs.setEnabled(false);
 
         return fileMenu;
     }
