@@ -25,13 +25,18 @@ public class RequestGenerator implements Runnable {
             this.sim.enqueueRequest(newRequest);
             this.sim.getQueueDrawer().enterQueue();
 
-            double timeToWait = (1 / lambda) / sim.getTimeMultiplier();
+            double timeToWait = getNextArrivalTime(lambda) / sim.getTimeMultiplier();
+            System.out.println(timeToWait);
             try {
                 Thread.sleep((long) timeToWait);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private double getNextArrivalTime(double lambda){
+        return (Math.log(1.0-((Math.random() / 2) + 0.25))/-lambda);
     }
 
     public Statistics getStats() {
