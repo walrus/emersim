@@ -9,6 +9,7 @@ import jmt.jmarkov.Graphics.constants.DrawSmall;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
+import jmt.jmarkov.SpatialQueue.Utils.SavedSimulation;
 import jmt.jmarkov.utils.Formatter;
 
 import javax.swing.*;
@@ -399,21 +400,26 @@ public class GuiComponents{
         Action Open = new AbstractAction("Open...") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String[] clientServer = SavedSimulation.fromFile();
+                mapConfig.loadClients(clientServer[0]);
+                mapConfig.loadServers(clientServer[1]);
             }
         };
         // creates a save simulation option in the file menu
         Action Save = new AbstractAction("Save") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                SavedSimulation.toExistingFile(mf.getTitle(), mapConfig.saveClients(), mapConfig.saveServers());
             }
         };
         // creates a save as simulation option in the file menu
         Action SaveAs = new AbstractAction("Save As...") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String fileName = SavedSimulation.toNewFile(mapConfig.saveClients(), mapConfig.saveServers());
+                if (!fileName.isEmpty()){
+                    mf.setTitle("Spatial Queue Simulator - " + fileName);
+                }
             }
         };
 
