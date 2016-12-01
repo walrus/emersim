@@ -3,12 +3,9 @@ package jmt.jmarkov.SpatialQueue.Gui;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-
-import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.dCst;
 
 /**
  * Created by joshuazeltser on 30/11/2016.
@@ -17,13 +14,13 @@ public class SummaryPage extends JFrame {
 
     private SpatialQueueSimulator sim;
     private GridBagConstraints c ;
-    private String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
+    private String nStrS = "Avg. Cust. N";
     private String nStrE = " cust.";
-    private String uStrS = "Avg. Utilization (Sum of All Servers) U = ";
+    private String uStrS = "Avg. Utilization U";
     private String uStrE = "";
-    private String thrStrS = "Avg. Throughput X =";
+    private String thrStrS = "Avg. Throughput X";
     private String thrStrE = " cust./s";
-    private String respStrS = "Avg. Response Time R = ";
+    private String respStrS = "Avg. Response Time R";
     private String respStrE = " s";
 
     public SummaryPage(SpatialQueueSimulator sim) {
@@ -37,73 +34,61 @@ public class SummaryPage extends JFrame {
         c = new GridBagConstraints();
 
         //set window size
-        Dimension d = new Dimension(900, 400);
+        Dimension d = new Dimension(650, 400);
         setPreferredSize(d);
 
         int count = 0;
 
-        JPanel statistics = new JPanel();
-        statistics.setLayout(new GridLayout( sim.getRegions().size(),1));
+        Object columnNames[] = {"Region", nStrS, thrStrS, uStrS, respStrS};
 
-        double mediaJobs;
-        double lambda;
-        double utilisation;
-        double responseTime;
+        Object rowData[][] = new Object[sim.getRegions().size()][5];
 
-        String statsString = "";
+       for (ClientRegion cr : sim.getRegions()) {
+           rowData[count][0] = count;
 
-        for(ClientRegion cr : sim.getRegions()) {
-
-            count++;
-            JTextField resultsP = new JTextField();
-            resultsP.setEditable(false);
-            Font font = new Font("Courier", Font.BOLD,12);
-            resultsP.setFont(font);
-            resultsP.setLayout(new GridLayout(2, 2));
-            resultsP.setBorder(addTitle("Client Region " + count, dCst.getSmallGUIFont()));
-//            cr.getGenerator().getStats().getQueueLogic();
-
-
-//            cr.getGenerator().getStats().generateSimulationStats(resultsP);
-//            cr.getGenerator().getStats().updateFields(sim);
-            try {
-                mediaJobs = cr.getGenerator().getStats().getQueueLogic().mediaJobs();
-                statsString += nStrS + mediaJobs + nStrE;
+           try {
+               double media = cr.getGenerator().getStats().getQueueLogic().mediaJobs();
+               rowData[count][1] = String.format("%.6f", media);
             } catch (NonErgodicException e) {
-                statsString += nStrS + "Saturation" + nStrE;
+               rowData[count][1] = "Saturation";
             }
+           double throughput = cr.getGenerator().getStats().getQueueLogic().getLambda();
+           rowData[count][2] = String.format("%.3f", throughput);
 
-            statsString += "\n";
-
-            lambda = cr.getGenerator().getStats().getQueueLogic().getLambda();
-            statsString += thrStrS + lambda + thrStrE;
-
-            statsString += "\n";
-
-            try {
-               utilisation = cr.getGenerator().getStats().getQueueLogic().utilization();
-                statsString += uStrS + utilisation + uStrE;
+           try {
+               double utilisation = cr.getGenerator().getStats().getQueueLogic().utilization();
+               rowData[count][3] = String.format("%.6f", utilisation);
             } catch(NonErgodicException e) {
-                statsString += uStrS + "Saturation" + uStrE;
+               rowData[count][3] = "Saturation";
             }
 
-            statsString += "\n";
-
-            try {
-                responseTime = cr.getGenerator().getStats().getQueueLogic().responseTime();
-                statsString += respStrS + responseTime + respStrE;
+           try {
+               double responseTime = cr.getGenerator().getStats().getQueueLogic().responseTime();
+               rowData[count][4] = String.format("%.6f", responseTime);
             } catch (NonErgodicException e) {
-                statsString += respStrS + "Saturation" + respStrE;
+               rowData[count][4] = "Saturation";
             }
-
-            resultsP.setText(statsString);
-            statistics.add(resultsP);
-
-        }
+           count++;
+       }
 
 
+        JTable table = new JTable(rowData, columnNames);
 
-        this.add(statistics);
+//        table.setFont(new Font("Serif", Font.BOLD, 15));
+
+//
+//        DefaultTableCellRenderer stringRenderer = (DefaultTableCellRenderer)
+//                table.getDefaultRenderer(String.class);
+//        stringRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        this.add(scrollPane, BorderLayout.CENTER);
+
+
+        this.setLayout(new GridLayout(1,1));
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+//        this.add(statistics);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);

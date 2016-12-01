@@ -135,6 +135,7 @@ public class Statistics {
 
     public void setLambda(double lambda) {
         ql.setLambda(lambda);
+        System.out.println("LAMBDA " + lambda);
         updateFields(sim);
     }
 
