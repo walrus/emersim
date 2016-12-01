@@ -14,6 +14,8 @@ public class SummaryPage extends JFrame {
 
     private SpatialQueueSimulator sim;
     private GridBagConstraints c ;
+
+    //stats units and names
     private String nStrS = "Avg. Cust. N";
     private String nStrE = " cust.";
     private String uStrS = "Avg. Utilization U";
@@ -43,9 +45,11 @@ public class SummaryPage extends JFrame {
 
         Object rowData[][] = new Object[sim.getRegions().size()][5];
 
+        // for each region collect the stats and print them to the summary page
        for (ClientRegion cr : sim.getRegions()) {
            rowData[count][0] = count;
 
+           // make sure to catch any saturation errors and print accordingly
            try {
                double media = cr.getGenerator().getStats().getQueueLogic().mediaJobs();
                rowData[count][1] = String.format("%.6f", media) + nStrE;
@@ -71,9 +75,10 @@ public class SummaryPage extends JFrame {
            count++;
        }
 
-
+        // create a table to store the stats
         JTable table = new JTable(rowData, columnNames) {
 
+           // stop the table from being editable
            @Override
            public boolean isCellEditable(int row, int column) {
                return false;
@@ -87,7 +92,6 @@ public class SummaryPage extends JFrame {
         this.setLayout(new GridLayout(1,1));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.removeEditor();
-//        this.add(statistics);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
