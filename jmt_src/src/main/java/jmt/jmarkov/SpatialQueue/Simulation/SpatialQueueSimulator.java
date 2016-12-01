@@ -8,8 +8,8 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
 import jmt.jmarkov.SpatialQueue.Gui.Statistics;
-import jmt.jmarkov.SpatialQueue.Utils.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+import jmt.jmarkov.SpatialQueue.Utils.Location;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -76,7 +76,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.queueDrawer = stats.getQueueDrawer();
 
         //Create a new request generator for each client region
-        for(ClientRegion cr : clientRegions) {
+        for (ClientRegion cr : clientRegions) {
             RequestGenerator rg = new RequestGenerator(this, cr.getLambda());
             cr.setRequestGenerator(rg);
         }
@@ -84,7 +84,8 @@ public class SpatialQueueSimulator implements Runnable {
 
     protected Client generateNewSenderWithinArea(ClientRegion clientRegion) {
         Location senderLocation = clientRegion.generatePoint();
-        return new Client(senderLocation);    }
+        return new Client(senderLocation);
+    }
 
     public void run() {
         running = true;
@@ -99,7 +100,7 @@ public class SpatialQueueSimulator implements Runnable {
         realTimeStart = new Date().getTime();
 
         // For each client region, Start new thread and run the generator from it
-        for(ClientRegion cr : clientRegions){
+        for (ClientRegion cr : clientRegions) {
             Thread generatorThread = new Thread(cr.getGenerator());
             generatorThread.start();
         }
@@ -150,6 +151,7 @@ public class SpatialQueueSimulator implements Runnable {
         System.out.println("Stopping, total requests served: " + this.server.getNumberOfRequestsServed());
 
     }
+
     // Return true iff server has served fewer then maxRequests requests or if maxRequests == 0
     protected synchronized boolean moreRequests() {
         return ((this.server.getNumberOfRequestsServed() < this.maxRequests) || maxRequests == 0);
@@ -157,7 +159,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     protected synchronized int getNextRequestID() {
         int r = this.currentRequestID;
-        this.currentRequestID ++;
+        this.currentRequestID++;
         return r;
     }
 
@@ -173,7 +175,7 @@ public class SpatialQueueSimulator implements Runnable {
     }
 
     public synchronized void enqueueRequest(Request newRequest) {
-        if (newRequest != null){
+        if (newRequest != null) {
             this.server.handleRequest(newRequest, returnJourney);
         }
     }
@@ -215,7 +217,9 @@ public class SpatialQueueSimulator implements Runnable {
         this.started = false;
     }
 
-    public float getMaxInterval() { return this.maxInterval;}
+    public float getMaxInterval() {
+        return this.maxInterval;
+    }
 
     public double getTimeMultiplier() {
         return this.timeMultiplier;

@@ -1,8 +1,8 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
-import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
+import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 
 import java.util.LinkedList;
 

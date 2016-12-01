@@ -1,8 +1,8 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
-import jmt.jmarkov.SpatialQueue.Utils.Location;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
+import jmt.jmarkov.SpatialQueue.Utils.Location;
 
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.map;
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.serverGraphics;

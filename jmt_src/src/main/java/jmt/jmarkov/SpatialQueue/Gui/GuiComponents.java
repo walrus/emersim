@@ -1,7 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
 import com.teamdev.jxmaps.MapViewOptions;
-import jmt.jmarkov.Graphics.*;
+import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.constants.DrawBig;
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
@@ -10,16 +10,19 @@ import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
 import jmt.jmarkov.utils.Formatter;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Dictionary;
+
+;
 
 /**
  * Created by joshuazeltser on 02/11/2016.
@@ -90,7 +93,7 @@ public class GuiComponents {
         start.setEnabled(false);
         pause = new JButton("Pause");
         stop = new JButton("Stop");
-        client = new JButton("Add Client" );
+        client = new JButton("Add Client");
         client.setEnabled(false);
 
         server = new JButton("Add Server");
@@ -234,11 +237,11 @@ public class GuiComponents {
                 Server server = mapConfig.getServers().get(0);
 
                 sim = new SpatialQueueSimulator(accelerationS.getValue(),
-                                                stats,
-                                                server,
+                        stats,
+                        server,
                         mapConfig,
-                                                jobsDialog.getTypedValue(),
-                                                returnJourney);
+                        jobsDialog.getTypedValue(),
+                        returnJourney);
 
                 sim.start();
                 start.setEnabled(false);
@@ -355,14 +358,13 @@ public class GuiComponents {
         c.weighty = 0;
         c.gridx = 0;
         c.gridy = 0;
-        simulationP.add(progressBar,c);
+        simulationP.add(progressBar, c);
 
     }
 
     public static void setProgressBarValue(int percentage) {
         progressBar.setValue(percentage);
     }
-
 
 
     // create the panel that contains the simulation stats
@@ -375,7 +377,6 @@ public class GuiComponents {
         simulationP.add(resultsP, c);
         stats.generateSimulationStats(resultsP);
     }
-
 
 
     // creates a menu bar
@@ -497,12 +498,10 @@ public class GuiComponents {
         Action customSim = new AbstractAction("Custom Simulation") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                    new CustomSimulationDialog(mf);
+                new CustomSimulationDialog(mf);
 
             }
         };
-
-
 
 
         simSettings.add(customSim);
@@ -769,15 +768,12 @@ public class GuiComponents {
     }
 
     public String getSimServer() {
-       return simServer;
+        return simServer;
     }
 
     public void setJobParam(String job) {
         queueDrawer.setJobName(job);
     }
-
-
-
 
 
 }

@@ -3,17 +3,17 @@ package jmt.jmarkov.SpatialQueue.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamdev.jxmaps.*;
-import com.teamdev.jxmaps.MouseEvent;
 import com.teamdev.jxmaps.swing.MapView;
-import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
+import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicTextFieldUI;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
@@ -31,7 +31,9 @@ public class MapConfig extends MapView {
     static LinkedList<ServerGraphic> serverGraphics = new LinkedList<>();
     private GuiComponents guiComponents;
 
-    public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE};
+    public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE}
+
+    ;
     static BUTTON_STATE buttonState;
 
     public MapConfig(MapViewOptions options, final GuiComponents guiComponents) {
@@ -75,8 +77,7 @@ public class MapConfig extends MapView {
                         if (buttonState == BUTTON_STATE.ADD_CLIENT) {
                             buttonState = BUTTON_STATE.DRAWING_CLIENT;
                             areaBeingDrawn = new ClientGraphic(mouseEvent.latLng(), guiComponents);
-                        }
-                        else if (buttonState == BUTTON_STATE.DRAWING_CLIENT) {
+                        } else if (buttonState == BUTTON_STATE.DRAWING_CLIENT) {
                             areaBeingDrawn.addVertexToArea(mouseEvent.latLng());
                         }
                     }

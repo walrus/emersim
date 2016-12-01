@@ -2,8 +2,8 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 
 import com.teamdev.jxmaps.DirectionsLeg;
 import com.teamdev.jxmaps.DirectionsResult;
-import jmt.jmarkov.SpatialQueue.Utils.Location;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+import jmt.jmarkov.SpatialQueue.Utils.Location;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;

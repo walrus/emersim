@@ -8,12 +8,13 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Dictionary;
 
-public class LambdaSliderFrame extends JFrame {
+class LambdaSliderFrame extends JFrame {
 
-    private ClientGraphic entity;
+    private ClientGraphic clientGraphic;
     private GridBagConstraints c = new GridBagConstraints();
     private JSlider lambdaS;
     private double lambdaMultiplier = 1; //lambda slide bar multiplier
@@ -22,22 +23,21 @@ public class LambdaSliderFrame extends JFrame {
     private String lambdaStrE = " cust./s";
     private boolean lambdaSChange = true;
     private int lambdaMultiplierChange = 0; //for the lambda slide bar
-    private final double initialLambda = 0.1;
 
-    public LambdaSliderFrame(ClientGraphic entity){
-        this.entity = entity;
+    LambdaSliderFrame(ClientGraphic clientGraphic) {
+        this.clientGraphic = clientGraphic;
         init();
         show();
     }
 
     private void init() {
-        JPanel mainPanel = new JPanel(new GridLayout(1,0));
+        JPanel mainPanel = new JPanel(new GridLayout(1, 0));
 
         JPanel lambdaPanel = createLambdaPanel();
         mainPanel.add(lambdaPanel);
 
         add(mainPanel);
-        setTitle(entity.getName());
+        setTitle(clientGraphic.getName());
 
         Dimension d = new Dimension(400, 100);
         setPreferredSize(d);
@@ -79,9 +79,7 @@ public class LambdaSliderFrame extends JFrame {
         lambdaS.setSnapToTicks(true);
         lambdaPanel.add(lambdaS);
         lambdaL.setFont(dCst.getNormalGUIFont());
-
-        // CHANGE THIS
-        lambdaS.setValue((int) (initialLambda / lambdaMultiplier));
+        lambdaS.setValue((int) (clientGraphic.getClientRegion().getLambda() / lambdaMultiplier));
 
         setLambdaSlider();
         lambdaS.addChangeListener(new ChangeListener() {
@@ -136,18 +134,20 @@ public class LambdaSliderFrame extends JFrame {
         }
 
         lambdaS.setLabelTable(ld);
-        entity.setLambda(lambdaMultiplier * lambdaS.getValue());
+        clientGraphic.setLambda(lambdaMultiplier * lambdaS.getValue());
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
     }
 
-    /** Auto-generated event handler method */
+    /**
+     * Auto-generated event handler method
+     */
     private void lambdaSStateChanged(ChangeEvent evt) {
         if (lambdaS.getValue() == 0) {
             lambdaMultiplier = 0.01;
             lambdaMultiplierChange = 0;
             lambdaS.setValue(1);
         }
-        entity.setLambda(lambdaMultiplier * lambdaS.getValue());
+        clientGraphic.setLambda(lambdaMultiplier * lambdaS.getValue());
         lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
     }
 

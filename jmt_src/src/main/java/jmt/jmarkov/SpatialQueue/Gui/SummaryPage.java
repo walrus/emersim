@@ -15,7 +15,7 @@ import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.dCst;
 public class SummaryPage extends JFrame {
 
     private SpatialQueueSimulator sim;
-    private GridBagConstraints c ;
+    private GridBagConstraints c;
 
     public SummaryPage(SpatialQueueSimulator sim) {
         this.sim = sim;
@@ -28,14 +28,14 @@ public class SummaryPage extends JFrame {
         c = new GridBagConstraints();
 
         //set window size
-        Dimension d = new Dimension(900,400);
+        Dimension d = new Dimension(900, 400);
         setPreferredSize(d);
 
         int count = 0;
 
         JPanel statistics = new JPanel();
-        statistics.setLayout(new GridLayout(3,1));
-        for(ClientRegion cr : sim.getRegions()) {
+        statistics.setLayout(new GridLayout(3, 1));
+        for (ClientRegion cr : sim.getRegions()) {
             count++;
             JPanel resultsP = new JPanel();
             resultsP.setLayout(new GridLayout(2, 2));
