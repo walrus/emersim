@@ -424,14 +424,17 @@ public class GuiComponents {
         Action Save = new AbstractAction("Save") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                SavedSimulation.toExistingFile(mf.getTitle(), mapConfig.saveClients(), mapConfig.saveServers());
             }
         };
 
         Action SaveAs = new AbstractAction("Save As...") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SavedSimulation.toNewFile(mapConfig.saveClients(), mapConfig.saveServers());
-
+                String fileName = SavedSimulation.toNewFile(mapConfig.saveClients(), mapConfig.saveServers());
+                if (!fileName.isEmpty()){
+                    mf.setTitle("Spatial Queue Simulator - " + fileName);
+                }
             }
         };
 

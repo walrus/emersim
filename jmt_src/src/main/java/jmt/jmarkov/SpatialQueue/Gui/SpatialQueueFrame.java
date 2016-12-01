@@ -83,7 +83,6 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
         setJMenuBar(menuB);
         guiComponents.createMenuBar(menuB);
 
-
         // window settings
         pack();
         setLocationRelativeTo(null);
@@ -104,6 +103,17 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
     public void propertyChange(PropertyChangeEvent evt) {
     }
 
+    @Override
+    public String getTitle(){
+        if (super.getTitle().equals("Spatial Queue Simulator")) {
+            return super.getTitle();
+        }
+        String title = super.getTitle();
+        String[] s = title.split("Spatial Queue Simulator - ");
+        return s[1];
+    }
+
+
     public static void main(String[] args) {
         new SpatialQueueFrame();
     }
@@ -112,6 +122,10 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
         guiComponents.setSimServer(server);
         guiComponents.setSimClient(client);
         guiComponents.setJobParam(client);
+    }
+
+    public void setTitleToSavedSimulation(String fileTitle) {
+        setTitle("Spatial Queue Simulator - " + fileTitle);
     }
 
     public String getButtonNames() {

@@ -8,13 +8,12 @@ import java.nio.charset.Charset;
 public class SavedSimulation {
 
 
-    public static void toNewFile(String client, String server) {
+    public static String toNewFile(String client, String server) {
 
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Spatial Queue Simulator Files (*.sqs)", ".sqs"));
 
         String fileName;
-        boolean success;
 
         int approved = chooser.showSaveDialog(null);
         if (approved == JFileChooser.APPROVE_OPTION) {
@@ -23,22 +22,36 @@ public class SavedSimulation {
             String inputString = input.toString();
 
             // Adds the .sqs extension if not typed in by the user
-            if (inputString.substring(inputString.length() - 4).equals(".sqs")) {
-                fileName = inputString.substring(0, inputString.length() - 4);
+            if (!inputString.substring(inputString.length() - 4).equals(".sqs")) {
+                fileName = (inputString + ".sqs");
             } else {
                 fileName = inputString;
             }
 
             // Writes to the file given by the user
             try {
-                FileWriter fw = new FileWriter(inputString);
+                FileWriter fw = new FileWriter(fileName);
                 fw.write(client + "\n");
                 fw.write(server);
                 fw.close();
+                return fileName;
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        return "";
+    }
+
+    public static void toExistingFile(String fileName, String client, String server) {
+        try {
+            FileWriter fw = new FileWriter(fileName, false);
+            fw.write(client + "\n");
+            fw.write(server);
+            fw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
