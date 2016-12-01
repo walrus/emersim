@@ -415,7 +415,7 @@ public class GuiComponents {
         Action Open = new AbstractAction("Open...") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String[] clientServer = SavedSimulation.fromFile("1.sqs");
+                String[] clientServer = SavedSimulation.fromFile();
                 mapConfig.loadClients(clientServer[0]);
                 mapConfig.loadServers(clientServer[1]);
             }

@@ -55,14 +55,22 @@ public class SavedSimulation {
         }
     }
 
-
-
-    public static String[] fromFile(String fileName) {
+    public static String[] fromFile() {
         String[] clientServer = null;
         String client;
         String server;
+        String fileName = "";
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Spatial Queue Simulator Files (*.sqs)", ".sqs"));
+
+        int approved = chooser.showOpenDialog(null);
+        if (approved == JFileChooser.APPROVE_OPTION) {
+            fileName = chooser.getSelectedFile().toString();
+        }
+
         try (
-                InputStream fis = new FileInputStream(System.getProperty("user.home") + "/" + "0.sqs");
+                InputStream fis = new FileInputStream(fileName);
                 InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
                 BufferedReader br = new BufferedReader(isr);
         ) {
