@@ -74,6 +74,8 @@ public class GuiComponents{
 
     private boolean stopped;
 
+    static boolean simSizeSet;
+
 
     private Statistics stats;
 
@@ -221,6 +223,7 @@ public class GuiComponents{
     private void startButton() {
         start.setEnabled(false);
         final GuiComponents gui = this;
+        simSizeSet = false;
 
         stopped = false;
         start.addActionListener(new ActionListener() {
@@ -233,17 +236,19 @@ public class GuiComponents{
                 jobsDialog.setLocationRelativeTo(mf);
                 jobsDialog.setVisible(true);
 
-                queueDrawer.setMediaJobs(stats.Q - stats.U);
+                if (simSizeSet) {
+                    queueDrawer.setMediaJobs(stats.Q - stats.U);
 
-                // Get one server TODO: support for multiple servers
-                Server server = mapConfig.getServers().get(0);
+                    // Get one server TODO: support for multiple servers
+                    Server server = mapConfig.getServers().get(0);
 
-                sim = new SpatialQueueSimulator(gui, accelerationS.getValue(), server, jobsDialog.getTypedValue());
+                    sim = new SpatialQueueSimulator(gui, accelerationS.getValue(), server, jobsDialog.getTypedValue());
 
-                sim.start();
-                start.setEnabled(false);
-                stop.setEnabled(true);
-                pause.setEnabled(true);
+                    sim.start();
+                    start.setEnabled(false);
+                    stop.setEnabled(true);
+                    pause.setEnabled(true);
+                }
             }
         });
     }
