@@ -424,13 +424,14 @@ public class GuiComponents {
         Action Save = new AbstractAction("Save") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SavedSimulation.toFile(mapConfig.saveClients(), mapConfig.saveServers());
             }
         };
 
         Action SaveAs = new AbstractAction("Save As...") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                SavedSimulation.toNewFile(mapConfig.saveClients(), mapConfig.saveServers());
+
             }
         };
 
