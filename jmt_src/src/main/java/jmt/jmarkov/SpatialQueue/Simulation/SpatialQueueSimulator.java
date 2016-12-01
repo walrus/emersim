@@ -106,8 +106,6 @@ public class SpatialQueueSimulator implements Runnable {
 
     public void run() {
 
-        setUpSimulation();
-
         // While not paused, process requests or wait for another one to be added
         while (!paused && moreRequests()) {
             if (this.server.getQueue().size() > 0) {
@@ -146,17 +144,18 @@ public class SpatialQueueSimulator implements Runnable {
                 // No requests in queue, so just loop till another is added
             }
         }
-        running = false;
-        gui.stopProcessing();
-        System.out.println("Stopping, total requests served: " + this.server.getNumberOfRequestsServed());
 
+        //IE, if we've 'paused' because there are no more requests, stop.
+        if (!paused) {
+            running = false;
+            gui.stopProcessing();
+        }
     }
 
     private void setUpSimulation() {
         this.running = true;
         this.started = true;
         this.currentTimeMultiplied = 0;
-        // this is the simulation time till run command is called (?)
         this.realTimeStart = new Date().getTime();
 
         // For each client region, Start new thread and run the generator from it
@@ -169,7 +168,6 @@ public class SpatialQueueSimulator implements Runnable {
         this.progressBar = new ProgressBar(timeMultiplier);
         Thread progressBarThread = new Thread(progressBar);
         progressBarThread.start();
-
     }
 
     // Return true iff server has served fewer then maxRequests requests or if maxRequests == 0
@@ -220,31 +218,33 @@ public class SpatialQueueSimulator implements Runnable {
     // Pause the simulation, preserving the current state
     // and allowing for resumption
     public void pause() {
+        System.out.println("%%%%%%%%%% PAUSE CALLED %%%%%%%%%%");
         if (paused) {
             paused = false;
-            //TODO: switch to resume() when ready
             start();
         } else {
             paused = true;
         }
     }
 
-    // Resume the simulation from the paused state
-    public void resume() {
-        //TODO: implement
-    }
-
     // Start the simulator for the first time:
     // Run in new thread and do simulator setup
     public void start() {
+        System.out.println("%%%%%%%%%% START CALLED %%%%%%%%%%");
         Thread simt = new Thread(this);
         simt.setDaemon(true);
+        // Only reset simulation if we aren't resuming
+        if (!this.running) {
+            this.setUpSimulation();
+        }
         simt.start();
     }
 
     // Stop the simulation and calculate the summary statistics. Cannot be resumed.
     public void stop() {
+        System.out.println("%%%%%%%%%% STOP CALLED %%%%%%%%%%");
         this.paused = true;
+        this.running = false;
         this.started = false;
     }
 
@@ -286,5 +286,9 @@ public class SpatialQueueSimulator implements Runnable {
 
     public double getAverageServiceTime() {
         return server.getAverageServiceTime();
+    }
+
+    public boolean isPaused() {
+        return this.paused;
     }
 }

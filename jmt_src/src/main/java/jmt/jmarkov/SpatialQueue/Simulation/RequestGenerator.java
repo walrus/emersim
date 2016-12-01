@@ -18,7 +18,7 @@ public class RequestGenerator implements Runnable {
     }
 
     public void run() {
-        while (this.sim.isRunning() && this.sim.moreRequests()) {
+        while (this.sim.isRunning() && this.sim.moreRequests() && !this.sim.isPaused()) {
             stats.setSI(sim.getAverageServiceTime());
             stats.setLambda(lambda);
             Request newRequest = this.sim.createRequest();

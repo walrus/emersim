@@ -191,6 +191,7 @@ public class GuiComponents{
             } catch (InterruptedException e) {
             }
         }
+
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -253,9 +254,9 @@ public class GuiComponents{
         pause.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sim.pause();
                 if (paused) {
                     paused = false;
-                    sim.pause();
                 } else {
                     paused = true;
                 }
