@@ -31,14 +31,13 @@ public class Statistics {
     private String respStrS = "Avg. Response Time R = ";
     private String respStrE = " s";
     private boolean nonErgodic = false;//if the utilization is less than 1
-
-
-
     private MM1Logic ql;
     private QueueDrawer queueDrawer;
     private DrawNormal dCst;
     private JLabel mediaJobsL;
     private JLabel utilizationL;
+    private JLabel thrL;
+    private JLabel responseL;
     private double R;
 
     public Statistics() {
@@ -51,6 +50,8 @@ public class Statistics {
     public void init() {
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
+        thrL = new JLabel();
+        responseL = new JLabel();
     }
 
 

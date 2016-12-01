@@ -55,6 +55,8 @@ public class SpatialQueueSimulator implements Runnable {
 
     private Statistics stats;
 
+    double systemLambda;
+
     public SpatialQueueSimulator(double timeMultiplier,
                                  Statistics stats,
                                  Server server,
@@ -76,11 +78,16 @@ public class SpatialQueueSimulator implements Runnable {
         this.stats = stats;
         this.queueDrawer = stats.getQueueDrawer();
 
+        double totalLambda = 0;
         //Create a new request generator for each client region
         for (ClientRegion cr : clientRegions) {
             RequestGenerator rg = new RequestGenerator(this, cr.getLambda());
             cr.setRequestGenerator(rg);
+            totalLambda += cr.getLambda();
         }
+
+        this.systemLambda = totalLambda / clientRegions.size();
+        stats.setLambda(systemLambda);
     }
 
     protected Client generateNewSenderWithinArea(ClientRegion clientRegion) {
