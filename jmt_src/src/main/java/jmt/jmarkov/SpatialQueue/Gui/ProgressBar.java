@@ -4,9 +4,12 @@ public class ProgressBar implements Runnable {
 
     private double jobLength = 0;
     private double timeMultiplier;
-
+    private int progressPercentage;
+    //True if resuming from a non zero progress percentage
+    private boolean hasBeenResumed;
     public ProgressBar(double timeMultiplier) {
         this.timeMultiplier = timeMultiplier;
+        this.hasBeenResumed = false;
     }
 
     public synchronized void setJobLength(double jobLength) {
@@ -17,8 +20,16 @@ public class ProgressBar implements Runnable {
     @Override
     public synchronized void run() {
         int percentageStep = 1;
+        // Store the progress percentage
+        int tempProgress = this.progressPercentage;
+
         while (true) {
-            int progressPercentage = 0;
+            this.progressPercentage = 0;
+
+            if (this.hasBeenResumed) {
+                this.progressPercentage = tempProgress;
+                this.hasBeenResumed = false;
+            }
             while (progressPercentage < 100 && jobLength > 0) {
                 // Amount of time to sleep until next increase
                 double increaseInterval = (jobLength / (100 / percentageStep)) / timeMultiplier;
