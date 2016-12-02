@@ -596,6 +596,7 @@ public class GuiComponents{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         int speed = Integer.parseInt(speedValue.getText());
+                        mapConfig.setStraightLineSpeed(speed);
                         speedFrame.dispose();
                     }
                 });

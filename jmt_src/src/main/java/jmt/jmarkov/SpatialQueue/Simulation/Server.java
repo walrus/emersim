@@ -3,6 +3,7 @@ package jmt.jmarkov.SpatialQueue.Simulation;
 import com.teamdev.jxmaps.*;
 import jmt.jmarkov.SpatialQueue.Map.ClientGraphic;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+import jmt.jmarkov.SpatialQueue.Utils.LatLngUtils;
 import jmt.jmarkov.SpatialQueue.Utils.Location;
 import jmt.jmarkov.SpatialQueue.Utils.PolyLineEncoder;
 
@@ -124,10 +125,10 @@ public class Server {
             // Store directions for later
             request.setDirectionsResult(directionsResult);
         } else {
-            double xDistance = clientLocation.getX() - serverLocation.getX();
-            double yDistance = clientLocation.getY() - serverLocation.getY();
-            // Straight line distance in degrees
-            time = Math.sqrt((xDistance * xDistance) + (yDistance * yDistance));
+            // straight line distance in meters
+            double crowFliesDistance = LatLngUtils.calculateDistance(clientLocation.getLocationAsLatLng(), serverLocation.getLocationAsLatLng());
+            // time in seconds
+            time = crowFliesDistance / mapConfig.getStraightLineSpeed();
             time *= 1000;
         }
 
