@@ -86,4 +86,31 @@ public class SavedSimulation {
         return  clientServer;
 
     }
+
+    public static String[] fromFile(String fileName) {
+        String[] clientServer = null;
+        String client;
+        String server;
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Spatial Queue Simulator Files (*.sqs)", ".sqs"));
+
+        try (
+                InputStream fis = new FileInputStream(fileName);
+                InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+                BufferedReader br = new BufferedReader(isr);
+        ) {
+            client = br.readLine();
+            server = br.readLine();
+            clientServer = new String[]{client, server, fileName};
+            return  clientServer;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return  clientServer;
+
+    }
 }

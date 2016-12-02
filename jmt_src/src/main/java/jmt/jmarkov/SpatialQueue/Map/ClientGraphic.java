@@ -155,7 +155,10 @@ public class ClientGraphic implements Entity {
     @Override
     public void remove() {
         polygon.setVisible(false);
-        areaPeri.setVisible(false);
+        if (areaPeri != null) {
+            areaPeri.setVisible(false);
+
+        }
         infoWindow.close();
         clientGraphics.remove(this);
         for (RequestMarker requestMarker : requestMarkers.values())

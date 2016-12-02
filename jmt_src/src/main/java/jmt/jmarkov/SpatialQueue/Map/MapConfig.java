@@ -161,6 +161,12 @@ public class MapConfig extends MapView {
         Gson gson = new Gson();
         Type type = new TypeToken<LinkedList<LatLng>>(){}.getType();
         LinkedList<LatLng> locations = gson.fromJson(jsonString, type);
+        for (ServerGraphic s : serverGraphics) {
+            s.remove();
+        }
+        if (jsonString == null) {
+            return;
+        }
         for (LatLng latLng : locations) {
             new ServerGraphic(this, latLng);
         }
@@ -179,7 +185,12 @@ public class MapConfig extends MapView {
         Gson gson = new Gson();
         Type type = new TypeToken<LinkedList<LinkedList<LatLng>>>(){}.getType();
         LinkedList<LinkedList<LatLng>> paths = gson.fromJson(jsonString, type);
-
+        for (ClientGraphic c : clientGraphics) {
+            c.remove();
+        }
+        if (jsonString == null) {
+            return;
+        }
         for (LinkedList<LatLng> path : paths) {
             new ClientGraphic(path, guiComponents);
         }
