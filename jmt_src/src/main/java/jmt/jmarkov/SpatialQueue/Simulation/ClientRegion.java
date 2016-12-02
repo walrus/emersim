@@ -14,7 +14,7 @@ public class ClientRegion {
     private ClientGraphic clientGraphic;
     private RequestGenerator requestGenerator;
     // Default number of arrivals per second
-    private double lambda = 0.1;
+    private double lambda = 0.002;
 
     public ClientRegion(LatLng[] areaVertices, ClientGraphic clientGraphic) {
         vertices = new Point2D.Double[areaVertices.length];
