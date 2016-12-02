@@ -7,6 +7,7 @@ import jmt.jmarkov.SpatialQueue.Utils.Location;
  */
 public class Client {
 
+    private final ClientRegion clientRegion;
     private Location location;
 
     //How many requests the Client should send
@@ -14,7 +15,8 @@ public class Client {
     private int requestsToSend;
     private int requestsSent;
 
-    public Client(Location location) {
+    public Client(ClientRegion clientRegion, Location location) {
+        this.clientRegion = clientRegion;
         this.location = location;
         this.requestsToSend = 1;
         this.requestsSent = 0;
@@ -27,12 +29,16 @@ public class Client {
 
     //Send a request to the Server
     //Called by the simulator, which provides jobid and time
-    public Request makeRequest(int jobid, double time) {
+    Request makeRequest(int jobid, double time) {
         if (requestsSent < requestsToSend) {
             requestsSent++;
             return new Request(jobid, time, this);
         } else {
             return null;
         }
+    }
+
+    ClientRegion getClientRegion() {
+        return clientRegion;
     }
 }

@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
 import com.teamdev.jxmaps.LatLng;
+import jmt.jmarkov.SpatialQueue.Map.ClientGraphic;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Utils.Location;
 
@@ -10,12 +11,14 @@ import java.awt.geom.Rectangle2D;
 public class ClientRegion {
 
     private Point2D.Double[] vertices;
+    private ClientGraphic clientGraphic;
     private RequestGenerator requestGenerator;
     // Default number of arrivals per second
     private double lambda = 0.1;
 
-    public ClientRegion(LatLng[] areaVertices) {
+    public ClientRegion(LatLng[] areaVertices, ClientGraphic clientGraphic) {
         vertices = new Point2D.Double[areaVertices.length];
+        this.clientGraphic = clientGraphic;
         for (int i = 0; i < areaVertices.length; i++) {
             vertices[i] = new Point2D.Double(areaVertices[i].getLng(), areaVertices[i].getLat());
         }
@@ -60,8 +63,9 @@ public class ClientRegion {
             y = r.getY() + r.getHeight() * Math.random();
         } while (!contains(new Point2D.Double(x, y)));
 
-        MapConfig.displayRequestLocationOnMap(new LatLng(y, x));
-        return new Location(x, y);
+        Location location = new Location(x, y);
+        clientGraphic.addRequestMarker(location);
+        return location;
     }
 
     /* Set the request generator for this client region with rate parameter */
@@ -81,5 +85,9 @@ public class ClientRegion {
         this.lambda = lambda;
         if (this.requestGenerator != null)
             this.requestGenerator.setLambda(lambda);
+    }
+
+    public ClientGraphic getClientGraphic() {
+        return clientGraphic;
     }
 }

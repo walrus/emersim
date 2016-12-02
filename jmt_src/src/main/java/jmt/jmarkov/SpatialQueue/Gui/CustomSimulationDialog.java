@@ -8,29 +8,29 @@ import java.awt.*;
  */
 public class CustomSimulationDialog extends JDialog {
 
+    //Name of custom server and clients
     private String serverName;
     private String clientName;
 
+    //The main frame
     private SpatialQueueFrame aFrame;
 
-    /**
-     * Creates the reusable dialog.
-     */
+    //Dialog that is produced when custom dialog selected
     public CustomSimulationDialog(SpatialQueueFrame aFrame) {
-        super(aFrame, true);
         this.aFrame = aFrame;
-
 
         serverName = "";
         clientName = "";
 
         JPanel p = new JPanel(new BorderLayout(5, 10));
 
+        //create labels for server and client input
         JPanel labels = new JPanel(new GridLayout(0, 1, 2, 5));
         labels.add(new JLabel("Server", SwingConstants.RIGHT));
         labels.add(new JLabel("Client", SwingConstants.RIGHT));
         p.add(labels, BorderLayout.WEST);
 
+        // create text fields so the user can input their chosen names
         JPanel params = new JPanel(new GridLayout(0, 1, 2, 5));
         final JTextField server = new JTextField();
         params.add(server);
@@ -43,15 +43,17 @@ public class CustomSimulationDialog extends JDialog {
 
         this.add(p);
 
+        // create the dialog box
         int result = JOptionPane.showConfirmDialog(
                 null, p, "Custom Simulation Setup", JOptionPane.OK_CANCEL_OPTION);
 
         clientName = client.getText().toString();
         serverName = server.getText().toString();
 
+        //if ok is clicked save the settings and close the dialog
         if (result == 0) {
+            this.dispose();
             aFrame.dispose();
-            aFrame = null;
             SpatialQueueFrame newSqf = new SpatialQueueFrame();
             newSqf.setCustomLabels(clientName, serverName);
             if (clientName.equals("") || serverName.equals("")) {
@@ -69,6 +71,5 @@ public class CustomSimulationDialog extends JDialog {
     public static void main(String[] args) {
         SpatialQueueFrame mf = new SpatialQueueFrame();
         CustomSimulationDialog jobsDialog = new CustomSimulationDialog(mf);
-
     }
 }

@@ -1,14 +1,17 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
 import com.teamdev.jxmaps.*;
+import com.teamdev.jxmaps.Polygon;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
+import jmt.jmarkov.SpatialQueue.Utils.Location;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.*;
 
-class ClientGraphic implements Entity {
+public class ClientGraphic implements Entity {
     private Polygon polygon;
     private InfoWindow infoWindow;
     private Marker marker;
@@ -16,6 +19,7 @@ class ClientGraphic implements Entity {
     private Polyline areaPeri;
     private GuiComponents guiComponents;
     private ClientRegion client;
+    private HashMap<Location, RequestMarker> requestMarkers = new HashMap<>();
 
     ClientGraphic(LatLng latLng, GuiComponents guiComponents) {
         this.guiComponents = guiComponents;
@@ -55,7 +59,7 @@ class ClientGraphic implements Entity {
         generateInfoWindow();
         addEventListeners();
         // Store area for use in simulation
-        this.client = new ClientRegion(getPathAsArray());
+        this.client = new ClientRegion(getPathAsArray(), this);
         clientGraphics.add(this);
     }
 
@@ -90,7 +94,7 @@ class ClientGraphic implements Entity {
             // Remove first vertex marker
             marker.setVisible(false);
 
-            this.client = new ClientRegion(getPathAsArray());
+            this.client = new ClientRegion(getPathAsArray(), this);
             // Store area for use in simulation
             clientGraphics.add(this);
             areaBeingDrawn = null;
@@ -107,19 +111,13 @@ class ClientGraphic implements Entity {
             }
         });
         final Entity entity = this;
-        final ClientGraphic clientGraphic = this;
         polygon.addEventListener("rightclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                new RenameEntityFrame(entity);
+                new RegionSettingsFrame(entity, client);
             }
         });
-        polygon.addEventListener("dblclick", new MapMouseEvent() {
-            @Override
-            public void onEvent(MouseEvent mouseEvent) {
-                new LambdaSliderFrame(clientGraphic);
-            }
-        });
+
     }
 
     private void generateInfoWindow() {
@@ -160,6 +158,20 @@ class ClientGraphic implements Entity {
         areaPeri.setVisible(false);
         infoWindow.close();
         clientGraphics.remove(this);
+        for (RequestMarker requestMarker : requestMarkers.values())
+            requestMarker.remove();
+    }
+
+    public void addRequestMarker(Location location) {
+        requestMarkers.put(location, new RequestMarker(location.getLocationAsLatLng()));
+    }
+
+    public void setRequestMarkerServing(Location location) {
+        requestMarkers.get(location).setServingColour();
+    }
+
+    public void setRequestMarkerServed(Location location) {
+        requestMarkers.get(location).setServedColour();
     }
 
     LinkedList<LatLng> getPath() {

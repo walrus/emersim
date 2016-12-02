@@ -18,8 +18,7 @@ import static jmt.jmarkov.SpatialQueue.Gui.GuiComponents.*;
 public class Statistics {
 
     private static double  T;
-    //To change service time change this variable
-    double S_I;
+
     double U; // Utilization [%]
     double Q; // Average customer in station
     private String nStrS = "Avg. Cust. in Station (Queue + Service) N = ";
@@ -30,6 +29,7 @@ public class Statistics {
     private String thrStrE = " cust./s";
     private String respStrS = "Avg. Response Time R = ";
     private String respStrE = " s";
+
     private boolean nonErgodic = false;//if the utilization is less than 1
     private MM1Logic ql;
     private QueueDrawer queueDrawer;
@@ -47,6 +47,7 @@ public class Statistics {
         dCst = new DrawNormal();
     }
 
+    //initialise components
     public void init() {
         mediaJobsL = new JLabel();
         utilizationL = new JLabel();
@@ -54,7 +55,7 @@ public class Statistics {
         responseL = new JLabel();
     }
 
-
+    // update values for stats in the stats results at the bottom of the gui
     protected void updateFields(SpatialQueueSimulator sim) {
         try {
             Q = ql.mediaJobs();
@@ -74,23 +75,20 @@ public class Statistics {
                 sim.setLambdaZero(false);
             }
         } catch (NonErgodicException e) {
+            // if saturation has been reached
             Q = 0.0;
             U = 0.0;
             mediaJobsL.setText(nStrS + "Saturation");
 
             utilizationL.setForeground(Color.RED);
             utilizationL.setText(uStrS + "Saturation");
-
-
-//            thrL.setText(thrStrS + "Saturation");
             responseL.setText(respStrS + "Saturation");
             nonErgodic = true;
         }
         queueDrawer.setMediaJobs(Q - U);
-//        statiDrawer.repaint();
-
     }
 
+    // generate the initial stats for when the frame is first opened
     protected void generateSimulationStats(JPanel resultsP) {
         // media
         mediaJobsL.setText(nStrS + "0" + nStrE);
@@ -118,16 +116,14 @@ public class Statistics {
 
         ql = new MM1Logic(0, 0);
 
-//        statiDrawer.updateLogic(ql);
         queueDrawer.updateLogic(ql);
         queueDrawer.setMaxJobs(0);
-//        statiDrawer.setMaxJobs(0);
         queueDrawer.setCpuNumber(1);
         updateFields(sim);
     }
 
+    // set the service time
     public void setSI(double sI) {
-        S_I = sI;
         ql.setS(sI / 1000);
         updateFields(sim);
 
@@ -140,10 +136,6 @@ public class Statistics {
 
     public QueueDrawer getQueueDrawer() {
         return queueDrawer;
-    }
-
-    public void setQueueDrawer(QueueDrawer queueDrawer) {
-        this.queueDrawer = queueDrawer;
     }
 
     public MM1Logic getQueueLogic() {

@@ -11,27 +11,32 @@ public class RequestGenerator implements Runnable {
     RequestGenerator(SpatialQueueSimulator sim, double lambda) {
         this.sim = sim;
         // set lambda to be #(arrivals per millisecond)
-        this.lambda = lambda;
+        this.lambda = lambda / 1000;
         stats = new Statistics();
-        stats.setLambda(lambda);
+        stats.setLambda(this.lambda);
         stats.setSI(sim.getAverageServiceTime());
     }
 
     public void run() {
         while (this.sim.isRunning() && this.sim.moreRequests() && !this.sim.isPaused()) {
             stats.setSI(sim.getAverageServiceTime());
-            stats.setLambda(lambda);
+            stats.setLambda(lambda * 1000);
             Request newRequest = this.sim.createRequest();
             this.sim.enqueueRequest(newRequest);
             this.sim.getQueueDrawer().enterQueue();
 
-            double timeToWait = (1 / lambda) / sim.getTimeMultiplier();
+            double timeToWait = getNextArrivalTime(lambda) / sim.getTimeMultiplier();
+            System.out.println(timeToWait);
             try {
                 Thread.sleep((long) timeToWait);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private double getNextArrivalTime(double lambda){
+        return (Math.log(1.0-((Math.random() / 2) + 0.25))/-lambda);
     }
 
     public Statistics getStats() {

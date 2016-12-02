@@ -41,6 +41,10 @@ public class Location {
         this.z = 0;
     }
 
+    public LatLng getLocationAsLatLng() {
+        return new LatLng(y, x);
+    }
+
     public double getX() {
         return x;
     }
@@ -51,5 +55,15 @@ public class Location {
 
     public double getZ() {
         return z;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Location) {
+            Location location = (Location) o;
+            if (location.getX() == x && location.getY() == y && location.getZ() == z)
+                return true;
+        }
+        return false;
     }
 }

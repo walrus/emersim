@@ -18,7 +18,7 @@ public class ClientRegionTest {
             new LatLng(-1.5, 1.5),
             new LatLng(0, 2),
             new LatLng(1.5, 1.5)};
-    ClientRegion polygon = new ClientRegion(vertices);
+    ClientRegion polygon = new ClientRegion(vertices, null);
 
     @Test
     public void canTellWhetherPointIsInRegion() {

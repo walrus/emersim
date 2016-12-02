@@ -9,6 +9,7 @@ import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
 import jmt.jmarkov.SpatialQueue.Gui.Statistics;
+import jmt.jmarkov.SpatialQueue.Gui.SummaryPage;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Utils.Location;
 
@@ -101,7 +102,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     protected Client generateNewSenderWithinArea(ClientRegion clientRegion) {
         Location senderLocation = clientRegion.generatePoint();
-        return new Client(senderLocation);
+        return new Client(clientRegion, senderLocation);
     }
 
     public void run() {
@@ -113,7 +114,9 @@ public class SpatialQueueSimulator implements Runnable {
                 Request currentRequest = this.server.serveRequest(currentTimeMultiplied);
                 // notify visualisation with which job is being served
                 queueDrawer.servingJob(currentRequest.getRequestId());
-                mapConfig.displayRoute(currentRequest.getDirectionsResult());
+                if (mapConfig.getTravelMethod() != MapConfig.TRAVEL_METHOD.AS_CROW_FLIES) {
+                    mapConfig.displayRoute(currentRequest.getDirectionsResult());
+                }
                 // notify progress bar and update the job time and time multiplier
                 this.progressBar.setJobLength(currentRequest.getResponseTime());
                 this.progressBar.setTimeMultiplier(timeMultiplier);
@@ -188,8 +191,7 @@ public class SpatialQueueSimulator implements Runnable {
 
         Client client = this.generateNewSenderWithinArea(this.clientRegions.get(randomInt));
 
-        Request r = client.makeRequest(getNextRequestID(), this.currentTime);
-        return r;
+        return client.makeRequest(getNextRequestID(), this.currentTime);
     }
 
     public synchronized void enqueueRequest(Request newRequest) {
@@ -246,6 +248,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.paused = true;
         this.running = false;
         this.started = false;
+
     }
 
     public float getMaxInterval() {

@@ -1,9 +1,11 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
-import com.teamdev.jxmaps.DirectionsLeg;
-import com.teamdev.jxmaps.DirectionsResult;
+import com.teamdev.jxmaps.*;
+import jmt.jmarkov.SpatialQueue.Map.ClientGraphic;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
+import jmt.jmarkov.SpatialQueue.Utils.LatLngUtils;
 import jmt.jmarkov.SpatialQueue.Utils.Location;
+import jmt.jmarkov.SpatialQueue.Utils.PolyLineEncoder;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -50,6 +52,8 @@ public class Server {
                 if (!requestQueue.isEmpty()) {
                     Request request = getNextRequest();
                     request.serve(currentTime, currentTime + request.getResponseTime());
+                    ClientGraphic clientGraphic = request.getClient().getClientRegion().getClientGraphic();
+                    clientGraphic.setRequestMarkerServing(request.getClient().getLocation());
                     System.out.println("Serving: " + request.getRequestId() + ", distance: " + request.getResponseTime()
                     + ", current time: " + currentTime);
                     setServing(true);
@@ -65,6 +69,8 @@ public class Server {
     }
 
     void stopServing(double currentTime) {
+        ClientGraphic clientGraphic = currentRequest.getClient().getClientRegion().getClientGraphic();
+        clientGraphic.setRequestMarkerServed(currentRequest.getClient().getLocation());
         this.setServing(false);
         this.currentRequest.finishServing(currentTime);
         this.servedRequests.add(this.currentRequest);
@@ -90,15 +96,41 @@ public class Server {
 
     // Given a Request object, calculate the response time in seconds and store it in the request
     void calculateResponseTime(Request request, boolean returnJourney) {
-        Location senderLocation = request.getClient().getLocation();
-        Location receiverLocation = this.getLocation();
+        Location clientLocation = request.getClient().getLocation();
+        Location serverLocation = this.getLocation();
 
-        DirectionsResult directionsResult = mapConfig.handleDirectionCall(senderLocation.getX(), senderLocation.getY(), receiverLocation.getX(), receiverLocation.getY());
-        DirectionsLeg[] legs = directionsResult.getRoutes()[0].getLegs();
-        // Journey duration converted into milliseconds
-        double time = legs[0].getDuration().getValue() * 1000;
-        // Store directions for later
-        request.setDirectionsResult(directionsResult);
+        MapConfig.TRAVEL_METHOD travelMethod = mapConfig.getTravelMethod();
+        TravelMode travelMode = null;
+        switch (travelMethod) {
+            case DRIVING:
+                travelMode = TravelMode.DRIVING;
+                break;
+            case BICYCLING:
+                travelMode = TravelMode.BICYCLING;
+                break;
+            case WALKING:
+                travelMode = TravelMode.WALKING;
+                break;
+            case PUBLIC_TRANSPORT:
+                travelMode = TravelMode.TRANSIT;
+                break;
+        }
+
+        Double time;
+        if (travelMode != null) {
+            DirectionsResult directionsResult = mapConfig.handleDirectionCall(travelMode, clientLocation.getX(), clientLocation.getY(), serverLocation.getX(), serverLocation.getY());
+            DirectionsLeg[] legs = directionsResult.getRoutes()[0].getLegs();
+            // Journey duration converted into milliseconds
+            time = legs[0].getDuration().getValue() * 1000;
+            // Store directions for later
+            request.setDirectionsResult(directionsResult);
+        } else {
+            // straight line distance in meters
+            double crowFliesDistance = LatLngUtils.calculateDistance(clientLocation.getLocationAsLatLng(), serverLocation.getLocationAsLatLng());
+            // time in seconds
+            time = crowFliesDistance / mapConfig.getStraightLineSpeed();
+            time *= 1000;
+        }
 
         if (returnJourney) {
             request.setResponseTime(time * 2);

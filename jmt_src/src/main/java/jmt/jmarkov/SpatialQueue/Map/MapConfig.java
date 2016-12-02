@@ -1,7 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.teamdev.jxmaps.*;
 import com.teamdev.jxmaps.swing.MapView;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
@@ -14,7 +14,7 @@ import javax.swing.plaf.basic.BasicTextFieldUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -30,10 +30,13 @@ public class MapConfig extends MapView {
     static LinkedList<ClientGraphic> clientGraphics = new LinkedList<>();
     static LinkedList<ServerGraphic> serverGraphics = new LinkedList<>();
     private GuiComponents guiComponents;
+    private TRAVEL_METHOD travelMethod = TRAVEL_METHOD.DRIVING;
+    // speed used for crow-flies travel
+    private int straightLineSpeed;
 
     public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE}
+    public enum TRAVEL_METHOD {DRIVING, BICYCLING, WALKING, PUBLIC_TRANSPORT, AS_CROW_FLIES}
 
-    ;
     static BUTTON_STATE buttonState;
 
     public MapConfig(MapViewOptions options, final GuiComponents guiComponents) {
@@ -91,8 +94,8 @@ public class MapConfig extends MapView {
 
     private static final ScheduledExecutorService handler = Executors.newScheduledThreadPool(1);
 
-    public DirectionsResult handleDirectionCall(double x1, double y1, double x2, double y2) {
-        Future<DirectionsResult> directions = handler.schedule(new DirectionsJob(this, x1, y1, x2, y2), RATE_LIMIT, TimeUnit.MILLISECONDS);
+    public DirectionsResult handleDirectionCall(TravelMode travelMode, double x1, double y1, double x2, double y2) {
+        Future<DirectionsResult> directions = handler.schedule(new DirectionsJob(this, travelMode, x1, y1, x2, y2), RATE_LIMIT, TimeUnit.MILLISECONDS);
         DirectionsResult directionsResult = null;
         try {
             directionsResult = directions.get();
@@ -101,43 +104,13 @@ public class MapConfig extends MapView {
         }
         if (directionsResult == null) {
             // If API fails for any reason, retry
-            return handleDirectionCall(x1, y1, x2, y2);
+            return handleDirectionCall(travelMode, x1, y1, x2, y2);
         }
         return directionsResult;
     }
 
     public void displayRoute(DirectionsResult directionsResult) {
         map.getDirectionsRenderer().setDirections(directionsResult);
-    }
-
-    public static void displayRequestLocationOnMap(LatLng latLng) {
-        double strokeWeight = 5;
-        LatLng[] line1Path = new LatLng[2];
-        LatLng[] line2Path = new LatLng[2];
-        Double x = latLng.getLng();
-        Double y = latLng.getLat();
-        line1Path[0] = new LatLng(y, x - 0.00005);
-        line1Path[1] = new LatLng(y, x + 0.00005);
-        line2Path[0] = new LatLng(y + 0.00003, x);
-        line2Path[1] = new LatLng(y - 0.00003, x);
-        Polyline line1 = new Polyline(map);
-        Polyline line2 = new Polyline(map);
-        // Creating a polyline options object
-        PolylineOptions options = new PolylineOptions();
-        // Setting geodesic property value
-        options.setGeodesic(true);
-        // Setting stroke color value
-        options.setStrokeColor("#0000FF");
-        // Setting stroke opacity value
-        options.setStrokeOpacity(1.0);
-        // Setting stroke weight value
-        options.setStrokeWeight(strokeWeight);
-        // Applying options to the polyline
-        line1.setOptions(options);
-        line2.setOptions(options);
-        // Set current perimeter
-        line1.setPath(line1Path);
-        line2.setPath(line2Path);
     }
 
     public void setButtonState(BUTTON_STATE buttonState) {
@@ -159,60 +132,55 @@ public class MapConfig extends MapView {
         return servers;
     }
 
+    public void setTravelMethod(TRAVEL_METHOD travelMethod) {
+        this.travelMethod = travelMethod;
+    }
+
+    public TRAVEL_METHOD getTravelMethod() {
+        return travelMethod;
+    }
+
+    public int getStraightLineSpeed() {
+        return straightLineSpeed;
+    }
+
+    public void setStraightLineSpeed(int straightLineSpeed) {
+        this.straightLineSpeed = straightLineSpeed;
+    }
+
     public String saveServers() {
         LinkedList<LatLng> serverLocations = new LinkedList<>();
         for (ServerGraphic serverGraphic : serverGraphics) {
             serverLocations.add(serverGraphic.getPosition());
         }
-        ObjectMapper mapper = new ObjectMapper();
-        //Object to JSON in String
-        String jsonInString = "";
-        try {
-            jsonInString = mapper.writeValueAsString(serverLocations);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return jsonInString;
+        Gson gson = new Gson();
+        return gson.toJson(serverLocations);
     }
 
     public void loadServers(String jsonString) {
-        ObjectMapper mapper = new ObjectMapper();
-        LinkedList<LatLng> serverLocations = null;
-        try {
-            serverLocations = mapper.readValue(jsonString, LinkedList.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (LatLng latLng : serverLocations) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<LinkedList<LatLng>>(){}.getType();
+        LinkedList<LatLng> locations = gson.fromJson(jsonString, type);
+        for (LatLng latLng : locations) {
             new ServerGraphic(this, latLng);
         }
     }
 
     public String saveClients() {
-        LinkedList<LinkedList> clientPaths = new LinkedList<>();
+        LinkedList<LinkedList<LatLng>> clientPaths = new LinkedList<>();
         for (ClientGraphic clientGraphic : clientGraphics) {
             clientPaths.add(clientGraphic.getPath());
         }
-        ObjectMapper mapper = new ObjectMapper();
-        //Object to JSON in String
-        String jsonInString = "";
-        try {
-            jsonInString = mapper.writeValueAsString(clientPaths);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return jsonInString;
+        Gson gson = new Gson();
+        return gson.toJson(clientPaths);
     }
 
     public void loadClients(String jsonString) {
-        ObjectMapper mapper = new ObjectMapper();
-        LinkedList<LinkedList> clientPaths = null;
-        try {
-            clientPaths = mapper.readValue(jsonString, LinkedList.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (LinkedList<LatLng> path : clientPaths) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<LinkedList<LinkedList<LatLng>>>(){}.getType();
+        LinkedList<LinkedList<LatLng>> paths = gson.fromJson(jsonString, type);
+
+        for (LinkedList<LatLng> path : paths) {
             new ClientGraphic(path, guiComponents);
         }
     }

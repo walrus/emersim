@@ -148,23 +148,13 @@ public class SimulationSizeDialog extends JDialog implements ActionListener, Pro
         //Create the JOptionPane.
         optionPane = new JOptionPane(array, JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION, null, options, options[0]);
 
-
         //Make this dialog display it.
         setContentPane(optionPane);
 
         //Handle window closing correctly.
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent we) {
-                /*
-				 * Instead of directly closing the window,
-				 * we're going to change the JOptionPane's
-				 * value property.
-				 */
-                optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
-            }
-        });
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//
+
 
         //Ensure the text field always gets the first focus.
         addComponentListener(new ComponentAdapter() {
@@ -233,10 +223,12 @@ public class SimulationSizeDialog extends JDialog implements ActionListener, Pro
                         clearAndHide();
                     }
                 }
+                GuiComponents.simSizeSet = true;
             } else { //user closed dialog or clicked cancel
                 typedValue = 0;
                 typedText = null;
                 clearAndHide();
+                GuiComponents.simSizeSet = false;
             }
         }
     }

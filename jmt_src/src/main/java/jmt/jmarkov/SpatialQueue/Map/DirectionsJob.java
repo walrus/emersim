@@ -11,13 +11,15 @@ import static jmt.jmarkov.SpatialQueue.Map.MapConfig.map;
 class DirectionsJob implements Callable<DirectionsResult> {
 
     private MapConfig mapConfig;
+    private TravelMode travelMode;
     private double lat1;
     private double lng1;
     private double lat2;
     private double lng2;
 
-    DirectionsJob(MapConfig mapConfig, double lng1, double lat1, double lng2, double lat2) {
+    DirectionsJob(MapConfig mapConfig, TravelMode travelMode, double lng1, double lat1, double lng2, double lat2) {
         this.mapConfig = mapConfig;
+        this.travelMode = travelMode;
         this.lat1 = lat1;
         this.lng1 = lng1;
         this.lat2 = lat2;
@@ -33,7 +35,7 @@ class DirectionsJob implements Callable<DirectionsResult> {
         // Setting of the destination location to the request
         request.setDestinationString(lat2 + ", " + lng2);
         // Setting of the travel mode
-        request.setTravelMode(TravelMode.DRIVING);
+        request.setTravelMode(travelMode);
         // Calculating the route between locations
         final BlockingQueue<DirectionsResult> directions = new ArrayBlockingQueue<>(1);
         // API call encased in try/catch to prevent errors from crashing simulator
