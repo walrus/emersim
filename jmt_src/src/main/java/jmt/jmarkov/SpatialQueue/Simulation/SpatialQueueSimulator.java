@@ -125,7 +125,7 @@ public class SpatialQueueSimulator implements Runnable {
         while (!paused && moreRequests()) {
             if (this.server.getQueue().size() > 0) {
                 // Serve the next request and grab a link to the request being served
-                Request currentRequest = this.server.serveRequest(currentTimeMultiplied);
+                Request currentRequest = this.server.serveRequest(currentTime);
                 // notify visualisation with which job is being served
                 queueDrawer.servingJob(currentRequest.getRequestId());
                 if (mapConfig.getTravelMethod() != MapConfig.TRAVEL_METHOD.AS_CROW_FLIES) {
