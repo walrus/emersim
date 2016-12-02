@@ -1,5 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Gui;
 
+import jmt.jmarkov.SpatialQueue.Utils.OpenRecentList;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
