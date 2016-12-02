@@ -392,6 +392,7 @@ public class GuiComponents{
                         options[2]);
                 if (choice == JOptionPane.YES_OPTION) {
                     //Save the simulation
+                    Save.actionPerformed(e);
                 } else if (choice == JOptionPane.NO_OPTION) {
                     //refresh the simulator
                     mf.dispose();
@@ -403,19 +404,53 @@ public class GuiComponents{
         Action Open = new AbstractAction("Open...") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String[] clientServer = SavedSimulation.fromFile();
-                mapConfig.loadClients(clientServer[0]);
-                mapConfig.loadServers(clientServer[1]);
-                mf.setTitle("Spatial Queue Simulator - " + clientServer[2]);
-                start.setEnabled(true);
-                client.setEnabled(true);
+                //Custom button text
+                Object[] options = {"Save",
+                        "Don't Save",
+                        "Cancel"};
+                int choice = JOptionPane.showOptionDialog(mf,
+                        "Would you like to save your work?",
+                        "Create New Simulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        2,
+                        null,
+                        options,
+                        options[2]);
+                if (choice == JOptionPane.YES_OPTION) {
+                    //Save the simulation
+                    Save.actionPerformed(e);
+                    String[] clientServer = SavedSimulation.fromFile();
+                    if (clientServer == null) {
+                        return;
+                    }
+                    mapConfig.loadClients(clientServer[0]);
+                    mapConfig.loadServers(clientServer[1]);
+                    mf.setTitle("Spatial Queue Simulator - " + clientServer[2]);
+                    start.setEnabled(true);
+                    client.setEnabled(true);
+                } else if (choice == JOptionPane.NO_OPTION) {
+                    //refresh the simulator
+                    String[] clientServer = SavedSimulation.fromFile();
+                    if (clientServer == null) {
+                        return;
+                    }
+                    mapConfig.loadClients(clientServer[0]);
+                    mapConfig.loadServers(clientServer[1]);
+                    mf.setTitle("Spatial Queue Simulator - " + clientServer[2]);
+                    start.setEnabled(true);
+                    client.setEnabled(true);
+                }
             }
         };
         // creates a save simulation option in the file menu
         Save = new AbstractAction("Save") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SavedSimulation.toExistingFile(mf.getTitle(), mapConfig.saveClients(), mapConfig.saveServers());
+                if (mf.getTitle().equals("Spatial Queue Simulator")) {
+                    SaveAs.actionPerformed(e);
+                } else {
+                    SavedSimulation.toExistingFile(mf.getTitle(), mapConfig.saveClients(), mapConfig.saveServers());
+                }
             }
         };
         // creates a save as simulation option in the file menu
