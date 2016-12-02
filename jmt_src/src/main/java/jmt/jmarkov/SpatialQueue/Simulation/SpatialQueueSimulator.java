@@ -95,7 +95,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     protected Client generateNewSenderWithinArea(ClientRegion clientRegion) {
         Location senderLocation = clientRegion.generatePoint();
-        return new Client(senderLocation);
+        return new Client(clientRegion, senderLocation);
     }
 
     public void run() {
@@ -185,8 +185,7 @@ public class SpatialQueueSimulator implements Runnable {
 
         Client client = this.generateNewSenderWithinArea(this.clientRegions.get(randomInt));
 
-        Request r = client.makeRequest(getNextRequestID(), this.currentTime);
-        return r;
+        return client.makeRequest(getNextRequestID(), this.currentTime);
     }
 
     public synchronized void enqueueRequest(Request newRequest) {

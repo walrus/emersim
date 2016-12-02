@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
 import com.teamdev.jxmaps.*;
+import jmt.jmarkov.SpatialQueue.Map.ClientGraphic;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Utils.Location;
 import jmt.jmarkov.SpatialQueue.Utils.PolyLineEncoder;
@@ -50,6 +51,8 @@ public class Server {
                 if (!requestQueue.isEmpty()) {
                     Request request = getNextRequest();
                     request.serve(currentTime, currentTime + request.getResponseTime());
+                    ClientGraphic clientGraphic = request.getClient().getClientRegion().getClientGraphic();
+                    clientGraphic.setRequestMarkerServing(request.getClient().getLocation());
                     System.out.println("Serving: " + request.getRequestId() + ", distance: " + request.getResponseTime()
                     + ", current time: " + currentTime);
                     setServing(true);
@@ -65,6 +68,8 @@ public class Server {
     }
 
     void stopServing(double currentTime) {
+        ClientGraphic clientGraphic = currentRequest.getClient().getClientRegion().getClientGraphic();
+        clientGraphic.setRequestMarkerServed(currentRequest.getClient().getLocation());
         this.setServing(false);
         this.currentRequest.finishServing(currentTime);
         this.servedRequests.add(this.currentRequest);
