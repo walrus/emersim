@@ -67,22 +67,22 @@ public class SavedSimulation {
         int approved = chooser.showOpenDialog(null);
         if (approved == JFileChooser.APPROVE_OPTION) {
             fileName = chooser.getSelectedFile().toString();
+            try (
+                    InputStream fis = new FileInputStream(fileName);
+                    InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+                    BufferedReader br = new BufferedReader(isr);
+            ) {
+                client = br.readLine();
+                server = br.readLine();
+                clientServer = new String[]{client, server, fileName};
+                return  clientServer;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-        try (
-                InputStream fis = new FileInputStream(fileName);
-                InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-                BufferedReader br = new BufferedReader(isr);
-        ) {
-            client = br.readLine();
-            server = br.readLine();
-            clientServer = new String[]{client, server, fileName};
-            return  clientServer;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return  clientServer;
 
     }
