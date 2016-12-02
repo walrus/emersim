@@ -9,6 +9,7 @@ import jmt.jmarkov.Graphics.constants.DrawSmall;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
 import jmt.jmarkov.SpatialQueue.Simulation.SpatialQueueSimulator;
+import jmt.jmarkov.SpatialQueue.Utils.OpenRecentList;
 import jmt.jmarkov.SpatialQueue.Utils.SavedSimulation;
 import jmt.jmarkov.utils.Formatter;
 
@@ -22,6 +23,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Dictionary;
+import java.util.LinkedList;
 
 /**
  * Created by joshuazeltser on 02/11/2016.
@@ -35,6 +37,8 @@ public class GuiComponents{
     private JButton client;
     private JButton server;
 
+    private Action newMenu;
+    private Action Open;
     private Action Save;
     private Action SaveAs;
 
@@ -46,6 +50,7 @@ public class GuiComponents{
     private JSlider accelerationS;
 
     private SpatialQueueFrame mf;
+    private JMenu openRecentMenu;
     private JMenu settingsMenu;
     private JMenu colorsMenu;
     private JRadioButtonMenuItem gradientItem;
@@ -370,11 +375,10 @@ public class GuiComponents{
 
     // creates a file menu
     private JMenu fileMenu() {
-
-        JMenu fileMenu = new JMenu("File");
+        final JMenu fileMenu = new JMenu("File");
 
         //creates a new option in the file menu
-        Action newMenu = new AbstractAction("New") {
+        newMenu = new AbstractAction("New") {
             //when new is clicked dialog asks if you want to save your work, if not it refreshes
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -401,7 +405,7 @@ public class GuiComponents{
             }
         };
         // creates an open simulation option in the file menu
-        Action Open = new AbstractAction("Open...") {
+        Open = new AbstractAction("Open...") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Custom button text
@@ -423,25 +427,39 @@ public class GuiComponents{
                     if (clientServer == null) {
                         return;
                     }
-                    mapConfig.loadClients(clientServer[0]);
-                    mapConfig.loadServers(clientServer[1]);
-                    mf.setTitle("Spatial Queue Simulator - " + clientServer[2]);
-                    start.setEnabled(true);
-                    client.setEnabled(true);
+                    loadSimulation(clientServer);
                 } else if (choice == JOptionPane.NO_OPTION) {
                     //refresh the simulator
                     String[] clientServer = SavedSimulation.fromFile();
                     if (clientServer == null) {
                         return;
                     }
-                    mapConfig.loadClients(clientServer[0]);
-                    mapConfig.loadServers(clientServer[1]);
-                    mf.setTitle("Spatial Queue Simulator - " + clientServer[2]);
-                    start.setEnabled(true);
-                    client.setEnabled(true);
+                    loadSimulation(clientServer);
                 }
             }
+
+            private void loadSimulation(String[] clientServer) {
+                mapConfig.loadClients(clientServer[0]);
+                mapConfig.loadServers(clientServer[1]);
+                mf.setTitle("Spatial Queue Simulator - " + clientServer[2]);
+                start.setEnabled(true);
+                client.setEnabled(true);
+                OpenRecentList.updateLinkedList(clientServer[2]);
+                openRecentMenu = openRecentSubMenu();
+                fileMenu.removeAll();
+                fileMenu.add(newMenu);
+                fileMenu.add(Open);
+                fileMenu.add(openRecentMenu);
+                fileMenu.addSeparator();
+                fileMenu.add(Save);
+                fileMenu.add(SaveAs);
+                fileMenu.addSeparator();
+                fileMenu.revalidate();
+                fileMenu.repaint();
+
+            }
         };
+
         // creates a save simulation option in the file menu
         Save = new AbstractAction("Save") {
             @Override
@@ -464,9 +482,11 @@ public class GuiComponents{
             }
         };
 
+        openRecentMenu = openRecentSubMenu();
+
         fileMenu.add(newMenu);
         fileMenu.add(Open);
-        fileMenu.add(openRecentSubMenu());
+        fileMenu.add(openRecentMenu);
         fileMenu.addSeparator();
         fileMenu.add(Save);
         fileMenu.add(SaveAs);
@@ -475,36 +495,22 @@ public class GuiComponents{
         return fileMenu;
     }
 
-    // creates an open recent SUB menu. CURRENTLY JUST A TEMPLATE
     private JMenu openRecentSubMenu() {
+        openRecentMenu = new JMenu("Open Recent");
+        OpenRecentList.linkedListFromFile();
+        LinkedList<String> list = OpenRecentList.getProjects();
+        
+        while(!list.isEmpty()) {
+            String temp = list.pop().toString();
+            String simulationName = temp.substring(temp.lastIndexOf('/')+1, temp.length());
+            Action simulationFile = new AbstractAction(simulationName) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
 
-        JMenu openRecentMenu = new JMenu("Open Recent");
-
-        // generates all of the sub menu buttons
-        Action NullSimulation1 = new AbstractAction("Null Simulation 1") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        };
-
-        Action NullSimulation2 = new AbstractAction("Null Simulation 2") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        };
-
-        Action NullSimulation3 = new AbstractAction("Null Simulation 3") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        };
-        openRecentMenu.add(NullSimulation1);
-        openRecentMenu.add(NullSimulation2);
-        openRecentMenu.add(NullSimulation3);
-
+                }
+            };
+            openRecentMenu.add(simulationFile);
+        }
         return openRecentMenu;
     }
 
