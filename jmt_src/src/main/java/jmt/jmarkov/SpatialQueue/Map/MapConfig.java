@@ -31,6 +31,8 @@ public class MapConfig extends MapView {
     static LinkedList<ServerGraphic> serverGraphics = new LinkedList<>();
     private GuiComponents guiComponents;
     private TRAVEL_METHOD travelMethod = TRAVEL_METHOD.DRIVING;
+    // speed used for crow-flies travel
+    private int straightLineSpeed;
 
     public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE}
     public enum TRAVEL_METHOD {DRIVING, BICYCLING, WALKING, PUBLIC_TRANSPORT, AS_CROW_FLIES}
@@ -136,6 +138,14 @@ public class MapConfig extends MapView {
 
     public TRAVEL_METHOD getTravelMethod() {
         return travelMethod;
+    }
+
+    public int getStraightLineSpeed() {
+        return straightLineSpeed;
+    }
+
+    public void setStraightLineSpeed(int straightLineSpeed) {
+        this.straightLineSpeed = straightLineSpeed;
     }
 
     public String saveServers() {
