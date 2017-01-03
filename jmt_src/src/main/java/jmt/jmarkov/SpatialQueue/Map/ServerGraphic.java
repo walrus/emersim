@@ -7,7 +7,13 @@ import jmt.jmarkov.SpatialQueue.Utils.Location;
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.map;
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.serverGraphics;
 
-class ServerGraphic implements Entity {
+class ServerGraphic implements Graphic {
+
+    /*
+     * Represents the server graphic on the map and provides methods to
+     * manage this server
+     */
+
     private Marker marker;
     private InfoWindow infoWindow;
     private Server server;
@@ -31,21 +37,23 @@ class ServerGraphic implements Entity {
                 infoWindow.open(map, marker);
             }
         });
-        final Entity entity = this;
+        final Graphic graphic = this;
         marker.addEventListener("rightclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                new RegionSettingsFrame(entity);
+                new RegionSettingsFrame(graphic);
             }
         });
         this.server = new Server(mapConfig, new Location(latLng));
         serverGraphics.add(this);
     }
 
+    // Returns the position of this server
     LatLng getPosition() {
         return marker.getPosition();
     }
 
+    // Removes this server from the map and simulation
     @Override
     public void remove() {
         marker.setVisible(false);
@@ -53,6 +61,7 @@ class ServerGraphic implements Entity {
         serverGraphics.remove(this);
     }
 
+    // Renames this server
     @Override
     public void rename(String newName) {
         infoWindow.setContent("<b>" + newName + "</b>");

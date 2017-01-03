@@ -5,6 +5,9 @@ import com.teamdev.jxmaps.Polyline;
 import com.teamdev.jxmaps.PolylineOptions;
 
 class RequestMarker {
+    /*
+     * Represents a request location marker on the map
+     */
 
     private final Polyline line1;
     private final Polyline line2;

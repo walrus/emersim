@@ -11,7 +11,13 @@ import java.util.LinkedList;
 
 import static jmt.jmarkov.SpatialQueue.Map.MapConfig.*;
 
-public class ClientGraphic implements Entity {
+public class ClientGraphic implements Graphic {
+
+    /*
+    * Represents the client region graphic on the map and provides methods to
+    * manage these regions
+    */
+
     private Polygon polygon;
     private InfoWindow infoWindow;
     private Marker marker;
@@ -21,6 +27,7 @@ public class ClientGraphic implements Entity {
     private ClientRegion client;
     private HashMap<Location, RequestMarker> requestMarkers = new HashMap<>();
 
+    // Create graphic manually using clicks on map
     ClientGraphic(LatLng latLng, GuiComponents guiComponents) {
         this.guiComponents = guiComponents;
         // Create perimeter line
@@ -50,6 +57,7 @@ public class ClientGraphic implements Entity {
         });
     }
 
+    // Create graphic using predefined path, used in loading from files
     ClientGraphic(LinkedList<LatLng> path, GuiComponents guiComponents) {
         this.guiComponents = guiComponents;
         this.path = path;
@@ -63,6 +71,7 @@ public class ClientGraphic implements Entity {
         clientGraphics.add(this);
     }
 
+    // Adds a vertex to this client region, used in the manual drawing process
     void addVertexToArea(LatLng latLng) {
         path.add(latLng);
         LatLng[] pathArray = getPathAsArray();
@@ -70,16 +79,20 @@ public class ClientGraphic implements Entity {
         areaPeri.setPath(pathArray);
     }
 
+    // Returns the current path vertices in an array
     private LatLng[] getPathAsArray() {
         final LatLng[] pathArray = new LatLng[path.size()];
         path.toArray(pathArray);
         return pathArray;
     }
 
+    // Sets the lambda arrival rate for this client region
     void setLambda(double lambda) {
         client.setLambda(lambda);
     }
 
+    // Completes the manual process of drawing this client region and displays
+    // the area as a polygon on the map
     private void finaliseArea() {
         if (path.size() < 3) {
             // Error, area must have >= 3 vertices
@@ -103,6 +116,8 @@ public class ClientGraphic implements Entity {
         }
     }
 
+    // Add event listeners to client graphic to allow modification on names
+    // and lambda variables
     private void addEventListeners() {
         polygon.addEventListener("click", new MapMouseEvent() {
             @Override
@@ -110,16 +125,17 @@ public class ClientGraphic implements Entity {
                 infoWindow.open(map, polygon.getPaths()[0][0]);
             }
         });
-        final Entity entity = this;
+        final Graphic graphic = this;
         polygon.addEventListener("rightclick", new MapMouseEvent() {
             @Override
             public void onEvent(MouseEvent mouseEvent) {
-                new RegionSettingsFrame(entity, client);
+                new RegionSettingsFrame(graphic, client);
             }
         });
 
     }
 
+    // Creates the name label for this client graphic
     private void generateInfoWindow() {
         // Creating an information window
         infoWindow = new InfoWindow(map);
@@ -131,6 +147,7 @@ public class ClientGraphic implements Entity {
         infoWindow.open(map, polygon.getPaths()[0][0]);
     }
 
+    // Creates the polygon graphic for this client
     private void generatePolygon() {
         polygon = new Polygon(map);
         // Initializing the polygon with the created path
@@ -152,6 +169,7 @@ public class ClientGraphic implements Entity {
         polygon.setOptions(options);
     }
 
+    // Removes this client from the simulation
     @Override
     public void remove() {
         polygon.setVisible(false);
@@ -162,27 +180,34 @@ public class ClientGraphic implements Entity {
             requestMarker.remove();
     }
 
+    // Adds a marker to the map indicating that a request has arrived from that
+    // location
     public void addRequestMarker(Location location) {
         requestMarkers.put(location, new RequestMarker(location.getLocationAsLatLng()));
     }
 
+    // Changes the colour of the request marker at location to indicate it is being served
     public void setRequestMarkerServing(Location location) {
         requestMarkers.get(location).setServingColour();
     }
 
+    // Changes the colour of the request marker at location to indicate it has been served
     public void setRequestMarkerServed(Location location) {
         requestMarkers.get(location).setServedColour();
     }
 
+    // Returns the path of vertices surrounding the client region
     LinkedList<LatLng> getPath() {
         return path;
     }
 
+    // Renames the current client region
     @Override
     public void rename(String newName) {
         infoWindow.setContent("<b>" + newName + "</b>");
     }
 
+    // Returns the name of the current region without HTML tags
     @Override
     public String getName() {
         String html = infoWindow.getContent();
@@ -192,10 +217,12 @@ public class ClientGraphic implements Entity {
         return s[0];
     }
 
+    // Returns the polygon graphic corresponding to this client
     public Polygon getPolygon() {
         return polygon;
     }
 
+    // Returns the ClientRegion object corresponding to this client
     ClientRegion getClientRegion() {
         return client;
     }
