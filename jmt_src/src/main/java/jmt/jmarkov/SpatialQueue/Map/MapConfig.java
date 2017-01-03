@@ -90,10 +90,13 @@ public class MapConfig extends MapView {
     }
 
     // API call handler
+    // Rate limit for JxMaps API, defined as the minimum time between API calls
     private static final int RATE_LIMIT = 1000;
 
+    // Executor service for API calls to ensure that the rate limit is not exceeded
     private static final ScheduledExecutorService handler = Executors.newScheduledThreadPool(1);
 
+    // Creates a new API call to be scheduled in the queue
     public DirectionsResult handleDirectionCall(TravelMode travelMode, double x1, double y1, double x2, double y2) {
         Future<DirectionsResult> directions = handler.schedule(new DirectionsJob(this, travelMode, x1, y1, x2, y2), RATE_LIMIT, TimeUnit.MILLISECONDS);
         DirectionsResult directionsResult = null;
@@ -109,14 +112,17 @@ public class MapConfig extends MapView {
         return directionsResult;
     }
 
+    // Displays the given directions on the map, to visualise the current job
     public void displayRoute(DirectionsResult directionsResult) {
         map.getDirectionsRenderer().setDirections(directionsResult);
     }
 
+    // Notifies the map of changes to the buttons in the GUI
     public void setButtonState(BUTTON_STATE buttonState) {
         this.buttonState = buttonState;
     }
 
+    // Returns the ClientRegion objects that correspond to clients placed on the map
     public LinkedList<ClientRegion> getClientRegions() {
         LinkedList<ClientRegion> clientRegions = new LinkedList<>();
         for (ClientGraphic c : clientGraphics) {
@@ -125,6 +131,7 @@ public class MapConfig extends MapView {
         return clientRegions;
     }
 
+    // Returns the Server objects that correspond to servers placed on the map
     public LinkedList<Server> getServers() {
         LinkedList<Server> servers = new LinkedList<>();
         for (ServerGraphic s : serverGraphics)
@@ -148,6 +155,7 @@ public class MapConfig extends MapView {
         this.straightLineSpeed = straightLineSpeed;
     }
 
+    // Saves the server objects currently placed into a string to be loaded again later
     public String saveServers() {
         LinkedList<LatLng> serverLocations = new LinkedList<>();
         for (ServerGraphic serverGraphic : serverGraphics) {
@@ -157,6 +165,7 @@ public class MapConfig extends MapView {
         return gson.toJson(serverLocations);
     }
 
+    // Loads the servers as defined by the given string
     public void loadServers(String jsonString) {
         Gson gson = new Gson();
         Type type = new TypeToken<LinkedList<LatLng>>(){}.getType();
@@ -166,6 +175,7 @@ public class MapConfig extends MapView {
         }
     }
 
+    // Saves the client objects currently placed into a string to be loaded again later
     public String saveClients() {
         LinkedList<LinkedList<LatLng>> clientPaths = new LinkedList<>();
         for (ClientGraphic clientGraphic : clientGraphics) {
@@ -175,6 +185,7 @@ public class MapConfig extends MapView {
         return gson.toJson(clientPaths);
     }
 
+    // Loads the clients as defined by the given string
     public void loadClients(String jsonString) {
         Gson gson = new Gson();
         Type type = new TypeToken<LinkedList<LinkedList<LatLng>>>(){}.getType();
