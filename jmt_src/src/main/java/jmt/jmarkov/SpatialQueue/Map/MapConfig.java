@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MapConfig extends MapView {
 
-    private static final String INITIAL_LOCATION = "Imperial College London, SW7 2AZ";
+    private static final LatLng INITIAL_LOCATION = new LatLng(51.498813, -0.174877);
     private OptionsWindow optionsWindow;
     static ClientGraphic areaBeingDrawn;
     static Map map;
@@ -60,7 +60,7 @@ public class MapConfig extends MapView {
                 options.setMapTypeControlOptions(controlOptions);
                 // Setting map options
                 map.setOptions(options);
-                performGeocode(INITIAL_LOCATION);
+                map.setCenter(INITIAL_LOCATION);
 
                 // Event handler for adding receivers
                 map.addEventListener("click", new MapMouseEvent() {
