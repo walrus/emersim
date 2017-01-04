@@ -23,7 +23,7 @@ public class APIErrorDialog extends JFrame {
 
 
         JOptionPane.showMessageDialog(this, "A route could not be calculated for this journey," +
-                "please choose another travel mode and try again.");
+                " please choose another travel mode and try again.");
         
         this.pack();
         this.setVisible(true);
