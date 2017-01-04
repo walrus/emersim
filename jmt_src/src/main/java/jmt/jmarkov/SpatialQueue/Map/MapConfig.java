@@ -33,6 +33,8 @@ public class MapConfig extends MapView {
     private TRAVEL_METHOD travelMethod = TRAVEL_METHOD.DRIVING;
     // speed used for crow-flies travel
     private int straightLineSpeed;
+    // Holds current line drawn for visualisation of crow-flies simulations
+    private Polyline route;
 
     public enum BUTTON_STATE {ADD_CLIENT, DRAWING_CLIENT, ADD_RECEIVER, NONE}
     public enum TRAVEL_METHOD {DRIVING, BICYCLING, WALKING, PUBLIC_TRANSPORT, AS_CROW_FLIES}
@@ -114,7 +116,43 @@ public class MapConfig extends MapView {
 
     // Displays the given directions on the map, to visualise the current job
     public void displayRoute(DirectionsResult directionsResult) {
+        // Hide current current crow-flies route (if applicable)
+        if (route != null)
+            route.setVisible(false);
         map.getDirectionsRenderer().setDirections(directionsResult);
+    }
+
+    public void displayCrowFliesRoute(LatLng start, LatLng end) {
+        // Hide current current crow-flies route (if applicable)
+        if (route != null)
+            route.setVisible(false);
+        // Create perimeter line
+        route = new Polyline(map);
+        // Creating a polyline options object
+        PolylineOptions options = new PolylineOptions();
+        // Setting geodesic property value
+        options.setGeodesic(true);
+        // Setting stroke color value
+        options.setStrokeColor("#6EABDA");
+        // Setting stroke opacity value
+        options.setStrokeOpacity(1.0);
+        // Setting stroke weight value
+        options.setStrokeWeight(3.0);
+        // Applying options to the polyline
+        route.setOptions(options);
+        LatLng[] routePath = {start, end};
+        // Set line path as route
+        route.setPath(routePath);
+
+        // Centre map on route path
+        double lowLat = (start.getLat() > end.getLat()) ? end.getLat() : start.getLat();
+        double highLat = (start.getLat() > end.getLat()) ? start.getLat() : end.getLat();
+        double lowLng = (start.getLng() > end.getLng()) ? end.getLng() : start.getLng();
+        double highLng = (start.getLng() > end.getLng()) ? start.getLng() : end.getLng();
+        LatLng sw = new LatLng(lowLat, lowLng);
+        LatLng ne = new LatLng(highLat, highLng);
+        LatLngBounds bounds = new LatLngBounds(sw, ne);
+        map.fitBounds(bounds);
     }
 
     // Notifies the map of changes to the buttons in the GUI
