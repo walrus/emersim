@@ -1,7 +1,9 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
 import com.teamdev.jxmaps.*;
+import jmt.jmarkov.SpatialQueue.Map.APIErrorDialog;
 import jmt.jmarkov.SpatialQueue.Map.ClientGraphic;
+import jmt.jmarkov.SpatialQueue.Map.DirectionsNotFoundException;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Utils.LatLngUtils;
 import jmt.jmarkov.SpatialQueue.Utils.Location;
@@ -118,7 +120,13 @@ public class Server {
 
         Double time;
         if (travelMode != null) {
-            DirectionsResult directionsResult = mapConfig.handleDirectionCall(travelMode, clientLocation.getX(), clientLocation.getY(), serverLocation.getX(), serverLocation.getY());
+            DirectionsResult directionsResult = null;
+            try {
+                directionsResult = mapConfig.handleDirectionCall(travelMode, clientLocation.getX(), clientLocation.getY(), serverLocation.getX(), serverLocation.getY());
+            } catch (DirectionsNotFoundException e) {
+                // Directions could not be calculated so we must inform user and stop simulation
+                new APIErrorDialog();
+            }
             DirectionsLeg[] legs = directionsResult.getRoutes()[0].getLegs();
             // Journey duration converted into milliseconds
             time = legs[0].getDuration().getValue() * 1000;
