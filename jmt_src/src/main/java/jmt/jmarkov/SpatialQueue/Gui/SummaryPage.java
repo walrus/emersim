@@ -16,13 +16,13 @@ public class SummaryPage extends JFrame {
     private GridBagConstraints c ;
 
     //stats units and names
-    private String nStrS = "Avg. Cust. N";
+    private String nStrS = "No. of Customers";
     private String nStrE = " cust.";
-    private String uStrS = "Avg. Utilization U";
+    private String uStrS = "Average Utilization";
     private String uStrE = "";
-    private String thrStrS = "Avg. Throughput X";
+    private String thrStrS = "Average Throughput";
     private String thrStrE = " cust./s";
-    private String respStrS = "Avg. Response Time R";
+    private String respStrS = "Avg. Response Time";
     private String respStrE = " s";
 
     public SummaryPage(SpatialQueueSimulator sim) {
