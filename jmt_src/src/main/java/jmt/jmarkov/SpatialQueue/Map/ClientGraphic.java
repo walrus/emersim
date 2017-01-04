@@ -176,6 +176,10 @@ public class ClientGraphic implements Graphic {
         areaPeri.setVisible(false);
         infoWindow.close();
         clientGraphics.remove(this);
+        removeRequestMarkers();
+    }
+
+    public void removeRequestMarkers() {
         for (RequestMarker requestMarker : requestMarkers.values())
             requestMarker.remove();
     }

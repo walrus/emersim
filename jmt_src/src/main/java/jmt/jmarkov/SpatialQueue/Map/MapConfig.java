@@ -159,6 +159,12 @@ public class MapConfig extends MapView {
         this.straightLineSpeed = straightLineSpeed;
     }
 
+    public void removeAllRequestMarkers() {
+        for (ClientGraphic c : clientGraphics) {
+            c.removeRequestMarkers();
+        }
+    }
+
     // Saves the server objects currently placed into a string to be loaded again later
     public String saveServers() {
         LinkedList<LatLng> serverLocations = new LinkedList<>();
@@ -200,7 +206,7 @@ public class MapConfig extends MapView {
         }
     }
 
-    // Below this is code provided for location search
+    // Below this is code provided by JxMaps for location search
 
     @Override
     public void addNotify() {

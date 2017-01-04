@@ -9,7 +9,6 @@ import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
 import jmt.jmarkov.SpatialQueue.Gui.Statistics;
-import jmt.jmarkov.SpatialQueue.Gui.SummaryPage;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Utils.Location;
 
@@ -59,26 +58,22 @@ public class SpatialQueueSimulator implements Runnable {
 
     double systemLambda;
 
-    private GuiComponents gui;
-
-
-    public SpatialQueueSimulator(GuiComponents gui, double timeMultiplier, Server server, int maxRequests ) {
+    public SpatialQueueSimulator(double timeMultiplier, Server server, int maxRequests ) {
 
         super();
-        this.gui = gui;
         currentTime = 0;
         setTimeMultiplier(timeMultiplier);
         this.server = server;
-        this.mapConfig = gui.getMapConfig();
+        this.mapConfig = GuiComponents.getMapConfig();
         this.clientRegions = mapConfig.getClientRegions();
         this.currentRequestID = 0;
         this.maxRequests = maxRequests;
 
-        this.returnJourney = gui.isReturnJourney();
+        this.returnJourney = GuiComponents.isReturnJourney();
         // lambda is #(number of requests per second)
 
         this.maxInterval = 3;
-        this.stats = gui.getStats();
+        this.stats = GuiComponents.getStats();
         this.queueDrawer = stats.getQueueDrawer();
 
         double totalLambda = 0;
@@ -162,7 +157,7 @@ public class SpatialQueueSimulator implements Runnable {
             }
         }
         running = false;
-        gui.stopProcessing();
+        GuiComponents.stopProcessing();
         System.out.println("Stopping, total requests served: " + this.server.getNumberOfRequestsServed());
 
     }
