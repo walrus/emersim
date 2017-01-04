@@ -38,7 +38,7 @@ public class RegionSettingsFrame extends JFrame {
         JPanel mainPanel = new JPanel(new GridLayout(3, 0));
         JPanel labelPanel = new JPanel(new GridLayout(3,1));
 
-        JLabel lambdaLabel = new JLabel("Lambda");
+        JLabel lambdaLabel = new JLabel("Throughput");
         JLabel nameLabel = new JLabel("Name");
         JButton delete = new JButton("Delete Region");
         delete.addActionListener(new ActionListener() {
