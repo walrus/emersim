@@ -5,6 +5,7 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
 
+import com.teamdev.jxmaps.LatLng;
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Gui.ProgressBar;
@@ -130,6 +131,11 @@ public class SpatialQueueSimulator implements Runnable {
                 queueDrawer.servingJob(currentRequest.getRequestId());
                 if (mapConfig.getTravelMethod() != MapConfig.TRAVEL_METHOD.AS_CROW_FLIES) {
                     mapConfig.displayRoute(currentRequest.getDirectionsResult());
+                }
+                else {
+                    LatLng serverLocation = server.getLocation().getLocationAsLatLng();
+                    LatLng clientLocation = currentRequest.getClient().getLocation().getLocationAsLatLng();
+                    mapConfig.displayCrowFliesRoute(serverLocation, clientLocation);
                 }
                 // notify progress bar and update the job time and time multiplier
                 progressBar.setJobLength(currentRequest.getResponseTime());
