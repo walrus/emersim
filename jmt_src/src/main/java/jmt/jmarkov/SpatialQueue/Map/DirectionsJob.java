@@ -32,7 +32,7 @@ class DirectionsJob implements Callable<DirectionsResult> {
 
     // Calls the JxMaps API and returns the result
     @Override
-    public DirectionsResult call() throws Exception {
+    public DirectionsResult call() throws DirectionsNotFoundException, CallRateExceededException {
         // Creating a directions request
         final DirectionsRequest request = new DirectionsRequest();
         // Setting of the origin location to the request
@@ -43,6 +43,7 @@ class DirectionsJob implements Callable<DirectionsResult> {
         request.setTravelMode(travelMode);
         // Calculating the route between locations
         final BlockingQueue<DirectionsResult> directions = new ArrayBlockingQueue<>(1);
+        final BlockingQueue<Boolean> resultStatus = new ArrayBlockingQueue<>(1);
         // API call encased in try/catch to prevent errors from crashing simulator
         try {
             mapConfig.getServices().getDirectionService().route(request, new DirectionsRouteCallback(map) {
@@ -51,15 +52,35 @@ class DirectionsJob implements Callable<DirectionsResult> {
                     // Checking of the operation status
                     if (status == DirectionsStatus.OK) {
                         directions.add(result);
+                        resultStatus.add(true);
                     } else {
-                        System.out.println("Error with request");
+                        System.out.println("JxMaps API Error - Directions not found");
+                        resultStatus.add(false);
                     }
                 }
             });
         } catch (Exception e) {
-            System.out.println("JxMaps API Error");
-            return null;
+            System.out.println("JxMaps API Error - Call rate exceeded");
+            throw new CallRateExceededException();
         }
-        return directions.take();
+        try {
+            if (!resultStatus.take()) {
+                // No directions could be calculated for this travel mode
+                throw new DirectionsNotFoundException();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            // Critical error so exit
+            System.exit(-1);
+        }
+        DirectionsResult directionsResult = null;
+        try {
+            directionsResult = directions.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            // Critical error so exit
+            System.exit(-1);
+        }
+        return directionsResult;
     }
 }

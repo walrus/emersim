@@ -16,10 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Type;
 import java.util.LinkedList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class MapConfig extends MapView {
 
@@ -99,17 +96,24 @@ public class MapConfig extends MapView {
     private static final ScheduledExecutorService handler = Executors.newScheduledThreadPool(1);
 
     // Creates a new API call to be scheduled in the queue
-    public DirectionsResult handleDirectionCall(TravelMode travelMode, double x1, double y1, double x2, double y2) {
+    public DirectionsResult handleDirectionCall(TravelMode travelMode, double x1, double y1, double x2, double y2) throws DirectionsNotFoundException {
         Future<DirectionsResult> directions = handler.schedule(new DirectionsJob(this, travelMode, x1, y1, x2, y2), RATE_LIMIT, TimeUnit.MILLISECONDS);
         DirectionsResult directionsResult = null;
         try {
             directionsResult = directions.get();
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-        if (directionsResult == null) {
-            // If API fails for any reason, retry
-            return handleDirectionCall(travelMode, x1, y1, x2, y2);
+            // Critical error so exit
+            System.exit(-1);
+        } catch (ExecutionException e) {
+            Throwable rootException = e.getCause();
+            if (rootException instanceof DirectionsNotFoundException) {
+                throw (DirectionsNotFoundException) rootException;
+            }
+            if (rootException instanceof CallRateExceededException) {
+                // Retry API call
+                return handleDirectionCall(travelMode, x1, y1, x2, y2);
+            }
         }
         return directionsResult;
     }
@@ -193,6 +197,12 @@ public class MapConfig extends MapView {
         this.straightLineSpeed = straightLineSpeed;
     }
 
+    public void removeAllRequestMarkers() {
+        for (ClientGraphic c : clientGraphics) {
+            c.removeRequestMarkers();
+        }
+    }
+
     // Saves the server objects currently placed into a string to be loaded again later
     public String saveServers() {
         LinkedList<LatLng> serverLocations = new LinkedList<>();
@@ -234,7 +244,7 @@ public class MapConfig extends MapView {
         }
     }
 
-    // Below this is code provided for location search
+    // Below this is code provided by JxMaps for location search
 
     @Override
     public void addNotify() {

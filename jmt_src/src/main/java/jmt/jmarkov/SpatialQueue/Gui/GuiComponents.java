@@ -31,10 +31,10 @@ import java.util.LinkedList;
 public class GuiComponents{
 
     //Gui buttons
-    private JButton start;
-    private JButton pause;
-    private JButton stop;
-    private JButton client;
+    private static JButton start;
+    private static JButton pause;
+    private static JButton stop;
+    private static JButton client;
     private JButton server;
 
     private Action newMenu;
@@ -46,10 +46,10 @@ public class GuiComponents{
     static DrawConstrains dCst;
     static QueueDrawer queueDrawer;
 
-    private MapConfig mapConfig;
-    private JSlider accelerationS;
+    private static MapConfig mapConfig;
+    private static JSlider accelerationS;
 
-    private SpatialQueueFrame mf;
+    private static SpatialQueueFrame mf;
     private JMenu openRecentMenu;
     private JMenu settingsMenu;
     private JMenu colorsMenu;
@@ -61,8 +61,8 @@ public class GuiComponents{
 
     private boolean gradientF = false;
     private boolean paused = false;
-    private boolean returnJourney;
-    private boolean stopped;
+    private static boolean returnJourney;
+    private static boolean stopped;
     static boolean simSizeSet;
 
     private String simServer;
@@ -78,7 +78,7 @@ public class GuiComponents{
     private JCheckBoxMenuItem publicTransport;
     private JCheckBoxMenuItem fly;
 
-    private Statistics stats;
+    private static Statistics stats;
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
@@ -180,7 +180,7 @@ public class GuiComponents{
     }
 
     // stop threads that are running and set the buttons accordingly
-    public void stopProcessing() {
+    public static void stopProcessing() {
         //stop simulator
         sim.stop();
 
@@ -217,43 +217,47 @@ public class GuiComponents{
                 stopProcessing();
             }
         });
-
     }
 
     // create a start button
     private void startButton() {
         start.setEnabled(false);
-        final GuiComponents gui = this;
         simSizeSet = false;
         stopped = false;
 
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                client.setEnabled(false);
-
-                //display dialog to set the arrivals to unlimited or a fixed number
-                SimulationSizeDialog jobsDialog = new SimulationSizeDialog(mf);
-                jobsDialog.pack();
-                jobsDialog.setLocationRelativeTo(mf);
-                jobsDialog.setVisible(true);
-
-                // if mode set create a new simulator and run it
-                if (simSizeSet) {
-                    queueDrawer.setMediaJobs(stats.Q - stats.U);
-
-                    // Get one server TODO: support for multiple servers
-                    Server server = mapConfig.getServers().get(0);
-
-                    sim = new SpatialQueueSimulator(gui, accelerationS.getValue(), server, jobsDialog.getTypedValue());
-
-                    sim.start();
-                    start.setEnabled(false);
-                    stop.setEnabled(true);
-                    pause.setEnabled(true);
-                }
+                setupSimulation();
             }
         });
+    }
+
+    // Creates a new simulation with the current graphical objects and starts it
+    private void setupSimulation() {
+        mapConfig.removeAllRequestMarkers();
+        client.setEnabled(false);
+
+        //display dialog to set the arrivals to unlimited or a fixed number
+        SimulationSizeDialog jobsDialog = new SimulationSizeDialog(mf);
+        jobsDialog.pack();
+        jobsDialog.setLocationRelativeTo(mf);
+        jobsDialog.setVisible(true);
+
+        // if mode set create a new simulator and run it
+        if (simSizeSet) {
+            queueDrawer.setMediaJobs(stats.Q - stats.U);
+
+            // Get one server TODO: support for multiple servers
+            Server server = mapConfig.getServers().get(0);
+
+            sim = new SpatialQueueSimulator(accelerationS.getValue(), server, jobsDialog.getTypedValue());
+
+            sim.start();
+            start.setEnabled(false);
+            stop.setEnabled(true);
+            pause.setEnabled(true);
+        }
     }
 
     // create a pause button
@@ -766,7 +770,6 @@ public class GuiComponents{
         };
         sizeMenu.add(drawSmallAction);
 
-        // Action drawNormalAction = new AbstractAction("Normali") {
         Action drawNormalAction = new AbstractAction("Normal") {
 
             private static final long serialVersionUID = 1L;
@@ -837,17 +840,17 @@ public class GuiComponents{
     }
 
     // get the stats corresponding to this simulation
-    public Statistics getStats() {
+    public static Statistics getStats() {
         return stats;
     }
 
     // get the map corresponding to this simulation
-    public MapConfig getMapConfig() {
+    public static MapConfig getMapConfig() {
         return mapConfig;
     }
 
     // is a return journey included
-    public boolean isReturnJourney() {
+    public static boolean isReturnJourney() {
         return returnJourney;
     }
 }
