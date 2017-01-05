@@ -130,13 +130,4 @@ public class SpatialQueueFrame extends JFrame implements ActionListener, Propert
         guiComponents.setJobParam(client);
     }
 
-    public void setTitleToSavedSimulation(String fileTitle) {
-        setTitle("Spatial Queue Simulator - " + fileTitle);
-    }
-
-    public String getButtonNames() {
-        return guiComponents.getSimServer() + " " + guiComponents.getSimClient();
-    }
-
-
 }

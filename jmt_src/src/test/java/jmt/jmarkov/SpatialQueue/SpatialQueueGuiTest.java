@@ -2,6 +2,7 @@ package jmt.jmarkov.SpatialQueue;
 
 import jmt.gui.common.startScreen.GraphStartScreen;
 import jmt.jmarkov.QueueTypeDialog;
+import jmt.jmarkov.SpatialQueue.Gui.SimulationSizeDialog;
 import jmt.jmarkov.SpatialQueue.Gui.SpatialQueueFrame;
 import jmt.util.ShortDescriptionButtonMatcher;
 import jmt.util.TextButtonMatcher;
@@ -9,6 +10,7 @@ import jmt.util.TextButtonMatcher;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.finder.WindowFinder;
+import org.fest.swing.fixture.DialogFixture;
 import org.fest.swing.fixture.FrameFixture;
 import org.junit.After;
 import org.junit.Before;
@@ -16,8 +18,6 @@ import org.junit.Test;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
-
-import static org.junit.Assert.assertTrue;
 
 public class SpatialQueueGuiTest {
     private FrameFixture window;
@@ -191,61 +191,282 @@ public class SpatialQueueGuiTest {
 
     }
 
+    @Test
+    public void afterStartPauseAndStopEnabledStartDisabled() throws AWTException {
+        window.button(new ShortDescriptionButtonMatcher(GraphStartScreen.JMCH_SHORT_DESCRIPTION)).click();
+        FrameFixture optionDialog = WindowFinder.findFrame(QueueTypeDialog.class).using(window.robot);
+        optionDialog.button(new TextButtonMatcher("Spatial Queue")).click();
+        FrameFixture jmch = WindowFinder.findFrame(SpatialQueueFrame.class).using(window.robot);
+        jmch.button(new TextButtonMatcher("Add Server")).click();
+        Robot robot = new Robot();
+        robot.mouseMove(400, 200);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        jmch.button(new TextButtonMatcher("Add Client")).click();
+
+        robot.mouseMove(500, 350);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(600, 300);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(500, 200);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(500, 340);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        jmch.button(new TextButtonMatcher("Start")).click();
+
+        DialogFixture startMenu = WindowFinder.findDialog(SimulationSizeDialog.class).using(window.robot);
+        startMenu.button(new TextButtonMatcher("Enter")).click();
 
 
 
 
+        jmch.button(new TextButtonMatcher("Pause")).requireEnabled();
+        jmch.button(new TextButtonMatcher("Stop")).requireEnabled();
+        jmch.button(new TextButtonMatcher("Start")).requireDisabled();
+
+    }
+
+    @Test
+    public void afterPauseStartAndStopEnabled() throws AWTException {
+        window.button(new ShortDescriptionButtonMatcher(GraphStartScreen.JMCH_SHORT_DESCRIPTION)).click();
+        FrameFixture optionDialog = WindowFinder.findFrame(QueueTypeDialog.class).using(window.robot);
+        optionDialog.button(new TextButtonMatcher("Spatial Queue")).click();
+        FrameFixture jmch = WindowFinder.findFrame(SpatialQueueFrame.class).using(window.robot);
+        jmch.button(new TextButtonMatcher("Add Server")).click();
+        Robot robot = new Robot();
+        robot.mouseMove(400, 200);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
+        jmch.button(new TextButtonMatcher("Add Client")).click();
 
-//    @Test
-//    public void startButtonIsDisabledAfterClicked() {
-//        window.button(new ShortDescriptionButtonMatcher(GraphStartScreen.JMCH_SHORT_DESCRIPTION)).click();
-//        FrameFixture optionDialog = WindowFinder.findFrame(QueueTypeDialog.class).using(window.robot);
-//        optionDialog.button(new TextButtonMatcher("Spatial Queue")).click();
-//        FrameFixture jmch = WindowFinder.findFrame(SpatialQueueFrame.class).using(window.robot);
-//        jmch.button(new TextButtonMatcher("Start")).click();
-//        jmch.button(new TextButtonMatcher("Start")).requireDisabled();
-//    }
-//
-//    @Test
-//    public void pauseAndStopButtonsEnabledAfterStartClicked() {
-//        window.button(new ShortDescriptionButtonMatcher(GraphStartScreen.JMCH_SHORT_DESCRIPTION)).click();
-//        FrameFixture optionDialog = WindowFinder.findFrame(QueueTypeDialog.class).using(window.robot);
-//        optionDialog.button(new TextButtonMatcher("Spatial Queue")).click();
-//        FrameFixture jmch = WindowFinder.findFrame(SpatialQueueFrame.class).using(window.robot);
-//        jmch.button(new TextButtonMatcher("Start")).click();
-//        jmch.button(new TextButtonMatcher("Pause")).requireEnabled();
-//        jmch.button(new TextButtonMatcher("Stop")).requireEnabled();
-//    }
-//
-//    @Test
-//    public void pauseButtonAndStopOnlyEnabledAfterPauseClicked() {
-//        window.button(new ShortDescriptionButtonMatcher(GraphStartScreen.JMCH_SHORT_DESCRIPTION)).click();
-//        FrameFixture optionDialog = WindowFinder.findFrame(QueueTypeDialog.class).using(window.robot);
-//        optionDialog.button(new TextButtonMatcher("Spatial Queue")).click();
-//        FrameFixture jmch = WindowFinder.findFrame(SpatialQueueFrame.class).using(window.robot);
-//        jmch.button(new TextButtonMatcher("Start")).click();
-//        jmch.button(new TextButtonMatcher("Pause")).click();
-//        jmch.button(new TextButtonMatcher("Start")).requireEnabled();
-//        jmch.button(new TextButtonMatcher("Pause")).requireDisabled();
-//        jmch.button(new TextButtonMatcher("Stop")).requireEnabled();
-//    }
-//
-//    @Test
-//    public void stopAndPauseDisabledAndStartEnabledAfterStop() {
-//        window.button(new ShortDescriptionButtonMatcher(GraphStartScreen.JMCH_SHORT_DESCRIPTION)).click();
-//        FrameFixture optionDialog = WindowFinder.findFrame(QueueTypeDialog.class).using(window.robot);
-//        optionDialog.button(new TextButtonMatcher("Spatial Queue")).click();
-//        FrameFixture jmch = WindowFinder.findFrame(SpatialQueueFrame.class).using(window.robot);
-//        jmch.button(new TextButtonMatcher("Start")).click();
-//        jmch.button(new TextButtonMatcher("Stop")).click();
-//        jmch.button(new TextButtonMatcher("Start")).requireEnabled();
-//        jmch.button(new TextButtonMatcher("Pause")).requireDisabled();
-//        jmch.button(new TextButtonMatcher("Stop")).requireDisabled();
-//    }
+        robot.mouseMove(500, 350);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(600, 300);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(500, 200);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(500, 340);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        jmch.button(new TextButtonMatcher("Start")).click();
+
+        DialogFixture startMenu = WindowFinder.findDialog(SimulationSizeDialog.class).using(window.robot);
+        startMenu.button(new TextButtonMatcher("Enter")).click();
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        jmch.button(new TextButtonMatcher("Pause")).click();
 
 
+        jmch.button(new TextButtonMatcher("Pause")).requireDisabled();
+        jmch.button(new TextButtonMatcher("Stop")).requireEnabled();
+        jmch.button(new TextButtonMatcher("Start")).requireEnabled();
+    }
+
+    @Test
+    public void abilityToCreateMultipleRegions() throws AWTException {
+        window.button(new ShortDescriptionButtonMatcher(GraphStartScreen.JMCH_SHORT_DESCRIPTION)).click();
+        FrameFixture optionDialog = WindowFinder.findFrame(QueueTypeDialog.class).using(window.robot);
+        optionDialog.button(new TextButtonMatcher("Spatial Queue")).click();
+        FrameFixture jmch = WindowFinder.findFrame(SpatialQueueFrame.class).using(window.robot);
+        jmch.button(new TextButtonMatcher("Add Server")).click();
+        Robot robot = new Robot();
+        robot.mouseMove(400, 200);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        jmch.button(new TextButtonMatcher("Add Client")).click();
+
+        robot.mouseMove(500, 350);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(600, 300);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(500, 200);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(500, 340);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        jmch.button(new TextButtonMatcher("Add Client")).click();
+
+        robot.mouseMove(800, 200);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(700, 400);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(800, 100);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(400, 400);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.mouseMove(800, 190);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        jmch.button(new TextButtonMatcher("Start")).requireEnabled();
+    }
 
 
     @After

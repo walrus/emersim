@@ -6,18 +6,14 @@ import java.awt.*;
 /**
  * Created by joshuazeltser on 22/11/2016.
  */
-public class CustomSimulationDialog extends JFrame {
+public class CustomSimulationDialog {
 
     //Name of custom server and clients
     private String serverName;
     private String clientName;
 
-    //The main frame
-    private SpatialQueueFrame aFrame;
-
     //Dialog that is produced when custom dialog selected
     public CustomSimulationDialog(SpatialQueueFrame aFrame) {
-        
 
         serverName = "";
         clientName = "";
@@ -39,20 +35,16 @@ public class CustomSimulationDialog extends JFrame {
         params.add(client);
 
         p.add(params, BorderLayout.CENTER);
-        setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-
-        this.add(p);
-
+        
         // create the dialog box
         int result = JOptionPane.showConfirmDialog(
-                null, p, "Custom Simulation Setup", JOptionPane.OK_CANCEL_OPTION);
+                aFrame, p, "Custom Simulation Setup", JOptionPane.OK_CANCEL_OPTION);
 
         clientName = client.getText().toString();
         serverName = server.getText().toString();
 
         //if ok is clicked save the settings and close the dialog
         if (result == 0) {
-            this.dispose();
             aFrame.dispose();
             SpatialQueueFrame newSqf = new SpatialQueueFrame();
             newSqf.setCustomLabels(clientName, serverName);
@@ -60,12 +52,5 @@ public class CustomSimulationDialog extends JFrame {
                 newSqf.setCustomLabels("Client", "Server");
             }
         }
-
-        //Register an event handler that reacts to option pane state changes.
-//        optionPane.addPropertyChangeListener(this);
-        this.pack();
-        this.setLocationRelativeTo(aFrame);
-        this.setVisible(true);
     }
-
 }
