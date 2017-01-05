@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * Created by joshuazeltser on 22/11/2016.
  */
-public class CustomSimulationDialog extends JDialog {
+public class CustomSimulationDialog extends JFrame {
 
     //Name of custom server and clients
     private String serverName;
@@ -17,7 +17,7 @@ public class CustomSimulationDialog extends JDialog {
 
     //Dialog that is produced when custom dialog selected
     public CustomSimulationDialog(SpatialQueueFrame aFrame) {
-        this.aFrame = aFrame;
+        
 
         serverName = "";
         clientName = "";
@@ -68,8 +68,4 @@ public class CustomSimulationDialog extends JDialog {
         this.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SpatialQueueFrame mf = new SpatialQueueFrame();
-        CustomSimulationDialog jobsDialog = new CustomSimulationDialog(mf);
-    }
 }
