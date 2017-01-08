@@ -7,6 +7,8 @@ import com.teamdev.jxmaps.swing.MapView;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Simulation.ClientRegion;
 import jmt.jmarkov.SpatialQueue.Simulation.Server;
+import jmt.jmarkov.SpatialQueue.Utils.ClientGraphicLabelled;
+import jmt.jmarkov.SpatialQueue.Utils.ServerGraphicLabelled;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -205,9 +207,9 @@ public class MapConfig extends MapView {
 
     // Saves the server objects currently placed into a string to be loaded again later
     public String saveServers() {
-        LinkedList<LatLng> serverLocations = new LinkedList<>();
+        LinkedList<ServerGraphicLabelled> serverLocations = new LinkedList<>();
         for (ServerGraphic serverGraphic : serverGraphics) {
-            serverLocations.add(serverGraphic.getPosition());
+            serverLocations.add(new ServerGraphicLabelled(serverGraphic.getPosition(), serverGraphic.getName()));
         }
         Gson gson = new Gson();
         return gson.toJson(serverLocations);
@@ -217,10 +219,11 @@ public class MapConfig extends MapView {
     public void loadServers(String jsonString) {
         removeServers();
         Gson gson = new Gson();
-        Type type = new TypeToken<LinkedList<LatLng>>(){}.getType();
-        LinkedList<LatLng> locations = gson.fromJson(jsonString, type);
-        for (LatLng latLng : locations) {
-            new ServerGraphic(this, latLng);
+        Type type = new TypeToken<LinkedList<ServerGraphicLabelled>>(){}.getType();
+        LinkedList<ServerGraphicLabelled> locations = gson.fromJson(jsonString, type);
+        for (ServerGraphicLabelled latLngLabelled : locations) {
+            ServerGraphic latLng = new ServerGraphic(this, latLngLabelled.getLocation());
+            latLng.rename(latLngLabelled.getName());
         }
     }
 
@@ -235,9 +238,9 @@ public class MapConfig extends MapView {
 
     // Saves the client objects currently placed into a string to be loaded again later
     public String saveClients() {
-        LinkedList<LinkedList<LatLng>> clientPaths = new LinkedList<>();
+        LinkedList<ClientGraphicLabelled> clientPaths = new LinkedList<>();
         for (ClientGraphic clientGraphic : clientGraphics) {
-            clientPaths.add(clientGraphic.getPath());
+            clientPaths.add(new ClientGraphicLabelled(clientGraphic.getPath(), clientGraphic.getName()));
         }
         Gson gson = new Gson();
         return gson.toJson(clientPaths);
@@ -247,11 +250,12 @@ public class MapConfig extends MapView {
     public void loadClients(String jsonString) {
         removeClients();
         Gson gson = new Gson();
-        Type type = new TypeToken<LinkedList<LinkedList<LatLng>>>(){}.getType();
-        LinkedList<LinkedList<LatLng>> paths = gson.fromJson(jsonString, type);
+        Type type = new TypeToken<LinkedList<ClientGraphicLabelled>>(){}.getType();
+        LinkedList<ClientGraphicLabelled> paths = gson.fromJson(jsonString, type);
 
-        for (LinkedList<LatLng> path : paths) {
-            new ClientGraphic(path, guiComponents);
+        for (ClientGraphicLabelled pathLabelled : paths) {
+            ClientGraphic path = new ClientGraphic(pathLabelled.getPath(), guiComponents);
+            path.rename(pathLabelled.getName());
         }
     }
 
