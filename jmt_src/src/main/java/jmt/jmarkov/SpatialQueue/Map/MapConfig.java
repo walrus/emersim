@@ -215,11 +215,23 @@ public class MapConfig extends MapView {
 
     // Loads the servers as defined by the given string
     public void loadServers(String jsonString) {
+        removeServers();
         Gson gson = new Gson();
         Type type = new TypeToken<LinkedList<LatLng>>(){}.getType();
         LinkedList<LatLng> locations = gson.fromJson(jsonString, type);
         for (LatLng latLng : locations) {
-            new ServerGraphic(this, latLng);
+            serverGraphics.add(new ServerGraphic(this, latLng));
+        }
+    }
+
+    public void removeServers() {
+        LinkedList<ServerGraphic> toRemove = new LinkedList<>();
+        for (ServerGraphic sg : serverGraphics) {
+            toRemove.add(sg);
+        }
+        serverGraphics.removeAll(toRemove);
+        for (ServerGraphic sg : toRemove) {
+            sg.remove();
         }
     }
 
@@ -228,6 +240,7 @@ public class MapConfig extends MapView {
         LinkedList<LinkedList<LatLng>> clientPaths = new LinkedList<>();
         for (ClientGraphic clientGraphic : clientGraphics) {
             clientPaths.add(clientGraphic.getPath());
+            System.out.println(clientGraphic.getName());
         }
         Gson gson = new Gson();
         return gson.toJson(clientPaths);
@@ -235,12 +248,24 @@ public class MapConfig extends MapView {
 
     // Loads the clients as defined by the given string
     public void loadClients(String jsonString) {
+        removeClients();
         Gson gson = new Gson();
         Type type = new TypeToken<LinkedList<LinkedList<LatLng>>>(){}.getType();
         LinkedList<LinkedList<LatLng>> paths = gson.fromJson(jsonString, type);
 
         for (LinkedList<LatLng> path : paths) {
-            new ClientGraphic(path, guiComponents);
+            clientGraphics.add(new ClientGraphic(path, guiComponents));
+        }
+    }
+
+    public void removeClients() {
+        LinkedList<ClientGraphic> toRemove = new LinkedList<>();
+        for (ClientGraphic cg : clientGraphics) {
+            toRemove.add(cg);
+        }
+        clientGraphics.removeAll(toRemove);
+        for (ClientGraphic cg : toRemove) {
+            cg.remove();
         }
     }
 

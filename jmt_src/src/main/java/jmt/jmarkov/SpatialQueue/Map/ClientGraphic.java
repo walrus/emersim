@@ -173,7 +173,7 @@ public class ClientGraphic implements Graphic {
     @Override
     public void remove() {
         polygon.setVisible(false);
-        areaPeri.setVisible(false);
+        //areaPeri.setVisible(false);
         infoWindow.close();
         clientGraphics.remove(this);
         removeRequestMarkers();

@@ -53,6 +53,7 @@ public class GuiComponents{
     private JMenu openRecentMenu;
     private JMenu settingsMenu;
     private JMenu colorsMenu;
+    private JMenu fileMenu;
     private JRadioButtonMenuItem gradientItem;
     private Color emptyC = Color.WHITE;
     private Color queueC = Color.BLUE;
@@ -379,7 +380,7 @@ public class GuiComponents{
 
     // creates a file menu
     private JMenu fileMenu() {
-        final JMenu fileMenu = new JMenu("File");
+        fileMenu = new JMenu("File");
 
         //creates a new option in the file menu
         newMenu = new AbstractAction("New") {
@@ -401,10 +402,14 @@ public class GuiComponents{
                 if (choice == JOptionPane.YES_OPTION) {
                     //Save the simulation
                     Save.actionPerformed(e);
+                    mapConfig.removeClients();
+                    mapConfig.removeServers();
+                    mf.setTitle("Spatial Queue Simulator");
                 } else if (choice == JOptionPane.NO_OPTION) {
                     //refresh the simulator
-                    mf.dispose();
-                    mf = new SpatialQueueFrame();
+                    mapConfig.removeClients();
+                    mapConfig.removeServers();
+                    mf.setTitle("Spatial Queue Simulator");
                 }
             }
         };
@@ -442,26 +447,7 @@ public class GuiComponents{
                 }
             }
 
-            private void loadSimulation(String[] clientServer) {
-                mapConfig.loadClients(clientServer[0]);
-                mapConfig.loadServers(clientServer[1]);
-                mf.setTitle("Spatial Queue Simulator - " + clientServer[2]);
-                start.setEnabled(true);
-                client.setEnabled(true);
-                OpenRecentList.updateLinkedList(clientServer[2]);
-                openRecentMenu = openRecentSubMenu();
-                fileMenu.removeAll();
-                fileMenu.add(newMenu);
-                fileMenu.add(Open);
-                fileMenu.add(openRecentMenu);
-                fileMenu.addSeparator();
-                fileMenu.add(Save);
-                fileMenu.add(SaveAs);
-                fileMenu.addSeparator();
-                fileMenu.revalidate();
-                fileMenu.repaint();
 
-            }
         };
 
         // creates a save simulation option in the file menu
@@ -503,14 +489,41 @@ public class GuiComponents{
         openRecentMenu = new JMenu("Open Recent");
         OpenRecentList.linkedListFromFile();
         LinkedList<String> list = OpenRecentList.getProjects();
+        String[] clientServer;
         
         while(!list.isEmpty()) {
-            String temp = list.pop().toString();
+            final String temp = list.pop().toString();
             String simulationName = temp.substring(temp.lastIndexOf('/')+1, temp.length());
             Action simulationFile = new AbstractAction(simulationName) {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-
+                    //Custom button text
+                    Object[] options = {"Save",
+                            "Don't Save",
+                            "Cancel"};
+                    int choice = JOptionPane.showOptionDialog(mf,
+                            "Would you like to save your work?",
+                            "Create New Simulation",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            2,
+                            null,
+                            options,
+                            options[2]);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        //Save the simulation
+                        Save.actionPerformed(e);
+                        String[] clientServer = SavedSimulation.fromFileName(temp);
+                        if (clientServer == null) {
+                            return;
+                        }
+                        loadSimulation(clientServer);
+                    } else if (choice == JOptionPane.NO_OPTION) {
+                        String[] clientServer = SavedSimulation.fromFileName(temp);
+                        if (clientServer == null) {
+                            return;
+                        }
+                        loadSimulation(clientServer);
+                    }
                 }
             };
             openRecentMenu.add(simulationFile);
@@ -852,5 +865,26 @@ public class GuiComponents{
     // is a return journey included
     public static boolean isReturnJourney() {
         return returnJourney;
+    }
+
+    private void loadSimulation(String[] clientServer) {
+        mapConfig.loadClients(clientServer[0]);
+        mapConfig.loadServers(clientServer[1]);
+        mf.setTitle("Spatial Queue Simulator - " + clientServer[2]);
+        start.setEnabled(true);
+        client.setEnabled(true);
+        OpenRecentList.updateLinkedList(clientServer[2]);
+        openRecentMenu = openRecentSubMenu();
+        fileMenu.removeAll();
+        fileMenu.add(newMenu);
+        fileMenu.add(Open);
+        fileMenu.add(openRecentMenu);
+        fileMenu.addSeparator();
+        fileMenu.add(Save);
+        fileMenu.add(SaveAs);
+        fileMenu.addSeparator();
+        fileMenu.revalidate();
+        fileMenu.repaint();
+
     }
 }
