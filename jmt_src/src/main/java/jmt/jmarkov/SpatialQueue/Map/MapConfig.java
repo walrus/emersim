@@ -215,11 +215,21 @@ public class MapConfig extends MapView {
 
     // Loads the servers as defined by the given string
     public void loadServers(String jsonString) {
+        removeServers();
         Gson gson = new Gson();
         Type type = new TypeToken<LinkedList<LatLng>>(){}.getType();
         LinkedList<LatLng> locations = gson.fromJson(jsonString, type);
         for (LatLng latLng : locations) {
             new ServerGraphic(this, latLng);
+        }
+    }
+
+    public void removeServers() {
+        LinkedList<ServerGraphic> toRemove = new LinkedList<>();
+        toRemove.addAll(serverGraphics);
+        serverGraphics = new LinkedList<>();
+        for (ServerGraphic sg : toRemove) {
+            sg.remove();
         }
     }
 
@@ -235,12 +245,22 @@ public class MapConfig extends MapView {
 
     // Loads the clients as defined by the given string
     public void loadClients(String jsonString) {
+        removeClients();
         Gson gson = new Gson();
         Type type = new TypeToken<LinkedList<LinkedList<LatLng>>>(){}.getType();
         LinkedList<LinkedList<LatLng>> paths = gson.fromJson(jsonString, type);
 
         for (LinkedList<LatLng> path : paths) {
             new ClientGraphic(path, guiComponents);
+        }
+    }
+
+    public void removeClients() {
+        LinkedList<ClientGraphic> toRemove = new LinkedList<>();
+        toRemove.addAll(clientGraphics);
+        clientGraphics = new LinkedList<>();
+        for (ClientGraphic cg : toRemove) {
+            cg.remove();
         }
     }
 
