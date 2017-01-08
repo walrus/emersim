@@ -458,6 +458,8 @@ public class GuiComponents{
                     SaveAs.actionPerformed(e);
                 } else {
                     SavedSimulation.toExistingFile(mf.getTitle(), mapConfig.saveClients(), mapConfig.saveServers());
+                    OpenRecentList.updateLinkedList(mf.getTitle());
+                    refreshOpenRecentList();
                 }
             }
         };
@@ -468,6 +470,8 @@ public class GuiComponents{
                 String fileName = SavedSimulation.toNewFile(mapConfig.saveClients(), mapConfig.saveServers());
                 if (!fileName.isEmpty()){
                     mf.setTitle("Spatial Queue Simulator - " + fileName);
+                    OpenRecentList.updateLinkedList(mf.getTitle());
+                    refreshOpenRecentList();
                 }
             }
         };
@@ -874,6 +878,10 @@ public class GuiComponents{
         start.setEnabled(true);
         client.setEnabled(true);
         OpenRecentList.updateLinkedList(clientServer[2]);
+        refreshOpenRecentList();
+    }
+
+    private void refreshOpenRecentList() {
         openRecentMenu = openRecentSubMenu();
         fileMenu.removeAll();
         fileMenu.add(newMenu);
@@ -885,6 +893,5 @@ public class GuiComponents{
         fileMenu.addSeparator();
         fileMenu.revalidate();
         fileMenu.repaint();
-
     }
 }
