@@ -49,6 +49,8 @@ public class SpatialQueueSimulator implements Runnable {
 
     private int maxRequests;
 
+    private int priorityLevels;
+
     private QueueDrawer queueDrawer;
 
     private MapConfig mapConfig;
@@ -59,7 +61,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     double systemLambda;
 
-    public SpatialQueueSimulator(double timeMultiplier, Server server, int maxRequests ) {
+    public SpatialQueueSimulator(double timeMultiplier, Server server, int maxRequests, int priorityLevels) {
 
         super();
         currentTime = 0;
@@ -69,6 +71,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.clientRegions = mapConfig.getClientRegions();
         this.currentRequestID = 0;
         this.maxRequests = maxRequests;
+        this.priorityLevels = priorityLevels;
 
         this.returnJourney = GuiComponents.isReturnJourney();
         // lambda is #(number of requests per second)
@@ -89,9 +92,9 @@ public class SpatialQueueSimulator implements Runnable {
         stats.setLambda(systemLambda);
     }
 
-    protected Client generateNewSenderWithinArea(ClientRegion clientRegion) {
-        Location senderLocation = clientRegion.generatePoint();
-        return new Client(clientRegion, senderLocation);
+    protected Client generateNewClientWithinArea(ClientRegion clientRegion) {
+        Location clientLocation = clientRegion.generatePoint();
+        return new Client(clientRegion, clientLocation, this.priorityLevels);
     }
 
     public void run() {
@@ -184,7 +187,7 @@ public class SpatialQueueSimulator implements Runnable {
         //Future implementation could take existing client (generate before running sim)
         int randomInt = new Random().nextInt(this.clientRegions.size());
 
-        Client client = this.generateNewSenderWithinArea(this.clientRegions.get(randomInt));
+        Client client = this.generateNewClientWithinArea(this.clientRegions.get(randomInt));
 
         return client.makeRequest(getNextRequestID(), this.currentTime);
     }

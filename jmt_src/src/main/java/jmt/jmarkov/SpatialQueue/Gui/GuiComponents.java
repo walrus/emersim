@@ -65,6 +65,7 @@ public class GuiComponents{
     private static boolean returnJourney;
     private static boolean stopped;
     static boolean simSizeSet;
+    static int priorityLevels;
 
     private String simServer;
     private String simClient;
@@ -252,7 +253,10 @@ public class GuiComponents{
             // Get one server TODO: support for multiple servers
             Server server = mapConfig.getServers().get(0);
 
-            sim = new SpatialQueueSimulator(accelerationS.getValue(), server, jobsDialog.getTypedValue());
+            sim = new SpatialQueueSimulator(accelerationS.getValue(),
+                    server,
+                    jobsDialog.getTypedValue(),
+                    priorityLevels);
 
             sim.start();
             start.setEnabled(false);
@@ -547,9 +551,17 @@ public class GuiComponents{
                 new CustomSimulationDialog(mf);
             }
         };
+        // Option to simulate different priorities of request
+        Action priorityAction = new AbstractAction("Set Priority Levels") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new RequestPriorityDialog(mf);
+            }
+        };
         simSettings.add(customSim);
         simSettings.add(setTravelModeSubMenu());
         simSettings.add(setReturnJourney());
+        simSettings.add(priorityAction);
 
         return simSettings;
     }

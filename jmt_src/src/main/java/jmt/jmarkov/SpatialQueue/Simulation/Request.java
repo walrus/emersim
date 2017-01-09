@@ -28,26 +28,37 @@ public class Request implements Comparable<Request> {
 
     enum RequestState {IN_QUEUE, BEING_SERVED, FINISHED}
 
-    public Request(int requestId, double time, Client client) {
+    private int priority;
+
+    public Request(int requestId, double time, Client client, int priority) {
         this.requestId = requestId;
         this.creationTime = time;
         this.currentState = IN_QUEUE;
         this.client = client;
+        this.priority = priority;
     }
 
     @Override
     public int compareTo(Request other) {
         if (other == null) {
-            //This should fix the NPEs?
             return 0;
         }
-        double diff = this.getResponseTime() - other.getResponseTime();
-        if (diff > 0) {
+
+        int priorityDiff = this.getPriority() - other.getPriority();
+
+        if (priorityDiff > 0) {
             return 1;
-        } else if (diff < 0) {
+        } else if (priorityDiff < 0) {
             return -1;
         } else {
-            return 0;
+            double diff = this.getResponseTime() - other.getResponseTime();
+            if (diff > 0) {
+                return 1;
+            } else if (diff < 0) {
+                return -1;
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -102,4 +113,6 @@ public class Request implements Comparable<Request> {
     public void setDirectionsResult(DirectionsResult directionsResult) {
         this.directionsResult = directionsResult;
     }
+
+    public int getPriority() {return this.priority;}
 }
