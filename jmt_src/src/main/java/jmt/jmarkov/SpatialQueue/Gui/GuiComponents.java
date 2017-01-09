@@ -409,11 +409,15 @@ public class GuiComponents{
                     mapConfig.removeClients();
                     mapConfig.removeServers();
                     mf.setTitle("Spatial Queue Simulator");
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
                 } else if (choice == JOptionPane.NO_OPTION) {
                     //refresh the simulator
                     mapConfig.removeClients();
                     mapConfig.removeServers();
                     mf.setTitle("Spatial Queue Simulator");
+                    mf.dispose();
+                    mf = new SpatialQueueFrame();
                 }
             }
         };
