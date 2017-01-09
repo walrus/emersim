@@ -30,12 +30,12 @@ public class Request implements Comparable<Request> {
 
     private int priority;
 
-    public Request(int requestId, double time, Client client) {
+    public Request(int requestId, double time, Client client, int priority) {
         this.requestId = requestId;
         this.creationTime = time;
         this.currentState = IN_QUEUE;
         this.client = client;
-        this.priority = 0;
+        this.priority = priority;
     }
 
     @Override

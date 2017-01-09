@@ -253,7 +253,10 @@ public class GuiComponents{
             // Get one server TODO: support for multiple servers
             Server server = mapConfig.getServers().get(0);
 
-            sim = new SpatialQueueSimulator(accelerationS.getValue(), server, jobsDialog.getTypedValue());
+            sim = new SpatialQueueSimulator(accelerationS.getValue(),
+                    server,
+                    jobsDialog.getTypedValue(),
+                    priorityLevels);
 
             sim.start();
             start.setEnabled(false);
