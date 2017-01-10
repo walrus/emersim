@@ -1,6 +1,8 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
-import com.teamdev.jxmaps.*;
+import com.teamdev.jxmaps.DirectionsLeg;
+import com.teamdev.jxmaps.DirectionsResult;
+import com.teamdev.jxmaps.TravelMode;
 import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 import jmt.jmarkov.SpatialQueue.Map.APIErrorDialog;
 import jmt.jmarkov.SpatialQueue.Map.ClientGraphic;
@@ -8,7 +10,6 @@ import jmt.jmarkov.SpatialQueue.Map.DirectionsNotFoundException;
 import jmt.jmarkov.SpatialQueue.Map.MapConfig;
 import jmt.jmarkov.SpatialQueue.Utils.LatLngUtils;
 import jmt.jmarkov.SpatialQueue.Utils.Location;
-import jmt.jmarkov.SpatialQueue.Utils.PolyLineEncoder;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -155,7 +156,11 @@ public class Server {
         if (this.servedRequests.isEmpty()) {
             this.averageServiceTime = 0;
         } else {
-            this.averageServiceTime = currentTime / this.servedRequests.size();
+            double temp = 0;
+            for (Request r : servedRequests) {
+                temp += r.getResponseTime();
+            }
+            this.averageServiceTime = temp / this.servedRequests.size();
         }
     }
 
