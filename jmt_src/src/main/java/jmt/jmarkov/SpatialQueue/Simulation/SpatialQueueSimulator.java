@@ -83,7 +83,7 @@ public class SpatialQueueSimulator implements Runnable {
         double totalLambda = 0;
         //Create a new request generator for each client region
         for (ClientRegion cr : clientRegions) {
-            RequestGenerator rg = new RequestGenerator(this, cr.getLambda());
+            RequestGenerator rg = new RequestGenerator(this, cr.getLambda(), cr);
             cr.setRequestGenerator(rg);
             totalLambda += cr.getLambda();
         }
@@ -182,12 +182,12 @@ public class SpatialQueueSimulator implements Runnable {
         return r;
     }
 
-    public synchronized Request createRequest() {
+    public synchronized Request createRequest(ClientRegion cr) {
         //Current implementation: create a new client then generate a request from them
         //Future implementation could take existing client (generate before running sim)
         int randomInt = new Random().nextInt(this.clientRegions.size());
 
-        Client client = this.generateNewClientWithinArea(this.clientRegions.get(randomInt));
+        Client client = this.generateNewClientWithinArea(cr);
 
         return client.makeRequest(getNextRequestID(), this.currentTime);
     }
