@@ -32,7 +32,6 @@ public class RequestGenerator implements Runnable {
             System.out.println(timeToWait);
             try {
                 Thread.sleep((long) timeToWait);
-                System.out.println(timeToWait);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -40,7 +39,6 @@ public class RequestGenerator implements Runnable {
     }
 
     private double getNextArrivalTime(double lambda){
-        System.out.println(Math.log(1.0-((Math.random() / 2) + 0.25))/-lambda);
         return (Math.log(1.0-((Math.random() / 2) + 0.25))/-lambda);
     }
 
