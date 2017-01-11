@@ -10,10 +10,12 @@ public class ClientGraphicLabelled {
 
     private LinkedList<LatLng> path;
     private String name;
+    private double lambda;
 
-    public ClientGraphicLabelled(LinkedList<LatLng> path, String name) {
+    public ClientGraphicLabelled(LinkedList<LatLng> path, String name, double lambda) {
         this.path = path;
         this.name = name;
+        this.lambda = lambda;
     }
 
     public LinkedList<LatLng> getPath() {
@@ -23,4 +25,6 @@ public class ClientGraphicLabelled {
     public String getName() {
         return name;
     }
+
+    public double getLambda() { return lambda; }
 }

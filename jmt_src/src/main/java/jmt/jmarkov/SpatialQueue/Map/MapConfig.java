@@ -240,7 +240,7 @@ public class MapConfig extends MapView {
     public String saveClients() {
         LinkedList<ClientGraphicLabelled> clientPaths = new LinkedList<>();
         for (ClientGraphic clientGraphic : clientGraphics) {
-            clientPaths.add(new ClientGraphicLabelled(clientGraphic.getPath(), clientGraphic.getName()));
+            clientPaths.add(new ClientGraphicLabelled(clientGraphic.getPath(), clientGraphic.getName(), clientGraphic.getClientRegion().getLambda()));
         }
         Gson gson = new Gson();
         return gson.toJson(clientPaths);
@@ -256,6 +256,7 @@ public class MapConfig extends MapView {
         for (ClientGraphicLabelled pathLabelled : paths) {
             ClientGraphic path = new ClientGraphic(pathLabelled.getPath(), guiComponents);
             path.rename(pathLabelled.getName());
+            path.setLambda(pathLabelled.getLambda());
         }
     }
 
