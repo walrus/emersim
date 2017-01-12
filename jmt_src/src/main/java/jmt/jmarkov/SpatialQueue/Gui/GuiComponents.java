@@ -615,7 +615,6 @@ public class GuiComponents{
         distanceSorting = new JCheckBoxMenuItem("Shortest-Distance-First");
         distanceSorting.setSelected(true);
 
-        // if on has been clicked off is deselected
         FIFO.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -624,7 +623,7 @@ public class GuiComponents{
                 queueMode = QUEUE_MODE.FIRST_COME_FIRST_SERVE;
             }
         });
-        // if off has been clicked on is deselected
+
         distanceSorting.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -633,6 +632,7 @@ public class GuiComponents{
                 queueMode = QUEUE_MODE.SHORTEST_DISTANCE_FIRST;
             }
         });
+        
         setReturnJourney.add(FIFO);
         setReturnJourney.add(distanceSorting);
         return setReturnJourney;
