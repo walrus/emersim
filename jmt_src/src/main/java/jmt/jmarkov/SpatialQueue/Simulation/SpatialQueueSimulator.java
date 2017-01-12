@@ -51,6 +51,8 @@ public class SpatialQueueSimulator implements Runnable {
 
     private int priorityLevels;
 
+    private GuiComponents.QUEUE_MODE queueMode;
+
     private QueueDrawer queueDrawer;
 
     private MapConfig mapConfig;
@@ -61,7 +63,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     double systemLambda;
 
-    public SpatialQueueSimulator(double timeMultiplier, Server server, int maxRequests, int priorityLevels) {
+    public SpatialQueueSimulator(double timeMultiplier, Server server, int maxRequests, int priorityLevels, GuiComponents.QUEUE_MODE queueMode) {
 
         super();
         currentTime = 0;
@@ -72,6 +74,7 @@ public class SpatialQueueSimulator implements Runnable {
         this.currentRequestID = 0;
         this.maxRequests = maxRequests;
         this.priorityLevels = priorityLevels;
+        this.queueMode = queueMode;
 
         this.returnJourney = GuiComponents.isReturnJourney();
         // lambda is #(number of requests per second)
@@ -94,7 +97,7 @@ public class SpatialQueueSimulator implements Runnable {
 
     protected Client generateNewClientWithinArea(ClientRegion clientRegion) {
         Location clientLocation = clientRegion.generatePoint();
-        return new Client(clientRegion, clientLocation, this.priorityLevels);
+        return new Client(clientRegion, clientLocation, this.priorityLevels, queueMode);
     }
 
     public void run() {
