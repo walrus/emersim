@@ -57,7 +57,7 @@ public class SummaryPage extends JFrame {
                rowData[count][1] = "Saturation";
             }
            double throughput = cr.getGenerator().getStats().getQueueLogic().getLambda();
-           rowData[count][2] = String.format("%.3f", throughput) + thrStrE;
+           rowData[count][2] = String.format("%.6f", throughput) + thrStrE;
 
            try {
                double utilisation = cr.getGenerator().getStats().getQueueLogic().utilization();

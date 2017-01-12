@@ -1,6 +1,7 @@
 package jmt.jmarkov.SpatialQueue.Simulation;
 
 import com.teamdev.jxmaps.DirectionsResult;
+import jmt.jmarkov.SpatialQueue.Gui.GuiComponents;
 
 import static jmt.jmarkov.SpatialQueue.Simulation.Request.RequestState.*;
 
@@ -28,14 +29,17 @@ public class Request implements Comparable<Request> {
 
     enum RequestState {IN_QUEUE, BEING_SERVED, FINISHED}
 
+    private GuiComponents.QUEUE_MODE queueMode;
+
     private int priority;
 
-    public Request(int requestId, double time, Client client, int priority) {
+    public Request(int requestId, double time, Client client, int priority, GuiComponents.QUEUE_MODE queueMode) {
         this.requestId = requestId;
         this.creationTime = time;
         this.currentState = IN_QUEUE;
         this.client = client;
         this.priority = priority;
+        this.queueMode = queueMode;
     }
 
     @Override
@@ -46,20 +50,40 @@ public class Request implements Comparable<Request> {
 
         int priorityDiff = this.getPriority() - other.getPriority();
 
-        if (priorityDiff > 0) {
-            return 1;
-        } else if (priorityDiff < 0) {
-            return -1;
-        } else {
-            double diff = this.getResponseTime() - other.getResponseTime();
-            if (diff > 0) {
-                return 1;
-            } else if (diff < 0) {
-                return -1;
-            } else {
-                return 0;
-            }
+        switch (queueMode) {
+            case SHORTEST_DISTANCE_FIRST:
+                if (priorityDiff > 0) {
+                    return 1;
+                } else if (priorityDiff < 0) {
+                    return -1;
+                } else {
+                    double diff = this.getResponseTime() - other.getResponseTime();
+                    if (diff > 0) {
+                        return 1;
+                    } else if (diff < 0) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            case FIRST_COME_FIRST_SERVE:
+                System.out.println("h");
+                if (priorityDiff > 0) {
+                    return 1;
+                }  else if (priorityDiff < 0) {
+                    return -1;
+                } else {
+                    int diff = this.getRequestId() - other.getRequestId();
+                    if (diff > 0) {
+                        return 1;
+                    } else if (diff < 0) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
         }
+        return 0;
     }
 
     public void serve(double currentTime, double finishTime) {

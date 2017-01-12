@@ -66,6 +66,8 @@ public class GuiComponents{
     private static boolean stopped;
     static boolean simSizeSet;
     static int priorityLevels;
+    private QUEUE_MODE queueMode = QUEUE_MODE.SHORTEST_DISTANCE_FIRST;
+
 
     private String simServer;
     private String simClient;
@@ -79,8 +81,12 @@ public class GuiComponents{
     private JCheckBoxMenuItem cycle;
     private JCheckBoxMenuItem publicTransport;
     private JCheckBoxMenuItem fly;
+    private JCheckBoxMenuItem FIFO;
+    private JCheckBoxMenuItem distanceSorting;
 
     private static Statistics stats;
+
+    public enum QUEUE_MODE {FIRST_COME_FIRST_SERVE, SHORTEST_DISTANCE_FIRST}
 
     public GuiComponents(SpatialQueueFrame mf) {
         init();
@@ -256,7 +262,7 @@ public class GuiComponents{
             sim = new SpatialQueueSimulator(accelerationS.getValue(),
                     server,
                     jobsDialog.getTypedValue(),
-                    priorityLevels);
+                    priorityLevels, queueMode);
 
             sim.start();
             start.setEnabled(false);
@@ -564,6 +570,7 @@ public class GuiComponents{
         };
         simSettings.add(customSim);
         simSettings.add(setTravelModeSubMenu());
+        simSettings.add(setQueueMode());
         simSettings.add(setReturnJourney());
         simSettings.add(priorityAction);
 
@@ -598,6 +605,36 @@ public class GuiComponents{
         });
         setReturnJourney.add(on);
         setReturnJourney.add(off);
+        return setReturnJourney;
+    }
+
+    // setting to choose which queueing method to use when selecting requests
+    private JMenu setQueueMode() {
+        JMenu setReturnJourney = new JMenu("Queue Mode");
+        FIFO = new JCheckBoxMenuItem("First-Come-First-Serve");
+        distanceSorting = new JCheckBoxMenuItem("Shortest-Distance-First");
+        distanceSorting.setSelected(true);
+
+        // if on has been clicked off is deselected
+        FIFO.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FIFO.setSelected(true);
+                distanceSorting.setSelected(false);
+                queueMode = QUEUE_MODE.FIRST_COME_FIRST_SERVE;
+            }
+        });
+        // if off has been clicked on is deselected
+        distanceSorting.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                distanceSorting.setSelected(true);
+                FIFO.setSelected(false);
+                queueMode = QUEUE_MODE.SHORTEST_DISTANCE_FIRST;
+            }
+        });
+        setReturnJourney.add(FIFO);
+        setReturnJourney.add(distanceSorting);
         return setReturnJourney;
     }
 
