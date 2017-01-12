@@ -67,7 +67,6 @@ public class Request implements Comparable<Request> {
                     }
                 }
             case FIRST_COME_FIRST_SERVE:
-                System.out.println("h");
                 if (priorityDiff > 0) {
                     return 1;
                 }  else if (priorityDiff < 0) {
