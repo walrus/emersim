@@ -47,6 +47,7 @@ public class SummaryPage extends JFrame {
 
         // for each region collect the stats and print them to the summary page
        for (ClientRegion cr : sim.getRegions()) {
+           cr.getGenerator().updateAverageServiceTime(0);
            rowData[count][0] = cr.getClientGraphic().getName();
 
            // make sure to catch any saturation errors and print accordingly

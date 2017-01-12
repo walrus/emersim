@@ -26,8 +26,6 @@ public class RequestGenerator implements Runnable {
 
     public void run() {
         while (this.sim.isRunning() && this.sim.moreRequests()) {
-            stats.setSI(averageServiceTime);
-            stats.setLambda(lambda * 1000);
             Request newRequest = this.sim.createRequest(cr);
             this.sim.enqueueRequest(newRequest);
             this.sim.getQueueDrawer().enterQueue();
@@ -42,8 +40,9 @@ public class RequestGenerator implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            updateAverageServiceTime(0);
+
         }
+
     }
 
     private double getNextArrivalTime(double lambda){
@@ -58,7 +57,7 @@ public class RequestGenerator implements Runnable {
         this.lambda = lambda;
     }
 
-    private void updateAverageServiceTime(double currentTime) {
+    public void updateAverageServiceTime(double currentTime) {
         if (this.servedRequests.isEmpty()) {
             this.averageServiceTime = 0;
         } else {
@@ -68,6 +67,8 @@ public class RequestGenerator implements Runnable {
             }
             this.averageServiceTime = temp / this.servedRequests.size();
         }
+        stats.setLambda(lambda * 1000);
+        stats.setSI(averageServiceTime);
     }
 
 }
